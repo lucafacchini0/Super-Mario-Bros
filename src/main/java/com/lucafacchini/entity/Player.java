@@ -45,8 +45,8 @@ public class Player extends Entity {
         super(gp);
         this.kh = kh;
 
-        screenX = gp.SCREEN_WIDTH / 2 - gp.TILE_SIZE / 2; // Center the player on the screen
-        screenY = gp.SCREEN_HEIGHT / 2 - gp.TILE_SIZE / 2; // Center the player on the screen
+        screenX = gp.WINDOW_WIDTH / 2 - gp.TILE_SIZE / 2; // Center the player on the screen
+        screenY = gp.WINDOW_HEIGHT / 2 - gp.TILE_SIZE / 2; // Center the player on the screen
 
         // Bounding box settings
         boundingBox = new Rectangle();

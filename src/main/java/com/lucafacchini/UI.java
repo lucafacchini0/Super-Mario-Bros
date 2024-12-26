@@ -63,7 +63,7 @@ public class UI {
 
         x = gp.TILE_SIZE * 2;
         y = gp.TILE_SIZE;
-        width = gp.SCREEN_WIDTH - gp.TILE_SIZE * 4;
+        width = gp.WINDOW_WIDTH - gp.TILE_SIZE * 4;
         height = gp.TILE_SIZE * 4;
 
         drawSubWindow(x, y, width, height);
