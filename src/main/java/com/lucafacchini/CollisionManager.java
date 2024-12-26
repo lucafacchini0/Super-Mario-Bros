@@ -23,9 +23,9 @@ public class CollisionManager {
     private boolean isTileColliding(int... tileNums) {
         for (int tileNum : tileNums) {
             if (tileNum >= 0) {
-                if(isTileSolid(tileNum, gp.firstLayerMap)) { return true; }
-                if(isTileSolid(tileNum, gp.secondLayerMap)) { return true; }
-                if(isTileSolid(tileNum, gp.thirdLayerMap)) { return true; }
+                if(isTileSolid(tileNum, gp.maps[0])) { return true; }
+                if(isTileSolid(tileNum, gp.maps[1])) { return true; }
+                if(isTileSolid(tileNum, gp.maps[2])) { return true; }
             }
         }
         return false;
@@ -51,21 +51,21 @@ public class CollisionManager {
 
     private void checkTileCollision(Entity entity, int entityLeftColumn, int entityRightColumn, int entityTopRow, int entityBottomRow) {
         int[] topTiles = {
-                gp.firstLayerMap.GAME_MAP[entityLeftColumn][entityTopRow],
-                gp.firstLayerMap.GAME_MAP[entityRightColumn][entityTopRow],
-                gp.secondLayerMap.GAME_MAP[entityLeftColumn][entityTopRow],
-                gp.secondLayerMap.GAME_MAP[entityRightColumn][entityTopRow],
-                gp.thirdLayerMap.GAME_MAP[entityLeftColumn][entityTopRow],
-                gp.thirdLayerMap.GAME_MAP[entityRightColumn][entityTopRow]
+                gp.maps[0].GAME_MAP[entityLeftColumn][entityTopRow],
+                gp.maps[0].GAME_MAP[entityRightColumn][entityTopRow],
+                gp.maps[1].GAME_MAP[entityLeftColumn][entityTopRow],
+                gp.maps[1].GAME_MAP[entityRightColumn][entityTopRow],
+                gp.maps[2].GAME_MAP[entityLeftColumn][entityTopRow],
+                gp.maps[2].GAME_MAP[entityRightColumn][entityTopRow]
         };
 
         int[] bottomTiles = {
-                gp.firstLayerMap.GAME_MAP[entityLeftColumn][entityBottomRow],
-                gp.firstLayerMap.GAME_MAP[entityRightColumn][entityBottomRow],
-                gp.secondLayerMap.GAME_MAP[entityLeftColumn][entityBottomRow],
-                gp.secondLayerMap.GAME_MAP[entityRightColumn][entityBottomRow],
-                gp.thirdLayerMap.GAME_MAP[entityLeftColumn][entityBottomRow],
-                gp.thirdLayerMap.GAME_MAP[entityRightColumn][entityBottomRow]
+                gp.maps[0].GAME_MAP[entityLeftColumn][entityBottomRow],
+                gp.maps[0].GAME_MAP[entityRightColumn][entityBottomRow],
+                gp.maps[1].GAME_MAP[entityLeftColumn][entityBottomRow],
+                gp.maps[1].GAME_MAP[entityRightColumn][entityBottomRow],
+                gp.maps[2].GAME_MAP[entityLeftColumn][entityBottomRow],
+                gp.maps[2].GAME_MAP[entityRightColumn][entityBottomRow]
         };
 
         if (isTileColliding(topTiles) || isTileColliding(bottomTiles)) {
@@ -141,9 +141,9 @@ public class CollisionManager {
         int bottomTile = (entity.worldY + entity.boundingBox.y + entity.boundingBox.height) / gp.TILE_SIZE;
 
         return isTileColliding(
-                gp.firstLayerMap.GAME_MAP[leftTile][topTile], gp.firstLayerMap.GAME_MAP[leftTile][bottomTile],
-                gp.secondLayerMap.GAME_MAP[leftTile][topTile], gp.secondLayerMap.GAME_MAP[leftTile][bottomTile],
-                gp.thirdLayerMap.GAME_MAP[leftTile][topTile], gp.thirdLayerMap.GAME_MAP[leftTile][bottomTile]
+                gp.maps[0].GAME_MAP[leftTile][topTile], gp.maps[0].GAME_MAP[leftTile][bottomTile],
+                gp.maps[1].GAME_MAP[leftTile][topTile], gp.maps[1].GAME_MAP[leftTile][bottomTile],
+                gp.maps[2].GAME_MAP[leftTile][topTile], gp.maps[2].GAME_MAP[leftTile][bottomTile]
         );
     }
 
@@ -156,9 +156,9 @@ public class CollisionManager {
         int bottomTile = (entity.worldY + entity.boundingBox.y + entity.boundingBox.height) / gp.TILE_SIZE;
 
         return isTileColliding(
-                gp.firstLayerMap.GAME_MAP[rightTile][topTile], gp.firstLayerMap.GAME_MAP[rightTile][bottomTile],
-                gp.secondLayerMap.GAME_MAP[rightTile][topTile], gp.secondLayerMap.GAME_MAP[rightTile][bottomTile],
-                gp.thirdLayerMap.GAME_MAP[rightTile][topTile], gp.thirdLayerMap.GAME_MAP[rightTile][bottomTile]
+                gp.maps[0].GAME_MAP[rightTile][topTile], gp.maps[0].GAME_MAP[rightTile][bottomTile],
+                gp.maps[1].GAME_MAP[rightTile][topTile], gp.maps[1].GAME_MAP[rightTile][bottomTile],
+                gp.maps[2].GAME_MAP[rightTile][topTile], gp.maps[2].GAME_MAP[rightTile][bottomTile]
         );
     }
 
@@ -171,9 +171,9 @@ public class CollisionManager {
         int bottomTile = nextBottomWorldY / gp.TILE_SIZE;
 
         return isTileColliding(
-                gp.firstLayerMap.GAME_MAP[leftTile][bottomTile], gp.firstLayerMap.GAME_MAP[rightTile][bottomTile],
-                gp.secondLayerMap.GAME_MAP[leftTile][bottomTile], gp.secondLayerMap.GAME_MAP[rightTile][bottomTile],
-                gp.thirdLayerMap.GAME_MAP[leftTile][bottomTile], gp.thirdLayerMap.GAME_MAP[rightTile][bottomTile]
+                gp.maps[0].GAME_MAP[leftTile][bottomTile], gp.maps[0].GAME_MAP[rightTile][bottomTile],
+                gp.maps[1].GAME_MAP[leftTile][bottomTile], gp.maps[1].GAME_MAP[rightTile][bottomTile],
+                gp.maps[2].GAME_MAP[leftTile][bottomTile], gp.maps[2].GAME_MAP[rightTile][bottomTile]
         );
     }
 
@@ -186,9 +186,9 @@ public class CollisionManager {
         int topTile = nextTopWorldY / gp.TILE_SIZE;
 
         return isTileColliding(
-                gp.firstLayerMap.GAME_MAP[leftTile][topTile], gp.firstLayerMap.GAME_MAP[rightTile][topTile],
-                gp.secondLayerMap.GAME_MAP[leftTile][topTile], gp.secondLayerMap.GAME_MAP[rightTile][topTile],
-                gp.thirdLayerMap.GAME_MAP[leftTile][topTile], gp.thirdLayerMap.GAME_MAP[rightTile][topTile]
+                gp.maps[0].GAME_MAP[leftTile][topTile], gp.maps[0].GAME_MAP[rightTile][topTile],
+                gp.maps[1].GAME_MAP[leftTile][topTile], gp.maps[1].GAME_MAP[rightTile][topTile],
+                gp.maps[2].GAME_MAP[leftTile][topTile], gp.maps[2].GAME_MAP[rightTile][topTile]
         );
     }
 

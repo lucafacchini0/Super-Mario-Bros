@@ -42,10 +42,11 @@ public class GamePanel extends JPanel implements Runnable {
     public final int MAX_WORLD_COLUMNS = 50;
     public final int MAX_WORLD_ROWS = 50;
 
-    // TODO: Set as a vector
-    public TileManager firstLayerMap = new TileManager(this, "background.csv");
-    public TileManager secondLayerMap = new TileManager(this, "groundDecoration.csv");
-    public TileManager thirdLayerMap = new TileManager(this, "background.csv");
+    TileManager[] maps = {
+            new TileManager(this, "background.csv"),
+            new TileManager(this, "groundDecoration.csv"),
+            new TileManager(this, "background.csv") // TODO: Remove this
+    };
 
     // ---------------------------------------------- //
 
@@ -166,7 +167,7 @@ public class GamePanel extends JPanel implements Runnable {
     // Draw the components of the panel.
     private void drawAllComponents(Graphics2D g2d) {
 
-        firstLayerMap.draw(g2d);
+        maps[0].draw(g2d);
 
         for(int i = 0; i < objectsArray.length; i++) {
             if(objectsArray[i] != null) {
@@ -181,7 +182,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.draw(g2d);
-        secondLayerMap.draw(g2d);
+        maps[1].draw(g2d);
         ui.draw(g2d);
     }
 

@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 
 public class Utilities {
 
+    // TODO: useless class. can be replaced with LOGGER.
+
     public Utilities() {
     }
 

@@ -12,8 +12,8 @@ public class KeyHandler implements KeyListener {
     private final GamePanel gp;
 
     // Minimum time in milliseconds before toggling the pause state
-    private static final long TIME_BEFORE_NEXT_PAUSE_SCREEN = 500; // 500ms
-    private long lastPauseTime = 0;
+//    private static final long TIME_BEFORE_NEXT_PAUSE_SCREEN = 500; // 500ms
+//    private long lastPauseTime = 0;
 
     public KeyHandler(GamePanel gp) {
         this.gp = gp;
@@ -74,8 +74,6 @@ public class KeyHandler implements KeyListener {
             System.out.println("Paused state: Key released");
         }
     }
-
-
 
     private void handlePauseToggle(int key) {
         if (key == KeyEvent.VK_T) {
