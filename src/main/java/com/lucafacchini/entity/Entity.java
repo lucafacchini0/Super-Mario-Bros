@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Entity {
+    // INFO: Every entity must have exactly the sprites per direction specified in the constants.
+    // TODO: For each entity, specify the number of sprites per direction, so that every entity can have a different number of sprites per direction.
     public final int MAX_SPRITES_PER_WALKING_DIRECTION = 2;
     public final int MAX_SPRITES_PER_IDLING_DIRECTION = 2;
 

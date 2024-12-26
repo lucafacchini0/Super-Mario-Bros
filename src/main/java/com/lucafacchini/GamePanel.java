@@ -12,6 +12,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 
     // Game settings
+    // TODO: Change the game status to an enum
     public final int runningState = 1;
     public final int pausedState = 2;
     public final int dialogueState = 3;
@@ -43,6 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player(this, kh);
 
     // Debug
+    // TODO: Set as a vector
     public TileManager firstLayerMap = new TileManager(this, "background.csv");
     public TileManager secondLayerMap = new TileManager(this, "groundDecoration.csv");
     public TileManager thirdLayerMap = new TileManager(this, "background.csv");
