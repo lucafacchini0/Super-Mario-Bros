@@ -1,19 +1,19 @@
 package com.lucafacchini.entity;
 
 import com.lucafacchini.GamePanel;
+import com.lucafacchini.Utilities;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
-// TODO: move similar code of the entities to this class
 
 public class Entity {
-    // INFO: Every entity must have exactly the sprites per direction specified in the constants.
-    // TODO: For each entity, specify the number of sprites per direction, so that every entity can have a different number of sprites per direction.
-    public final int MAX_SPRITES_PER_WALKING_DIRECTION = 2;
+    public final int MAX_SPRITES_PER_WALKING_DIRECTION = 4;
     public final int MAX_SPRITES_PER_IDLING_DIRECTION = 2;
 
     public int updateFramesCounter = 0;
@@ -21,17 +21,33 @@ public class Entity {
     public int worldX, worldY;
     public int speed;
 
-    public BufferedImage[] upImages = new BufferedImage[MAX_SPRITES_PER_WALKING_DIRECTION];
-    public BufferedImage[] downImages = new BufferedImage[MAX_SPRITES_PER_WALKING_DIRECTION];
-    public BufferedImage[] leftImages = new BufferedImage[MAX_SPRITES_PER_WALKING_DIRECTION];
-    public BufferedImage[] rightImages = new BufferedImage[MAX_SPRITES_PER_WALKING_DIRECTION];
+    public enum spriteDirection {
+        UP_MOVING, DOWN_MOVING, LEFT_MOVING, RIGHT_MOVING,
+        UP_IDLING, DOWN_IDLING, LEFT_IDLING, RIGHT_IDLING
+    };
 
-    public BufferedImage[] idlingDownImages = new BufferedImage[MAX_SPRITES_PER_IDLING_DIRECTION];
-    public BufferedImage[] idlingUpImages = new BufferedImage[MAX_SPRITES_PER_IDLING_DIRECTION];
-    public BufferedImage[] idlingLeftImages = new BufferedImage[MAX_SPRITES_PER_IDLING_DIRECTION];
-    public BufferedImage[] idlingRightImages = new BufferedImage[MAX_SPRITES_PER_IDLING_DIRECTION];
+    public HashMap<spriteDirection, ArrayList<BufferedImage>> spriteImages = new HashMap<>();
 
     public String currentDirection;
+
+    public enum Direction {
+        UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT
+    }
+
+    Utilities utilities = new Utilities();
+
+//    public BufferedImage[] upImages = new BufferedImage[MAX_SPRITES_PER_WALKING_DIRECTION];
+//    public BufferedImage[] downImages = new BufferedImage[MAX_SPRITES_PER_WALKING_DIRECTION];
+//    public BufferedImage[] leftImages = new BufferedImage[MAX_SPRITES_PER_WALKING_DIRECTION];
+//    public BufferedImage[] rightImages = new BufferedImage[MAX_SPRITES_PER_WALKING_DIRECTION];
+//
+//    public BufferedImage[] idlingDownImages = new BufferedImage[MAX_SPRITES_PER_IDLING_DIRECTION];
+//    public BufferedImage[] idlingUpImages = new BufferedImage[MAX_SPRITES_PER_IDLING_DIRECTION];
+//    public BufferedImage[] idlingLeftImages = new BufferedImage[MAX_SPRITES_PER_IDLING_DIRECTION];
+//    public BufferedImage[] idlingRightImages = new BufferedImage[MAX_SPRITES_PER_IDLING_DIRECTION];
+
+
+
 
     // The bounding box of the entity and whether it is colliding with another entity.
     public Rectangle boundingBox = new Rectangle(0, 0, 64, 64);
@@ -39,6 +55,9 @@ public class Entity {
     public boolean isCollidingWithTile = false;
     public boolean isCollidingWithObject = false;
     public boolean isCollidingWithEntity = false;
+
+
+
 
     GamePanel gp;
     String[] dialogues = new String[20]; // TODO: Change to HashMap
@@ -90,133 +109,95 @@ public class Entity {
 
 
 
+    public void setEntityImages(String folderPath, int NUM_WALK_UP, int NUM_WALK_DOWN, int NUM_WALK_LEFT, int NUM_WALK_RIGHT, int NUM_IDLE_UP, int NUM_IDLE_DOWN, int NUM_IDLE_LEFT, int NUM_IDLE_RIGHT) {
+
+        // Initialize hashmap
+        for (spriteDirection direction : spriteDirection.values()) {
+            spriteImages.put(direction, new ArrayList<>());
+        }
+
+        try {
+            for(int i = 0; i < NUM_WALK_UP; i++) { spriteImages.get(spriteDirection.UP_MOVING).add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/walk_up_" + (i+1) + ".png")))); }
+            for(int i = 0; i < NUM_WALK_DOWN; i++) { spriteImages.get(spriteDirection.DOWN_MOVING).add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/walk_down_" + (i+1) + ".png")))); }
+            for(int i = 0; i < NUM_WALK_LEFT; i++) { spriteImages.get(spriteDirection.LEFT_MOVING).add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/walk_left_" + (i+1) + ".png")))); }
+            for(int i = 0; i < NUM_WALK_RIGHT; i++) { spriteImages.get(spriteDirection.RIGHT_MOVING).add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/walk_right_" + (i+1) + ".png")))); }
+
+            for(int i = 0; i < NUM_IDLE_UP; i++) { spriteImages.get(spriteDirection.UP_IDLING).add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/idling/idling_up_" + (i+1) + ".png")))); }
+            for(int i = 0; i < NUM_IDLE_DOWN; i++) { spriteImages.get(spriteDirection.DOWN_IDLING).add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/idling/idling_down_" + (i+1) + ".png")))); }
+            for(int i = 0; i < NUM_IDLE_LEFT; i++) { spriteImages.get(spriteDirection.LEFT_IDLING).add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/idling/idling_left_" + (i+1) + ".png")))); }
+            for(int i = 0; i < NUM_IDLE_RIGHT; i++) { spriteImages.get(spriteDirection.RIGHT_IDLING).add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/idling/idling_right_" + (i+1) + ".png")))); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void draw(Graphics2D g2d) {
         BufferedImage image = null;
-
 
         int screenX = worldX - gp.player.worldX + gp.player.screenX;
         int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-        // If the object is within the screen boundaries, draw it.
         if (worldX + gp.TILE_SIZE > gp.player.worldX - gp.player.screenX &&
                 worldX - gp.TILE_SIZE < gp.player.worldX + gp.player.screenX &&
                 worldY + gp.TILE_SIZE > gp.player.worldY - gp.player.screenY &&
                 worldY - gp.TILE_SIZE < gp.player.worldY + gp.player.screenY) {
 
-            switch (currentDirection) {
-                case "up", "up-left", "up-right" -> image = switch (spriteImageNum) {
-                    case 1 -> upImages[0];
-                    case 2 -> upImages[1];
-                    case 3 -> upImages[2];
-                    case 4 -> upImages[3];
-                    case 5 -> upImages[4];
-                    case 6 -> upImages[5];
-                    default -> upImages[0];
-                };
+            spriteDirection direction = switch (currentDirection) {
+                case "up", "up-left", "up-right" -> spriteDirection.UP_MOVING;
+                case "down", "down-left", "down-right" -> spriteDirection.DOWN_MOVING;
+                case "left" -> spriteDirection.LEFT_MOVING;
+                case "right" -> spriteDirection.RIGHT_MOVING;
+                case "idling-up", "idling-up-right", "idling-up-left" -> spriteDirection.UP_IDLING;
+                case "idling-down", "idling-down-right", "idling-down-left" -> spriteDirection.DOWN_IDLING;
+                case "idling-left" -> spriteDirection.LEFT_IDLING;
+                case "idling-right" -> spriteDirection.RIGHT_IDLING;
+                default -> null;
+            };
 
-                case "down", "down-left", "down-right" -> image = switch (spriteImageNum) {
-                    case 1 -> downImages[0];
-                    case 2 -> downImages[1];
-                    case 3 -> downImages[2];
-                    case 4 -> downImages[3];
-                    case 5 -> downImages[4];
-                    case 6 -> downImages[5];
-                    default -> downImages[0];
-                };
+            if (direction != null) {
+                ArrayList<BufferedImage> frames = spriteImages.get(direction);
+                if (frames != null && !frames.isEmpty()) {
 
-                case "left" -> image = switch (spriteImageNum) {
-                    case 1 -> leftImages[0];
-                    case 2 -> leftImages[1];
-                    case 3 -> leftImages[2];
-                    case 4 -> leftImages[3];
-                    case 5 -> leftImages[4];
-                    case 6 -> leftImages[5];
-                    default -> leftImages[0];
-                };
-
-                case "right" -> image = switch (spriteImageNum) {
-                    case 1 -> rightImages[0];
-                    case 2 -> rightImages[1];
-                    case 3 -> rightImages[2];
-                    case 4 -> rightImages[3];
-                    case 5 -> rightImages[4];
-                    case 6 -> rightImages[5];
-                    default -> rightImages[0];
-                };
-
-                case "idling-up", "idling-up-right", "idling-up-left" -> image = switch (spriteImageNum) {
-                    case 1 -> idlingUpImages[0];
-                    case 2 -> idlingUpImages[1];
-                    case 3 -> idlingUpImages[2];
-                    case 4 -> idlingUpImages[3];
-                    default -> idlingUpImages[0];
-                };
-
-                case "idling-down", "idling-down-right", "idling-down-left" -> image = switch (spriteImageNum) {
-                    case 1 -> idlingDownImages[0];
-                    case 2 -> idlingDownImages[1];
-                    case 3 -> idlingDownImages[2];
-                    case 4 -> idlingDownImages[3];
-                    default -> idlingDownImages[0];
-                };
-
-                case "idling-left" -> image = switch (spriteImageNum) {
-                    case 1 -> idlingLeftImages[0];
-                    case 2 -> idlingLeftImages[1];
-                    case 3 -> idlingLeftImages[2];
-                    case 4 -> idlingLeftImages[3];
-                    default -> idlingLeftImages[0];
-                };
-
-                case "idling-right" -> image = switch (spriteImageNum) {
-                    case 1 -> idlingRightImages[0];
-                    case 2 -> idlingRightImages[1];
-                    case 3 -> idlingRightImages[2];
-                    case 4 -> idlingRightImages[3];
-                    default -> idlingRightImages[0];
-                };
-
-                default -> image = null;
+                    int frameIndex = (spriteImageNum - 1) % frames.size();
+                    image = frames.get(frameIndex);
+                }
             }
 
             if (image != null) {
                 g2d.drawImage(image, screenX, screenY, null);
-
-                // Debug
-                g2d.setColor(Color.RED);
-                g2d.drawRect(screenX + boundingBox.x, screenY + boundingBox.y, boundingBox.width, boundingBox.height);
             }
 
-            g2d.drawImage(image, screenX, screenY, null);
+            g2d.setColor(Color.RED);
+            g2d.drawRect(screenX + boundingBox.x, screenY + boundingBox.y, boundingBox.width, boundingBox.height);
         }
-
-        //Debug ##IMPORTANT
-        g2d.setColor(Color.BLACK);
-        g2d.drawRect(screenX + boundingBox.x, screenY + boundingBox.y, boundingBox.width, boundingBox.height);
-
     }
+
 
     public int spriteFramesCounter = 0; // Frames that has passed since the last sprite change.
     public int spriteImageNum = 1; // The current sprite image number.
 
-    public void getImages(String folderPath) {
-        try {
-            for(int i = 0; i < MAX_SPRITES_PER_WALKING_DIRECTION; i++) {
-                upImages[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/walk_up_" + (i+1) + ".png")));
-                downImages[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/walk_down_" + (i+1) + ".png")));
-                leftImages[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/walk_left_" + (i+1) + ".png")));
-                rightImages[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/walk_right_" + (i+1) + ".png")));
-            }
 
-            for(int i = 0; i < MAX_SPRITES_PER_IDLING_DIRECTION; i++) {
-                idlingUpImages[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/idling/idling_up_" + (i+1) + ".png")));
-                idlingDownImages[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/idling/idling_down_" + (i+1) + ".png")));
-                idlingLeftImages[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/idling/idling_left_" + (i+1) + ".png")));
-                idlingRightImages[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/idling/idling_right_" + (i+1) + ".png")));
+
+
+
+
+
+
+
+
+    public void rescaleSprites(int WIDTH, int HEIGHT) {
+        for (spriteDirection direction : spriteDirection.values()) {
+            ArrayList<BufferedImage> images = spriteImages.get(direction);
+
+            if (images != null) {
+                for (int i = 0; i < images.size(); i++) {
+                    if (images.get(i) != null) {
+                        images.set(i, utilities.rescaleImage(images.get(i), WIDTH, HEIGHT));
+                    }
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
+
 
 }
