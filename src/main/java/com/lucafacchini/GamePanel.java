@@ -10,14 +10,14 @@ import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
 
+    public enum GameStatus {
+        RUNNING,
+        PAUSED,
+        DIALOGUE
+    }
 
-    // Game settings
-    // TODO: Change the game status to an enum
-    public final int runningState = 1;
-    public final int pausedState = 2;
-    public final int dialogueState = 3;
-
-    public int gameStatus = runningState;
+  //  public int gameStatus = runningState;
+    public GameStatus gameStatus = GameStatus.RUNNING;
 
     // Tile settings
     public final int ORIGINAL_TILE_SIZE = 16;
@@ -106,7 +106,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void updateComponents() {
-        if(gameStatus == runningState) {
+        if(gameStatus == GameStatus.RUNNING) {
             player.update();
             npcArray[0].update();
 
@@ -115,7 +115,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void paintComponent(Graphics g)  {
-        if(gameStatus == runningState) {
+        if(gameStatus == GameStatus.RUNNING) {
             super.paintComponent(g);
 
             Graphics2D g2d = (Graphics2D)g;
@@ -123,7 +123,7 @@ public class GamePanel extends JPanel implements Runnable {
             drawAllComponents(g2d);
 
             g2d.dispose();
-        } else if(gameStatus == dialogueState && !ui.isDrawing) {
+        } else if(gameStatus == GameStatus.DIALOGUE && !ui.isDrawing) {
             ui.draw((Graphics2D)g);
         }
 

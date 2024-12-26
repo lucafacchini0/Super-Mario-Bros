@@ -29,7 +29,7 @@ public class KeyHandler implements KeyListener {
         int key = e.getKeyCode();
 
         // Handle movement keys only if the game is not paused or in dialogue state
-        if (gp.gameStatus != gp.pausedState && gp.gameStatus != gp.dialogueState) {
+        if (gp.gameStatus != GamePanel.GameStatus.PAUSED && GamePanel.GameStatus.RUNNING != GamePanel.GameStatus.DIALOGUE) {
             if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
                 isLeftPressed = true;
             }
@@ -53,7 +53,7 @@ public class KeyHandler implements KeyListener {
         System.out.println("Key released: " + KeyEvent.getKeyText(key));
         System.out.println("Current game status: " + gp.gameStatus);
 
-        if (gp.gameStatus == gp.runningState) {
+        if (gp.gameStatus == GamePanel.GameStatus.RUNNING) {
             // Handle movement keys
             if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) isLeftPressed = false;
             if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) isRightPressed = false;
@@ -63,13 +63,13 @@ public class KeyHandler implements KeyListener {
             // Handle pause toggle
             handlePauseToggle(key);
 
-        } else if (gp.gameStatus == gp.dialogueState) {
+        } else if (gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
             if (key == KeyEvent.VK_ENTER) {
                 System.out.println("Dialogue state: Enter key pressed, exiting dialogue");
-                gp.gameStatus = gp.runningState; // Attempting state transition
+                gp.gameStatus = GamePanel.GameStatus.RUNNING; // Attempting state transition
                 System.out.println("Game status changed to: " + gp.gameStatus);
             }
-        } else if (gp.gameStatus == gp.pausedState) {
+        } else if (gp.gameStatus == GamePanel.GameStatus.PAUSED) {
             // Handle paused state actions
             System.out.println("Paused state: Key released");
         }
@@ -79,12 +79,12 @@ public class KeyHandler implements KeyListener {
 
     private void handlePauseToggle(int key) {
         if (key == KeyEvent.VK_T) {
-            if (gp.gameStatus == gp.runningState) {
+            if (gp.gameStatus == GamePanel.GameStatus.RUNNING) {
                 System.out.println("PAUSE");
-                gp.gameStatus = gp.pausedState;
-            } else if (gp.gameStatus == gp.pausedState) {
+                gp.gameStatus = GamePanel.GameStatus.PAUSED;
+            } else if (gp.gameStatus == GamePanel.GameStatus.PAUSED) {
                 System.out.println("UNPAUSE");
-                gp.gameStatus = gp.runningState;
+                gp.gameStatus = GamePanel.GameStatus.RUNNING;
             }
         }
     }

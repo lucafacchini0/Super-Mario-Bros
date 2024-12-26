@@ -46,13 +46,13 @@ public class UI {
         g2d.setFont(arial_30);
         g2d.setColor(Color.WHITE);
 
-        if(gp.gameStatus == gp.runningState) {
+        if(gp.gameStatus == GamePanel.GameStatus.RUNNING) {
             // Do stuff
         }
-        if(gp.gameStatus == gp.pausedState) {
+        if(gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
             // Do stuff
         }
-        if(gp.gameStatus == gp.dialogueState) {
+        if(gp.gameStatus == GamePanel.GameStatus.PAUSED) {
             isDrawing = true;
             drawDialogueScreen();
         }

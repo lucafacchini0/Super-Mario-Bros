@@ -367,7 +367,7 @@ public class Player extends Entity {
 
     public void interractionWithNPC(int index) {
         if(index != -1) {
-            gp.gameStatus = gp.dialogueState;
+            gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
             gp.npcArray[index].speak();
         }
     }
