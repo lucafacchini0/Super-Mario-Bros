@@ -1,13 +1,11 @@
 package com.lucafacchini.tiles;
+
 import com.lucafacchini.GamePanel;
 import com.lucafacchini.Utilities;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.InputStream;
-import java.io.BufferedReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,10 +24,11 @@ public class TileManager {
     public final int[][] GAME_MAP; // Store the actual map
 
     // Objects
-    GamePanel gp;
+    private final GamePanel gp;
     private final Utilities utilities = new Utilities();
 
-
+    // Logger
+    private static final Logger LOGGER = Logger.getLogger(TileManager.class.getName());
 
     // ------------------- Constructor -------------------
 
@@ -39,25 +38,19 @@ public class TileManager {
         tileMap = new HashMap<>();
 
         loadMap(MAPS_PATH + path);
-
-       rescaleAllTileImages();
+        rescaleAllTileImages();
 
         // TODO: Implement a way to set the solid tiles
         // [ DEBUG ]
         setSolid(38193);
     }
 
-
-
     // ------------------- Tile Loading -------------------
 
     public void loadMap(String filePath) {
-        try {
-            InputStream inputFile = getClass().getResourceAsStream(filePath);
-            assert inputFile != null;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputFile));
+        try (InputStream inputFile = getClass().getResourceAsStream(filePath);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputFile))) {
 
-            int currentWorldColumn = 0;
             int currentWorldRow = 0;
 
             while (currentWorldRow < gp.MAX_WORLD_ROWS) {
@@ -65,23 +58,17 @@ public class TileManager {
                 if (line == null) break; // Stop if no more lines
 
                 String[] numbers = line.split(",");
-
-                while (currentWorldColumn < gp.MAX_WORLD_COLUMNS && currentWorldColumn < numbers.length) {
-                    int number = Integer.parseInt(numbers[currentWorldColumn]);
-                    GAME_MAP[currentWorldColumn][currentWorldRow] = number;
-                    currentWorldColumn++;
+                for (int currentWorldColumn = 0; currentWorldColumn < gp.MAX_WORLD_COLUMNS && currentWorldColumn < numbers.length; currentWorldColumn++) {
+                    GAME_MAP[currentWorldColumn][currentWorldRow] = Integer.parseInt(numbers[currentWorldColumn]);
                 }
-                currentWorldColumn = 0;
                 currentWorldRow++;
             }
-            reader.close();
         } catch (Exception e) {
-            Logger.getLogger(TileManager.class.getName()).log(Level.SEVERE, null, e);
+            LOGGER.log(Level.SEVERE, "Failed to load map: " + filePath, e);
         }
         loadAllTileImages();
     }
 
-    // Method to load all tile images
     private void loadAllTileImages() {
         for (int row = 0; row < gp.MAX_WORLD_ROWS; row++) {
             for (int col = 0; col < gp.MAX_WORLD_COLUMNS; col++) {
@@ -93,7 +80,6 @@ public class TileManager {
         }
     }
 
-    // Load images with the specified ID, if not already loaded
     private void loadTileImage(int id) {
         if (!tileMap.containsKey(id)) {
             try {
@@ -101,26 +87,22 @@ public class TileManager {
                 InputStream imageStream = getClass().getResourceAsStream(imagePath);
 
                 if (imageStream == null) {
-                    utilities.printErrorMessage("TILE_MANAGER", "Error: TILE not found for ID: " + id + " (" + imagePath + ")");
+                    LOGGER.log(Level.WARNING, "Tile image not found for ID: {0}", id);
                 } else {
                     Tile tile = new Tile();
                     tile.image = ImageIO.read(imageStream);
                     if (tile.image != null) {
                         tileMap.put(id, tile);
-                        utilities.printSuccess("TILE_MANAGER", "Successfully loaded TILE for ID: " + id);
+                        LOGGER.log(Level.INFO, "Successfully loaded tile for ID: {0}", id);
                     } else {
-                        utilities.printErrorMessage("TILE_MANAGER", "Error: Failed to load TILE for ID: " + id + " (" + imagePath + ")");
+                        LOGGER.log(Level.SEVERE, "Failed to read tile image for ID: {0}", id);
                     }
                 }
-
             } catch (IOException e) {
-                utilities.printErrorMessage("TILE_MANAGER", "Error loading TILE: " + id + " (" + e.getMessage() + ")");
+                LOGGER.log(Level.SEVERE, "Error loading tile image for ID: {0}");
             }
         }
     }
-
-
-
 
     // ------------------- Tile Rescaling -------------------
 
@@ -132,8 +114,6 @@ public class TileManager {
         }
     }
 
-
-
     // ------------------- Tile Setting -------------------
 
     public void setSolid(int id) {
@@ -143,55 +123,34 @@ public class TileManager {
         }
     }
 
-
-
     // ------------------- Drawing -------------------
 
     public void draw(Graphics2D g2d) {
-        int currentWorldColumn = 0;
-        int currentWorldRow = 0;
+        for (int row = 0; row < gp.MAX_WORLD_ROWS; row++) {
+            for (int col = 0; col < gp.MAX_WORLD_COLUMNS; col++) {
+                int tileID = GAME_MAP[col][row];
 
-        while (currentWorldColumn < gp.MAX_WORLD_COLUMNS && currentWorldRow < gp.MAX_WORLD_ROWS) {
-            int currentTileIndex = GAME_MAP[currentWorldColumn][currentWorldRow];
+                if (tileID == -1) continue;
 
-            // Skip if the index is -1
-            if (currentTileIndex == -1) {
-                currentWorldColumn++;
-                if (currentWorldColumn == gp.MAX_WORLD_COLUMNS) {
-                    currentWorldRow++;
-                    currentWorldColumn = 0;
-                }
-                continue;
-            }
+                worldX = col * gp.TILE_SIZE;
+                worldY = row * gp.TILE_SIZE;
+                screenX = worldX - gp.player.worldX + gp.player.screenX;
+                screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-            worldX = currentWorldColumn * gp.TILE_SIZE;
-            worldY = currentWorldRow * gp.TILE_SIZE;
-            screenX = worldX - gp.player.worldX + gp.player.screenX;
-            screenY = worldY - gp.player.worldY + gp.player.screenY;
-
-            // Draw the tile only if it's visible
-            if (worldX + gp.TILE_SIZE > gp.player.worldX - gp.player.screenX &&
-                    worldX - gp.TILE_SIZE < gp.player.worldX + gp.player.screenX &&
-                    worldY + gp.TILE_SIZE > gp.player.worldY - gp.player.screenY &&
-                    worldY - gp.TILE_SIZE < gp.player.worldY + gp.player.screenY) {
-
-                Tile tile = tileMap.get(currentTileIndex);
-                if (tile != null && tile.image != null) {
-                    g2d.drawImage(tile.image, screenX, screenY, null);
+                if (isVisible()) {
+                    Tile tile = tileMap.get(tileID);
+                    if (tile != null && tile.image != null) {
+                        g2d.drawImage(tile.image, screenX, screenY, null);
+                    }
                 }
             }
-
-            currentWorldColumn++;
-
-            if (currentWorldColumn == gp.MAX_WORLD_COLUMNS) {
-                currentWorldRow++;
-                currentWorldColumn = 0;
-            }
-
-            // [ DEBUG ]
-            // [ WARNING ] - takes long time to draw (around 0.8 ms)
-            // g2d.setColor(Color.pink);
-            // g2d.drawRect(screenX, screenY, gp.TILE_SIZE, gp.TILE_SIZE);
         }
+    }
+
+    private boolean isVisible() {
+        return worldX + gp.TILE_SIZE > gp.player.worldX - gp.player.screenX &&
+                worldX - gp.TILE_SIZE < gp.player.worldX + gp.player.screenX &&
+                worldY + gp.TILE_SIZE > gp.player.worldY - gp.player.screenY &&
+                worldY - gp.TILE_SIZE < gp.player.worldY + gp.player.screenY;
     }
 }
