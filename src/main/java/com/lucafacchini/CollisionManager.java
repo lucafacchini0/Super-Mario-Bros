@@ -8,18 +8,15 @@ public class CollisionManager {
 
     GamePanel gp;
 
-
-
     // ------------------- Constructor -------------------
 
     public CollisionManager(GamePanel gp) {
         this.gp = gp;
     }
 
-
-
     // ------------------- Utility methods -------------------
 
+    // TODO: Refactor this to make it work dynamically with maps.
     private boolean isTileColliding(int... tileNums) {
         for (int tileNum : tileNums) {
             if (tileNum >= 0) {
@@ -44,7 +41,6 @@ public class CollisionManager {
         object.boundingBox.x = object.boundingBoxDefaultX;
         object.boundingBox.y = object.boundingBoxDefaultY;
     }
-
 
 
     // ------------------- Collision methods -------------------
