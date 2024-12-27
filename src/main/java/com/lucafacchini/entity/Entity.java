@@ -85,7 +85,7 @@ public class Entity {
     // ---------------------------------------------- //
 
     // Current status of the entity
-    public Status currentStatus = Status.IDLING;
+    public Status currentStatus = Status.MOVING;
     public Direction currentDirection = Direction.DOWN;
 
     // ---------------------------------------------- //
@@ -292,6 +292,8 @@ public class Entity {
             // if (image != null)
             g2d.drawImage(image, screenX, screenY, null);
             g2d.setColor(Color.RED);
+
+            // TODO: bounding box of NPCs is unexpectedly small. it's represented by a pixel at 0,0.
             g2d.drawRect(screenX + boundingBox.x, screenY + boundingBox.y, boundingBox.width, boundingBox.height);
         }
     }

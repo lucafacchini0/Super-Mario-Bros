@@ -12,11 +12,13 @@ public class NPC_OldMan extends Entity{
     public final int RESCALED_NPC_WIDTH;
     public final int DEFAULT_NPC_SPEED = 1;
 
+
+
     /**
      * @brief Number of sprites used for  animations.
      */
-    public final int NUM_MOVING_SPRITES = 2;
-    public final int NUM_IDLING_SPRITES = 2;
+    public final int NUM_MOVING_SPRITES = 6;
+    public final int NUM_IDLING_SPRITES = 4;
 
     private int updateFrameCounter = 0;
 
@@ -30,6 +32,9 @@ public class NPC_OldMan extends Entity{
         loadSprites("player", NUM_MOVING_SPRITES, NUM_IDLING_SPRITES);
         rescaleSprites(RESCALED_NPC_WIDTH, RESCALED_NPC_HEIGTH);
         setDialogue();
+
+        // TODO: Pass variables
+        setSpriteTimers(4, 6);
 
     }
 
@@ -72,4 +77,6 @@ public class NPC_OldMan extends Entity{
             dialogueIndex++;
         }
     }
+
+
 }
