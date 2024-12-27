@@ -196,124 +196,124 @@ public class CollisionManager {
 
     // IMPORTANT TODO: Uncomment and remove return -1
     public int checkObject(Entity entity, boolean isPlayer) {
-//        int index = -1;
-//
-//        for (int i = 0; i < gp.objectsArray.length; i++) {
-//            if (gp.objectsArray[i] != null) {
-//                entity.boundingBox.x = entity.worldX + entity.boundingBox.x;
-//                entity.boundingBox.y = entity.worldY + entity.boundingBox.y;
-//
-//                gp.objectsArray[i].boundingBox.x = gp.objectsArray[i].worldX + gp.objectsArray[i].boundingBox.x;
-//                gp.objectsArray[i].boundingBox.y = gp.objectsArray[i].worldY + gp.objectsArray[i].boundingBox.y;
-//
-//                switch (entity.currentDirection) {
-//                    case "up-left":
-//                        entity.boundingBox.x -= entity.speed;
-//                        entity.boundingBox.y -= entity.speed;
-//                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-//                            if (gp.objectsArray[i].isSolid) {
-//                                entity.isCollidingWithObject = true;
-//                            }
-//                            if (isPlayer) {
-//                                index = i;
-//                            }
-//                        }
-//                        break;
-//
-//                    case "up-right":
-//                        entity.boundingBox.x += entity.speed;
-//                        entity.boundingBox.y -= entity.speed;
-//                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-//                            if (gp.objectsArray[i].isSolid) {
-//                                entity.isCollidingWithObject = true;
-//                            }
-//                            if (isPlayer) {
-//                                index = i;
-//                            }
-//                        }
-//                        break;
-//
-//                    case "down-left":
-//                        entity.boundingBox.x -= entity.speed;
-//                        entity.boundingBox.y += entity.speed;
-//                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-//                            if (gp.objectsArray[i].isSolid) {
-//                                entity.isCollidingWithObject = true;
-//                            }
-//                            if (isPlayer) {
-//                                index = i;
-//                            }
-//                        }
-//                        break;
-//
-//                    case "down-right":
-//                        entity.boundingBox.x += entity.speed;
-//                        entity.boundingBox.y += entity.speed;
-//                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-//                            if (gp.objectsArray[i].isSolid) {
-//                                entity.isCollidingWithObject = true;
-//                            }
-//                            if (isPlayer) {
-//                                index = i;
-//                            }
-//                        }
-//                        break;
-//
-//                    case "up":
-//                        entity.boundingBox.y -= entity.speed;
-//                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-//                            if (gp.objectsArray[i].isSolid) {
-//                                entity.isCollidingWithObject = true;
-//                            }
-//                            if (isPlayer) {
-//                                index = i;
-//                            }
-//                        }
-//                        break;
-//
-//                    case "down":
-//                        entity.boundingBox.y += entity.speed;
-//                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-//                            if (gp.objectsArray[i].isSolid) {
-//                                entity.isCollidingWithObject = true;
-//                            }
-//                            if (isPlayer) {
-//                                index = i;
-//                            }
-//                        }
-//                        break;
-//
-//                    case "left":
-//                        entity.boundingBox.x -= entity.speed;
-//                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-//                            if (gp.objectsArray[i].isSolid) {
-//                                entity.isCollidingWithObject = true;
-//                            }
-//                            if (isPlayer) {
-//                                index = i;
-//                            }
-//                        }
-//                        break;
-//
-//                    case "right":
-//                        entity.boundingBox.x += entity.speed;
-//                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-//                            if (gp.objectsArray[i].isSolid) {
-//                                entity.isCollidingWithObject = true;
-//                            }
-//                            if (isPlayer) {
-//                                index = i;
-//                            }
-//                        }
-//                        break;
-//                }
-//                entity.boundingBox.x = entity.boundingBoxDefaultX;
-//                entity.boundingBox.y = entity.boundingBoxDefaultY;
-//                gp.objectsArray[i].boundingBox.x = gp.objectsArray[i].boundingBoxDefaultX;
-//                gp.objectsArray[i].boundingBox.y = gp.objectsArray[i].boundingBoxDefaultY;
-//            }
-//        }
-//        return index;
+        int index = -1;
+
+        for (int i = 0; i < gp.objectsArray.length; i++) {
+            if (gp.objectsArray[i] != null) {
+                entity.boundingBox.x = entity.worldX + entity.boundingBox.x;
+                entity.boundingBox.y = entity.worldY + entity.boundingBox.y;
+
+                gp.objectsArray[i].boundingBox.x = gp.objectsArray[i].worldX + gp.objectsArray[i].boundingBox.x;
+                gp.objectsArray[i].boundingBox.y = gp.objectsArray[i].worldY + gp.objectsArray[i].boundingBox.y;
+
+                switch (entity.currentDirection) {
+                    case "up-left":
+                        entity.boundingBox.x -= entity.speed;
+                        entity.boundingBox.y -= entity.speed;
+                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
+                            if (gp.objectsArray[i].isSolid) {
+                                entity.isCollidingWithObject = true;
+                            }
+                            if (isPlayer) {
+                                index = i;
+                            }
+                        }
+                        break;
+
+                    case "up-right":
+                        entity.boundingBox.x += entity.speed;
+                        entity.boundingBox.y -= entity.speed;
+                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
+                            if (gp.objectsArray[i].isSolid) {
+                                entity.isCollidingWithObject = true;
+                            }
+                            if (isPlayer) {
+                                index = i;
+                            }
+                        }
+                        break;
+
+                    case "down-left":
+                        entity.boundingBox.x -= entity.speed;
+                        entity.boundingBox.y += entity.speed;
+                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
+                            if (gp.objectsArray[i].isSolid) {
+                                entity.isCollidingWithObject = true;
+                            }
+                            if (isPlayer) {
+                                index = i;
+                            }
+                        }
+                        break;
+
+                    case "down-right":
+                        entity.boundingBox.x += entity.speed;
+                        entity.boundingBox.y += entity.speed;
+                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
+                            if (gp.objectsArray[i].isSolid) {
+                                entity.isCollidingWithObject = true;
+                            }
+                            if (isPlayer) {
+                                index = i;
+                            }
+                        }
+                        break;
+
+                    case "up":
+                        entity.boundingBox.y -= entity.speed;
+                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
+                            if (gp.objectsArray[i].isSolid) {
+                                entity.isCollidingWithObject = true;
+                            }
+                            if (isPlayer) {
+                                index = i;
+                            }
+                        }
+                        break;
+
+                    case "down":
+                        entity.boundingBox.y += entity.speed;
+                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
+                            if (gp.objectsArray[i].isSolid) {
+                                entity.isCollidingWithObject = true;
+                            }
+                            if (isPlayer) {
+                                index = i;
+                            }
+                        }
+                        break;
+
+                    case "left":
+                        entity.boundingBox.x -= entity.speed;
+                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
+                            if (gp.objectsArray[i].isSolid) {
+                                entity.isCollidingWithObject = true;
+                            }
+                            if (isPlayer) {
+                                index = i;
+                            }
+                        }
+                        break;
+
+                    case "right":
+                        entity.boundingBox.x += entity.speed;
+                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
+                            if (gp.objectsArray[i].isSolid) {
+                                entity.isCollidingWithObject = true;
+                            }
+                            if (isPlayer) {
+                                index = i;
+                            }
+                        }
+                        break;
+                }
+                entity.boundingBox.x = entity.boundingBoxDefaultX;
+                entity.boundingBox.y = entity.boundingBoxDefaultY;
+                gp.objectsArray[i].boundingBox.x = gp.objectsArray[i].boundingBoxDefaultX;
+                gp.objectsArray[i].boundingBox.y = gp.objectsArray[i].boundingBoxDefaultY;
+            }
+        }
+        return index;
 
          return -1;
     }
@@ -321,164 +321,164 @@ public class CollisionManager {
     public int checkEntity(Entity entity, Entity[] target) {
         int index = -1;
 
-//        for (int i = 0; i < target.length; i++) {
-//            if (target[i] != null) {
-//                entity.boundingBox.x = entity.worldX + entity.boundingBox.x;
-//                entity.boundingBox.y = entity.worldY + entity.boundingBox.y;
-//
-//                target[i].boundingBox.x = target[i].worldX + target[i].boundingBox.x;
-//                target[i].boundingBox.y = target[i].worldY + target[i].boundingBox.y;
-//
-//                switch (entity.currentDirection) {
-//                    case "up-left":
-//                        entity.boundingBox.x -= entity.speed;
-//                        entity.boundingBox.y -= entity.speed;
-//                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-//                            index = i;
-//                            entity.isCollidingWithEntity = true;
-//                        }
-//                        break;
-//
-//                    case "up-right":
-//                        entity.boundingBox.x += entity.speed;
-//                        entity.boundingBox.y -= entity.speed;
-//                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-//                            index = i;
-//                            entity.isCollidingWithEntity = true;
-//                        }
-//                        break;
-//
-//                    case "down-left":
-//                        entity.boundingBox.x -= entity.speed;
-//                        entity.boundingBox.y += entity.speed;
-//                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-//                            index = i;
-//                            entity.isCollidingWithEntity = true;
-//                        }
-//                        break;
-//
-//                    case "down-right":
-//                        entity.boundingBox.x += entity.speed;
-//                        entity.boundingBox.y += entity.speed;
-//                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-//                            index = i;
-//                            entity.isCollidingWithEntity = true;
-//                        }
-//                        break;
-//
-//                    case "up":
-//                        entity.boundingBox.y -= entity.speed;
-//                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-//                            index = i;
-//                            entity.isCollidingWithEntity = true;
-//                        }
-//                        break;
-//
-//                    case "down":
-//                        entity.boundingBox.y += entity.speed;
-//                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-//                            index = i;
-//                            entity.isCollidingWithEntity = true;
-//                        }
-//                        break;
-//
-//                    case "left":
-//                        entity.boundingBox.x -= entity.speed;
-//                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-//                            index = i;
-//                            entity.isCollidingWithEntity = true;
-//                        }
-//                        break;
-//
-//                    case "right":
-//                        entity.boundingBox.x += entity.speed;
-//                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-//                            index = i;
-//                            entity.isCollidingWithEntity = true;
-//                        }
-//                        break;
-//                }
-//                entity.boundingBox.x = entity.boundingBoxDefaultX;
-//                entity.boundingBox.y = entity.boundingBoxDefaultY;
-//                target[i].boundingBox.x = target[i].boundingBoxDefaultX;
-//                target[i].boundingBox.y = target[i].boundingBoxDefaultY;
-//            }
-//        }
+        for (int i = 0; i < target.length; i++) {
+            if (target[i] != null) {
+                entity.boundingBox.x = entity.worldX + entity.boundingBox.x;
+                entity.boundingBox.y = entity.worldY + entity.boundingBox.y;
+
+                target[i].boundingBox.x = target[i].worldX + target[i].boundingBox.x;
+                target[i].boundingBox.y = target[i].worldY + target[i].boundingBox.y;
+
+                switch (entity.currentDirection) {
+                    case "up-left":
+                        entity.boundingBox.x -= entity.speed;
+                        entity.boundingBox.y -= entity.speed;
+                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
+                            index = i;
+                            entity.isCollidingWithEntity = true;
+                        }
+                        break;
+
+                    case "up-right":
+                        entity.boundingBox.x += entity.speed;
+                        entity.boundingBox.y -= entity.speed;
+                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
+                            index = i;
+                            entity.isCollidingWithEntity = true;
+                        }
+                        break;
+
+                    case "down-left":
+                        entity.boundingBox.x -= entity.speed;
+                        entity.boundingBox.y += entity.speed;
+                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
+                            index = i;
+                            entity.isCollidingWithEntity = true;
+                        }
+                        break;
+
+                    case "down-right":
+                        entity.boundingBox.x += entity.speed;
+                        entity.boundingBox.y += entity.speed;
+                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
+                            index = i;
+                            entity.isCollidingWithEntity = true;
+                        }
+                        break;
+
+                    case "up":
+                        entity.boundingBox.y -= entity.speed;
+                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
+                            index = i;
+                            entity.isCollidingWithEntity = true;
+                        }
+                        break;
+
+                    case "down":
+                        entity.boundingBox.y += entity.speed;
+                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
+                            index = i;
+                            entity.isCollidingWithEntity = true;
+                        }
+                        break;
+
+                    case "left":
+                        entity.boundingBox.x -= entity.speed;
+                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
+                            index = i;
+                            entity.isCollidingWithEntity = true;
+                        }
+                        break;
+
+                    case "right":
+                        entity.boundingBox.x += entity.speed;
+                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
+                            index = i;
+                            entity.isCollidingWithEntity = true;
+                        }
+                        break;
+                }
+                entity.boundingBox.x = entity.boundingBoxDefaultX;
+                entity.boundingBox.y = entity.boundingBoxDefaultY;
+                target[i].boundingBox.x = target[i].boundingBoxDefaultX;
+                target[i].boundingBox.y = target[i].boundingBoxDefaultY;
+            }
+        }
         return index;
     }
 
     public void checkPlayer(Entity entity) {
-//        entity.boundingBox.x = entity.worldX + entity.boundingBox.x;
-//        entity.boundingBox.y = entity.worldY + entity.boundingBox.y;
-//
-//        gp.player.boundingBox.x = gp.player.worldX + gp.player.boundingBox.x;
-//        gp.player.boundingBox.y = gp.player.worldY + gp.player.boundingBox.y;
-//
-//        switch (entity.currentDirection) {
-//            case "up-left":
-//                entity.boundingBox.x -= entity.speed;
-//                entity.boundingBox.y -= entity.speed;
-//                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-//
-//                    entity.isCollidingWithEntity = true;
-//                }
-//                break;
-//
-//            case "up-right":
-//                entity.boundingBox.x += entity.speed;
-//                entity.boundingBox.y -= entity.speed;
-//                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-//                    entity.isCollidingWithEntity = true;
-//                }
-//                break;
-//
-//            case "down-left":
-//                entity.boundingBox.x -= entity.speed;
-//                entity.boundingBox.y += entity.speed;
-//                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-//                    entity.isCollidingWithEntity = true;
-//                }
-//                break;
-//
-//            case "down-right":
-//                entity.boundingBox.x += entity.speed;
-//                entity.boundingBox.y += entity.speed;
-//                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-//                    entity.isCollidingWithEntity = true;
-//                }
-//                break;
-//
-//            case "up":
-//                entity.boundingBox.y -= entity.speed;
-//                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-//                    entity.isCollidingWithEntity = true;
-//                }
-//                break;
-//
-//            case "down":
-//                entity.boundingBox.y += entity.speed;
-//                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-//                    entity.isCollidingWithEntity = true;
-//                }
-//                break;
-//
-//            case "left":
-//                entity.boundingBox.x -= entity.speed;
-//                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-//                    entity.isCollidingWithEntity = true;
-//                }
-//                break;
-//
-//            case "right":
-//                entity.boundingBox.x += entity.speed;
-//                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-//                    entity.isCollidingWithEntity = true;
-//                }
-//                break;
-//        }
-//        entity.boundingBox.x = entity.boundingBoxDefaultX;
-//        entity.boundingBox.y = entity.boundingBoxDefaultY;
-//        gp.player.boundingBox.x = gp.player.boundingBoxDefaultX;
-//        gp.player.boundingBox.y = gp.player.boundingBoxDefaultY;
+        entity.boundingBox.x = entity.worldX + entity.boundingBox.x;
+        entity.boundingBox.y = entity.worldY + entity.boundingBox.y;
+
+        gp.player.boundingBox.x = gp.player.worldX + gp.player.boundingBox.x;
+        gp.player.boundingBox.y = gp.player.worldY + gp.player.boundingBox.y;
+
+        switch (entity.currentDirection) {
+            case "up-left":
+                entity.boundingBox.x -= entity.speed;
+                entity.boundingBox.y -= entity.speed;
+                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
+
+                    entity.isCollidingWithEntity = true;
+                }
+                break;
+
+            case "up-right":
+                entity.boundingBox.x += entity.speed;
+                entity.boundingBox.y -= entity.speed;
+                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
+                    entity.isCollidingWithEntity = true;
+                }
+                break;
+
+            case "down-left":
+                entity.boundingBox.x -= entity.speed;
+                entity.boundingBox.y += entity.speed;
+                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
+                    entity.isCollidingWithEntity = true;
+                }
+                break;
+
+            case "down-right":
+                entity.boundingBox.x += entity.speed;
+                entity.boundingBox.y += entity.speed;
+                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
+                    entity.isCollidingWithEntity = true;
+                }
+                break;
+
+            case "up":
+                entity.boundingBox.y -= entity.speed;
+                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
+                    entity.isCollidingWithEntity = true;
+                }
+                break;
+
+            case "down":
+                entity.boundingBox.y += entity.speed;
+                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
+                    entity.isCollidingWithEntity = true;
+                }
+                break;
+
+            case "left":
+                entity.boundingBox.x -= entity.speed;
+                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
+                    entity.isCollidingWithEntity = true;
+                }
+                break;
+
+            case "right":
+                entity.boundingBox.x += entity.speed;
+                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
+                    entity.isCollidingWithEntity = true;
+                }
+                break;
+        }
+        entity.boundingBox.x = entity.boundingBoxDefaultX;
+        entity.boundingBox.y = entity.boundingBoxDefaultY;
+        gp.player.boundingBox.x = gp.player.boundingBoxDefaultX;
+        gp.player.boundingBox.y = gp.player.boundingBoxDefaultY;
     }
 }

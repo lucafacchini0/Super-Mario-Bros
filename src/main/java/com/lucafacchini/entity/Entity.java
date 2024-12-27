@@ -43,12 +43,11 @@ public class Entity {
 
     // The hashmap that contains the sprite images of the entity.
     // The keys are the directions of the entity, and the values are the sprite images of the entity.
-    public HashMap<SpriteImagesEnum, ArrayList<BufferedImage>> spriteImages = new HashMap<>();
+    private HashMap<SpriteImagesEnum, ArrayList<BufferedImage>> spriteImages = new HashMap<>();
 
-    public int spriteCounterMultiplier; // This variable is used to check the sprite animation speed. It's incremented by 1 every frame.
-    public int spriteFramesCounter = 0; // Frames that has passed since the last sprite change.
-    public int spriteImageNum = 1; // The current sprite num
-
+    protected int spriteCounterMultiplier; // This variable is used to check the sprite animation speed. It's incremented by 1 every frame.
+    protected int spriteFramesCounter = 0; // Frames that has passed since the last sprite change.
+    protected int spriteImageNum = 1; // The current sprite num
     private int NUM_MOVING_SPRITES = 0;
 
 
@@ -64,13 +63,13 @@ public class Entity {
     // ---------------------------------------------- //
 
     // Current status of the entity
-    Status currentStatus = Status.IDLING;
-    Direction currentDirection = Direction.DOWN;
+    public Status currentStatus = Status.IDLING;
+    public Direction currentDirection = Direction.DOWN;
 
     // ---------------------------------------------- //
 
     // Utilities, used for rescaling images.
-    Utilities utilities = new Utilities();
+    private Utilities utilities = new Utilities();
 
     // ---------------------------------------------- //
 
@@ -102,6 +101,7 @@ public class Entity {
                 // ACCESSORY METHODS //
 
     int diagonalMove(int speed) { return (int)(speed * Math.sqrt(2) / 2); }
+
     void setSpriteTimers(int spriteCounterMultiplier, int NUM_MOVING_SPRITES) {
         this.spriteCounterMultiplier = spriteCounterMultiplier;
         this.NUM_MOVING_SPRITES = NUM_MOVING_SPRITES;
