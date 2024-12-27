@@ -28,6 +28,8 @@ public class Entity {
 
     // ---------------------------------------------- //
 
+                // SPRITES //
+
     // NOTE: This enumerator is only used to initialize the keys of the hashmap. The actual direction is stored in the currentDirection variable.
     // and for backend drawing
     // SpriteImagesEnum is an enumerator that contains all the possible directions of the entity.
@@ -42,6 +44,13 @@ public class Entity {
     // The hashmap that contains the sprite images of the entity.
     // The keys are the directions of the entity, and the values are the sprite images of the entity.
     public HashMap<SpriteImagesEnum, ArrayList<BufferedImage>> spriteImages = new HashMap<>();
+
+    public int spriteCounterMultiplier; // This variable is used to check the sprite animation speed. It's incremented by 1 every frame.
+    public int spriteFramesCounter = 0; // Frames that has passed since the last sprite change.
+    public int spriteImageNum = 1; // The current sprite num
+
+    private int NUM_MOVING_SPRITES = 0;
+
 
     // ---------------------------------------------- //
 
@@ -93,6 +102,10 @@ public class Entity {
                 // ACCESSORY METHODS //
 
     int diagonalMove(int speed) { return (int)(speed * Math.sqrt(2) / 2); }
+    void setSpriteTimers(int spriteCounterMultiplier, int NUM_MOVING_SPRITES) {
+        this.spriteCounterMultiplier = spriteCounterMultiplier;
+        this.NUM_MOVING_SPRITES = NUM_MOVING_SPRITES;
+    }
 
     // ---------------------------------------------- //
 
@@ -184,40 +197,60 @@ public class Entity {
     public void speak() {}
 
     public void update() {
-//       // setAction();
-//
-//        isCollidingWithTile = false;
-//        isCollidingWithEntity = false;
-//        isCollidingWithObject = false;
-//
-//        gp.collisionManager.checkTile(this);
-//        gp.collisionManager.checkPlayer(this);
-//        gp.collisionManager.checkObject(this, false);
-//
-//        if(!isCollidingWithTile && !isCollidingWithEntity && !isCollidingWithObject) {
-//            switch(currentDirection) {
-//                case "up" -> worldY -= speed;
-//                case "down" -> worldY += speed;
-//                case "left" -> worldX -= speed;
-//                case "right" -> worldX += speed;
-//                case "up-left" -> {  worldY -= speed; worldX -= speed; }
-//                case "up-right" -> {  worldY -= speed; worldX += speed;  }
-//                case "down-left" -> { worldY += speed; worldX -= speed; }
-//                case "down-right" -> { worldY += speed;  worldX += speed; }
-//            }
-//
-//
-//            spriteFramesCounter++;
-//
-//            spriteFramesCounter++;
-//            if (spriteFramesCounter > 30) {
-//                spriteImageNum++;
-//                if (spriteImageNum > MAX_SPRITES_PER_WALKING_DIRECTION) {
-//                    spriteImageNum = 1;
-//                }
-//                spriteFramesCounter = 0;
-//            }
-//        }
+       // setAction();
+
+        spriteFramesCounter++;
+
+        if (spriteFramesCounter > spriteCounterMultiplier) {
+            spriteImageNum++;
+            if (spriteImageNum > NUM_MOVING_SPRITES) {
+                spriteImageNum = 1;
+            }
+            spriteFramesCounter = 0;
+        }
+
+        // Direction is updated in the subclass of NPCs.
+
+        // ---------------------------- //
+
+        isCollidingWithTile = false;
+        isCollidingWithEntity = false;
+        isCollidingWithObject = false;
+
+        // Booleans are updated in the collision manager.
+
+        // Check tile collisions
+        gp.collisionManager.checkTile(this);
+
+        // Check object collisions
+        gp.collisionManager.checkObject(this, false);
+
+        // Check player collisions (for NPCs)
+        gp.collisionManager.checkPlayer(this);
+
+        // ---------------------------- //
+
+        if(!isCollidingWithTile && !isCollidingWithEntity && !isCollidingWithObject) {
+            move();
+        }
+    }
+
+    public void updateSprite() {
+        spriteFramesCounter++; // Increase the counter every frame
+
+        if (spriteFramesCounter >= spriteCounterMultiplier) {
+            spriteFramesCounter = 0;
+            spriteImageNum++;
+        }
+    }
+
+    public void move() {
+        switch (currentDirection) {
+            case UP -> worldY -= speed;
+            case DOWN -> worldY += speed;
+            case LEFT -> worldX -= speed;
+            case RIGHT -> worldX += speed;
+        }
     }
 
 
@@ -269,9 +302,4 @@ public class Entity {
         }
         return direction;
     }
-
-
-    public int spriteFramesCounter = 0; // Frames that has passed since the last sprite change.
-    public int spriteImageNum = 1; // The current sprite image number.
-
 }

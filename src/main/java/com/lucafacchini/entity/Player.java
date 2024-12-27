@@ -7,7 +7,10 @@ import java.awt.*;
 
 public class Player extends Entity {
 
-    // TEMPORARY FOR DEBUGGING
+    // ---------------------------------------------- //
+
+    // Debugging
+
     public int hasKey = 0;
 
     // ---------------------------------------------- //
@@ -23,8 +26,6 @@ public class Player extends Entity {
         public final int MOVING_SPRITE_UPDATE_TIME = 5;
         public final int IDLING_SPRITE_MULTIPLIER_UPDATE_TIME = 120;
         public final int IDLING_SPRITE_MULTIPLIER_EYES_CLOSED = MOVING_SPRITE_UPDATE_TIME;
-
-        private double spriteCounterMultiplier = MOVING_SPRITE_UPDATE_TIME; // This variable is used to check the sprite animation speed. It's incremented by 1 every frame.
 
     // ---------------------------------------------- //
 
@@ -79,6 +80,7 @@ public class Player extends Entity {
         // ---------------------------------------------- //
 
         setDefaultValues();
+        setSpriteTimers(MOVING_SPRITE_UPDATE_TIME, NUM_MOVING_SPRITES);
     }
 
     void setDefaultValues() {
@@ -122,7 +124,7 @@ public class Player extends Entity {
         }
     }
 
-    private void updateSprite() {
+    public void updateSprite() {
         spriteFramesCounter++; // Increase the counter every frame
 
         // This method has the only purpose of setting some "delays" in the sprite animation
@@ -173,9 +175,13 @@ public class Player extends Entity {
 
             // ---------------------------- //
 
+            // Booleans are updated in the collision manager.
+
             isCollidingWithTile = false;
             isCollidingWithObject = false;
             isCollidingWithEntity = false;
+
+            // Booleans are updated in the collision manager.
 
             // Check tile collision
             gp.collisionManager.checkTile(this);
@@ -191,7 +197,7 @@ public class Player extends Entity {
             // ---------------------------- //
 
             if (!isCollidingWithTile && !isCollidingWithObject && !isCollidingWithEntity) {
-                movePlayer();
+                move();
             } else if (isCollidingWithTile && !isCollidingWithObject && !isCollidingWithEntity) {
                 handleDiagonalCollision(); // TODO: Fix this method. Diagonal movement is not working while colliding with Objects.
             } else { // isCollidingWithObject
@@ -200,7 +206,10 @@ public class Player extends Entity {
         }
     }
 
-    private void movePlayer() {
+    // @NOTE: Override because the player moves differently than the other entities.
+    // The player can move diagonally, while the other entities can't.
+    @Override
+    public void move() {
         switch (currentDirection) {
             case UP_LEFT -> { worldY -= diagonalMove(speed); worldX -= diagonalMove(speed); }
             case UP_RIGHT -> { worldY -= diagonalMove(speed); worldX += diagonalMove(speed); }
