@@ -10,9 +10,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 
 public class Entity {
+
+    // LOGGER FOR DEBUGGING
+    private static final Logger LOGGER = Logger.getLogger(Entity.class.getName());
+
     public final int MAX_SPRITES_PER_WALKING_DIRECTION = 4;
     public final int MAX_SPRITES_PER_IDLING_DIRECTION = 2;
 
@@ -21,6 +26,8 @@ public class Entity {
     public int worldX, worldY;
     public int speed;
 
+    // NOTE: This enumerator is only used to initialize the keys of the hashmap. The actual direction is stored in the currentDirection variable.
+    // and for backend drawing
     public enum spriteDirection {
         UP_MOVING, DOWN_MOVING, LEFT_MOVING, RIGHT_MOVING,
         UP_IDLING, DOWN_IDLING, LEFT_IDLING, RIGHT_IDLING
@@ -28,11 +35,15 @@ public class Entity {
 
     public HashMap<spriteDirection, ArrayList<BufferedImage>> spriteImages = new HashMap<>();
 
-    public String currentDirection;
+   // public String currentDirection;
 
-    public enum Direction {
-        UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT
-    }
+    public enum Status { IDLING, MOVING }
+    public enum Direction { UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT }
+
+    Status previousStatus = Status.IDLING;
+    Status currentStatus = Status.IDLING;
+    Direction previousDirection = Direction.DOWN;
+    Direction currentDirection = Direction.DOWN;
 
     Utilities utilities = new Utilities();
 
@@ -56,60 +67,22 @@ public class Entity {
     public boolean isCollidingWithObject = false;
     public boolean isCollidingWithEntity = false;
 
-
-
-
     GamePanel gp;
-    String[] dialogues = new String[20]; // TODO: Change to HashMap
-    int dialogueIndex = 0;
+
+
+
+
+//    String[] dialogues = new String[20]; // TODO: Change to HashMap
+//    int dialogueIndex = 0;
 
     public Entity(GamePanel gp) {
         this.gp = gp;
     }
 
-    public void setAction() {}
-    public void speak() {}
-
-    public void update() {
-        setAction();
-
-        isCollidingWithTile = false;
-        isCollidingWithEntity = false;
-        isCollidingWithObject = false;
-
-        gp.collisionManager.checkTile(this);
-        gp.collisionManager.checkPlayer(this);
-        gp.collisionManager.checkObject(this, false);
-
-        if(!isCollidingWithTile && !isCollidingWithEntity && !isCollidingWithObject) {
-            switch(currentDirection) {
-                case "up" -> worldY -= speed;
-                case "down" -> worldY += speed;
-                case "left" -> worldX -= speed;
-                case "right" -> worldX += speed;
-                case "up-left" -> {  worldY -= speed; worldX -= speed; }
-                case "up-right" -> {  worldY -= speed; worldX += speed;  }
-                case "down-left" -> { worldY += speed; worldX -= speed; }
-                case "down-right" -> { worldY += speed;  worldX += speed; }
-            }
-
-
-            spriteFramesCounter++;
-
-            spriteFramesCounter++;
-            if (spriteFramesCounter > 30) {
-                spriteImageNum++;
-                if (spriteImageNum > MAX_SPRITES_PER_WALKING_DIRECTION) {
-                    spriteImageNum = 1;
-                }
-                spriteFramesCounter = 0;
-            }
-        }
-    }
 
 
 
-    public void setEntityImages(String folderPath, int NUM_WALK_UP, int NUM_WALK_DOWN, int NUM_WALK_LEFT, int NUM_WALK_RIGHT, int NUM_IDLE_UP, int NUM_IDLE_DOWN, int NUM_IDLE_LEFT, int NUM_IDLE_RIGHT) {
+    public void setImages(String folderPath, int NUM_WALK_UP, int NUM_WALK_DOWN, int NUM_WALK_LEFT, int NUM_WALK_RIGHT, int NUM_IDLE_UP, int NUM_IDLE_DOWN, int NUM_IDLE_LEFT, int NUM_IDLE_RIGHT) {
 
         // Initialize hashmap
         for (spriteDirection direction : spriteDirection.values()) {
@@ -127,63 +100,9 @@ public class Entity {
             for(int i = 0; i < NUM_IDLE_LEFT; i++) { spriteImages.get(spriteDirection.LEFT_IDLING).add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/idling/idling_left_" + (i+1) + ".png")))); }
             for(int i = 0; i < NUM_IDLE_RIGHT; i++) { spriteImages.get(spriteDirection.RIGHT_IDLING).add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/" + folderPath + "/idling/idling_right_" + (i+1) + ".png")))); }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.severe("Error loading images: " + e.getMessage());
         }
     }
-
-    public void draw(Graphics2D g2d) {
-        BufferedImage image = null;
-
-        int screenX = worldX - gp.player.worldX + gp.player.screenX;
-        int screenY = worldY - gp.player.worldY + gp.player.screenY;
-
-        if (worldX + gp.TILE_SIZE > gp.player.worldX - gp.player.screenX &&
-                worldX - gp.TILE_SIZE < gp.player.worldX + gp.player.screenX &&
-                worldY + gp.TILE_SIZE > gp.player.worldY - gp.player.screenY &&
-                worldY - gp.TILE_SIZE < gp.player.worldY + gp.player.screenY) {
-
-            spriteDirection direction = switch (currentDirection) {
-                case "up", "up-left", "up-right" -> spriteDirection.UP_MOVING;
-                case "down", "down-left", "down-right" -> spriteDirection.DOWN_MOVING;
-                case "left" -> spriteDirection.LEFT_MOVING;
-                case "right" -> spriteDirection.RIGHT_MOVING;
-                case "idling-up", "idling-up-right", "idling-up-left" -> spriteDirection.UP_IDLING;
-                case "idling-down", "idling-down-right", "idling-down-left" -> spriteDirection.DOWN_IDLING;
-                case "idling-left" -> spriteDirection.LEFT_IDLING;
-                case "idling-right" -> spriteDirection.RIGHT_IDLING;
-                default -> null;
-            };
-
-            if (direction != null) {
-                ArrayList<BufferedImage> frames = spriteImages.get(direction);
-                if (frames != null && !frames.isEmpty()) {
-
-                    int frameIndex = (spriteImageNum - 1) % frames.size();
-                    image = frames.get(frameIndex);
-                }
-            }
-
-            if (image != null) {
-                g2d.drawImage(image, screenX, screenY, null);
-            }
-
-            g2d.setColor(Color.RED);
-            g2d.drawRect(screenX + boundingBox.x, screenY + boundingBox.y, boundingBox.width, boundingBox.height);
-        }
-    }
-
-
-    public int spriteFramesCounter = 0; // Frames that has passed since the last sprite change.
-    public int spriteImageNum = 1; // The current sprite image number.
-
-
-
-
-
-
-
-
-
 
     public void rescaleSprites(int WIDTH, int HEIGHT) {
         for (spriteDirection direction : spriteDirection.values()) {
@@ -199,5 +118,98 @@ public class Entity {
         }
     }
 
+
+
+
+
+
+    public void setAction() {}
+    public void speak() {}
+
+    public void update() {
+//       // setAction();
+//
+//        isCollidingWithTile = false;
+//        isCollidingWithEntity = false;
+//        isCollidingWithObject = false;
+//
+//        gp.collisionManager.checkTile(this);
+//        gp.collisionManager.checkPlayer(this);
+//        gp.collisionManager.checkObject(this, false);
+//
+//        if(!isCollidingWithTile && !isCollidingWithEntity && !isCollidingWithObject) {
+//            switch(currentDirection) {
+//                case "up" -> worldY -= speed;
+//                case "down" -> worldY += speed;
+//                case "left" -> worldX -= speed;
+//                case "right" -> worldX += speed;
+//                case "up-left" -> {  worldY -= speed; worldX -= speed; }
+//                case "up-right" -> {  worldY -= speed; worldX += speed;  }
+//                case "down-left" -> { worldY += speed; worldX -= speed; }
+//                case "down-right" -> { worldY += speed;  worldX += speed; }
+//            }
+//
+//
+//            spriteFramesCounter++;
+//
+//            spriteFramesCounter++;
+//            if (spriteFramesCounter > 30) {
+//                spriteImageNum++;
+//                if (spriteImageNum > MAX_SPRITES_PER_WALKING_DIRECTION) {
+//                    spriteImageNum = 1;
+//                }
+//                spriteFramesCounter = 0;
+//            }
+//        }
+    }
+
+
+
+
+
+    public void draw(Graphics2D g2d) {
+//        BufferedImage image = null;
+//
+//        int screenX = worldX - gp.player.worldX + gp.player.screenX;
+//        int screenY = worldY - gp.player.worldY + gp.player.screenY;
+//
+//        if (worldX + gp.TILE_SIZE > gp.player.worldX - gp.player.screenX &&
+//                worldX - gp.TILE_SIZE < gp.player.worldX + gp.player.screenX &&
+//                worldY + gp.TILE_SIZE > gp.player.worldY - gp.player.screenY &&
+//                worldY - gp.TILE_SIZE < gp.player.worldY + gp.player.screenY) {
+//
+//            spriteDirection direction = switch (currentDirection) {
+//                case "up", "up-left", "up-right" -> spriteDirection.UP_MOVING;
+//                case "down", "down-left", "down-right" -> spriteDirection.DOWN_MOVING;
+//                case "left" -> spriteDirection.LEFT_MOVING;
+//                case "right" -> spriteDirection.RIGHT_MOVING;
+//                case "idling-up", "idling-up-right", "idling-up-left" -> spriteDirection.UP_IDLING;
+//                case "idling-down", "idling-down-right", "idling-down-left" -> spriteDirection.DOWN_IDLING;
+//                case "idling-left" -> spriteDirection.LEFT_IDLING;
+//                case "idling-right" -> spriteDirection.RIGHT_IDLING;
+//                default -> null;
+//            };
+//
+//            if (direction != null) {
+//                ArrayList<BufferedImage> frames = spriteImages.get(direction);
+//                if (frames != null && !frames.isEmpty()) {
+//
+//                    int frameIndex = (spriteImageNum - 1) % frames.size();
+//                    image = frames.get(frameIndex);
+//                }
+//            }
+//
+//            if (image != null) {
+//                g2d.drawImage(image, screenX, screenY, null);
+//            }
+//
+//            g2d.setColor(Color.RED);
+//            g2d.drawRect(screenX + boundingBox.x, screenY + boundingBox.y, boundingBox.width, boundingBox.height);
+//        }
+    }
+
+
+    public int spriteFramesCounter = 0; // Frames that has passed since the last sprite change.
+    public int spriteImageNum = 1; // The current sprite image number.
 
 }

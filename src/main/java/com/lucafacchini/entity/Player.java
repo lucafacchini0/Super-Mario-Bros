@@ -65,7 +65,7 @@ public class Player extends Entity {
 
         // Load player sprites
         setDefaultValues();
-        setEntityImages("player", 6, 6, 6, 6, 4, 4, 4, 4);
+        setImages("player", 6, 6, 6, 6, 4, 4, 4, 4);
         rescaleSprites(RESCALED_PLAYER_WIDTH, RESCALED_PLAYER_HEIGTH);
     }
 
@@ -74,8 +74,6 @@ public class Player extends Entity {
         worldY = gp.TILE_SIZE * 25 - gp.TILE_SIZE; // Spawn at the center of the map
 
         speed = DEFAULT_PLAYER_SPEED;
-        currentDirection = "down";
-
     }
 
 
@@ -87,6 +85,12 @@ public class Player extends Entity {
         updateDirection();
         updateSprite();
         updatePosition();
+
+        // DEBUGGING
+
+        // Print current status and position
+        System.out.println("Current status: " + currentStatus);
+        System.out.println("Current direction: " + currentDirection);
     }
 
     private void updateDirection() {
@@ -94,39 +98,60 @@ public class Player extends Entity {
         boolean isIdle = !isMoving;
 
         if (isIdle || (kh.isUpPressed && kh.isDownPressed) || (kh.isLeftPressed && kh.isRightPressed)) {
-            currentDirection = "idling-" + lastPosition;
+         //   currentDirection = "idling-" + lastPosition;
+
+            currentStatus = Status.IDLING;
+            currentDirection = previousDirection;
         } else {
+            currentStatus = Status.MOVING;
+
             if (kh.isUpPressed && kh.isLeftPressed) {
-                currentDirection = "up-left";
-                lastPosition = currentDirection;
+//                currentDirection = "up-left";
+//                lastPosition = currentDirection;
+                currentDirection = Direction.UP_LEFT;
+                previousDirection = currentDirection;
             }
             else if (kh.isUpPressed && kh.isRightPressed) {
-                currentDirection = "up-right";
-                lastPosition = currentDirection;
+//                currentDirection = "up-right";
+//                lastPosition = currentDirection;
+                currentDirection = Direction.UP_RIGHT;
+                previousDirection = currentDirection;
             }
             else if (kh.isDownPressed && kh.isLeftPressed) {
-                currentDirection = "down-left";
-                lastPosition = currentDirection;
+//                currentDirection = "down-left";
+//                lastPosition = currentDirection;
+                currentDirection = Direction.DOWN_LEFT;
+                previousDirection = currentDirection;
             }
             else if (kh.isDownPressed && kh.isRightPressed) {
-                currentDirection = "down-right";
-                lastPosition = currentDirection;
+//                currentDirection = "down-right";
+//                lastPosition = currentDirection;
+                currentDirection = Direction.DOWN_RIGHT;
+                previousDirection = currentDirection;
             }
             else if (kh.isUpPressed) {
-                currentDirection = "up";
-                lastPosition = currentDirection;
+//                currentDirection = "up";
+//                lastPosition = currentDirection;
+                currentDirection = Direction.UP;
+                previousDirection = currentDirection;
             }
             else if (kh.isDownPressed) {
-                currentDirection = "down";
-                lastPosition = currentDirection;
+//                currentDirection = "down";
+//                lastPosition = currentDirection;
+                currentDirection = Direction.DOWN;
+                previousDirection = currentDirection;
             }
             else if (kh.isLeftPressed) {
-                currentDirection = "left";
-                lastPosition = currentDirection;
+//                currentDirection = "left";
+//                lastPosition = currentDirection;
+                currentDirection = Direction.LEFT;
+                previousDirection = currentDirection;
             }
             else {
-                currentDirection = "right";
-                lastPosition = currentDirection;
+//                currentDirection = "right";
+//                lastPosition = currentDirection;
+                currentDirection = Direction.RIGHT;
+                previousDirection = currentDirection;
             }
         }
     }
@@ -137,10 +162,16 @@ public class Player extends Entity {
         // This method has the only purpose of setting some "delays" in the sprite animation
         // depending on the current direction of the player. It does not follow any
         // logical pattern, it's just a way to make the sprite animation look better.
-        setMultiplier(currentDirection, spriteImageNum);
+//        setMultiplier(currentDirection, spriteImageNum);
 
         // Reset the sprite image number if the player is idling
-        if(lastPosition.contains("idling")) {
+//        if(lastPosition.contains("idling")) {
+//            if(spriteImageNum > 4) { // 4 is the last sprite of the idling animation. Walk have 6.
+//                spriteImageNum = 1;
+//            }
+//        }
+
+        if(currentStatus == Status.IDLING) {
             if(spriteImageNum > 4) { // 4 is the last sprite of the idling animation. Walk have 6.
                 spriteImageNum = 1;
             }
@@ -354,26 +385,42 @@ public class Player extends Entity {
                 worldY + gp.TILE_SIZE > gp.player.worldY - gp.player.screenY &&
                 worldY - gp.TILE_SIZE < gp.player.worldY + gp.player.screenY) {
 
-            spriteDirection direction = switch (currentDirection) {
-                case "up", "up-left", "up-right" -> spriteDirection.UP_MOVING;
-                case "down", "down-left", "down-right" -> spriteDirection.DOWN_MOVING;
-                case "left" -> spriteDirection.LEFT_MOVING;
-                case "right" -> spriteDirection.RIGHT_MOVING;
-                case "idling-up", "idling-up-right", "idling-up-left" -> spriteDirection.UP_IDLING;
-                case "idling-down", "idling-down-right", "idling-down-left" -> spriteDirection.DOWN_IDLING;
-                case "idling-left" -> spriteDirection.LEFT_IDLING;
-                case "idling-right" -> spriteDirection.RIGHT_IDLING;
-                default -> null;
-            };
 
-            if (direction != null) {
-                ArrayList<BufferedImage> frames = spriteImages.get(direction);
-                if (frames != null && !frames.isEmpty()) {
+//            spriteDirection direction = switch(currentDirection) {
+//                case Direction.UP, Direction.UP_LEFT, Direction.UP_RIGHT -> Direction.UP;
+//                case Direction.DOWN, Direction.DOWN_LEFT, Direction.DOWN_RIGHT -> Direction.DOWN;
+//                case Direction.LEFT -> Direction.LEFT;
+//                case Direction.RIGHT -> Direction.RIGHT;
+//            };
 
-                    int frameIndex = (spriteImageNum - 1) % frames.size();
-                    image = frames.get(frameIndex);
-                }
+            spriteDirection direction;
+
+            if(currentStatus == Status.IDLING) {
+                direction = switch(currentDirection) {
+                    case Direction.UP, Direction.UP_LEFT, Direction.UP_RIGHT -> spriteDirection.UP_IDLING;
+                    case Direction.DOWN, Direction.DOWN_LEFT, Direction.DOWN_RIGHT -> spriteDirection.DOWN_IDLING;
+                    case Direction.LEFT -> spriteDirection.LEFT_IDLING;
+                    case Direction.RIGHT -> spriteDirection.RIGHT_IDLING;
+                };
+            } else {
+                direction = switch(currentDirection) {
+                    case Direction.UP, Direction.UP_LEFT, Direction.UP_RIGHT -> spriteDirection.UP_MOVING;
+                    case Direction.DOWN, Direction.DOWN_LEFT, Direction.DOWN_RIGHT -> spriteDirection.DOWN_MOVING;
+                    case Direction.LEFT -> spriteDirection.LEFT_MOVING;
+                    case Direction.RIGHT -> spriteDirection.RIGHT_MOVING;
+                };
             }
+
+
+
+
+            ArrayList<BufferedImage> frames = spriteImages.get(direction);
+            if (frames != null && !frames.isEmpty()) {
+
+                int frameIndex = (spriteImageNum - 1) % frames.size();
+                image = frames.get(frameIndex);
+            }
+
 
             if (image != null) {
                 g2d.drawImage(image, screenX, screenY, null);
