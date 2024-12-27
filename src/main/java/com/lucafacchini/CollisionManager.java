@@ -74,54 +74,54 @@ public class CollisionManager {
     // ------------------- Directional collision methods -------------------
 
     public void checkTile(Entity entity) {
-//        int entityLeftWorldX = entity.worldX + entity.boundingBox.x;
-//        int entityRightWorldX = entity.worldX + entity.boundingBox.x + entity.boundingBox.width;
-//        int entityTopWorldY = entity.worldY + entity.boundingBox.y;
-//        int entityBottomWorldY = entity.worldY + entity.boundingBox.y + entity.boundingBox.height;
-//
-//        int entityLeftColumn = entityLeftWorldX / gp.TILE_SIZE;
-//        int entityRightColumn = entityRightWorldX / gp.TILE_SIZE;
-//        int entityTopRow = entityTopWorldY / gp.TILE_SIZE;
-//        int entityBottomRow = entityBottomWorldY / gp.TILE_SIZE;
-//
-//        switch (entity.currentDirection) {
-//            case "up":
-//                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
-//                break;
-//
-//            case "down":
-//                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
-//                break;
-//
-//            case "left":
-//                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
-//                break;
-//
-//            case "right":
-//                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
-//                break;
-//
-//            case "up-left":
-//                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
-//                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
-//                break;
-//
-//            case "up-right":
-//                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
-//                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
-//                break;
-//
-//            case "down-left":
-//                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
-//                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
-//                break;
-//
-//            case "down-right":
-//                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
-//                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
-//                break;
-//        }
-//        checkTileCollision(entity, entityLeftColumn, entityRightColumn, entityTopRow, entityBottomRow);
+        int entityLeftWorldX = entity.worldX + entity.boundingBox.x;
+        int entityRightWorldX = entity.worldX + entity.boundingBox.x + entity.boundingBox.width;
+        int entityTopWorldY = entity.worldY + entity.boundingBox.y;
+        int entityBottomWorldY = entity.worldY + entity.boundingBox.y + entity.boundingBox.height;
+
+        int entityLeftColumn = entityLeftWorldX / gp.TILE_SIZE;
+        int entityRightColumn = entityRightWorldX / gp.TILE_SIZE;
+        int entityTopRow = entityTopWorldY / gp.TILE_SIZE;
+        int entityBottomRow = entityBottomWorldY / gp.TILE_SIZE;
+
+        switch (entity.currentDirection) {
+            case Entity.Direction.UP:
+                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
+                break;
+
+            case Entity.Direction.DOWN:
+                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
+                break;
+
+            case Entity.Direction.LEFT:
+                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
+                break;
+
+            case Entity.Direction.RIGHT:
+                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
+                break;
+
+            case Entity.Direction.UP_LEFT:
+                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
+                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
+                break;
+
+            case Entity.Direction.UP_RIGHT:
+                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
+                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
+                break;
+
+            case Entity.Direction.DOWN_LEFT:
+                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
+                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
+                break;
+
+            case Entity.Direction.DOWN_RIGHT:
+                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
+                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
+                break;
+        }
+        checkTileCollision(entity, entityLeftColumn, entityRightColumn, entityTopRow, entityBottomRow);
     }
 
 
@@ -207,7 +207,7 @@ public class CollisionManager {
                 gp.objectsArray[i].boundingBox.y = gp.objectsArray[i].worldY + gp.objectsArray[i].boundingBox.y;
 
                 switch (entity.currentDirection) {
-                    case "up-left":
+                    case Entity.Direction.UP_LEFT:
                         entity.boundingBox.x -= entity.speed;
                         entity.boundingBox.y -= entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
@@ -220,7 +220,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "up-right":
+                    case Entity.Direction.UP_RIGHT:
                         entity.boundingBox.x += entity.speed;
                         entity.boundingBox.y -= entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
@@ -233,7 +233,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "down-left":
+                    case Entity.Direction.DOWN_LEFT:
                         entity.boundingBox.x -= entity.speed;
                         entity.boundingBox.y += entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
@@ -246,7 +246,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "down-right":
+                    case Entity.Direction.DOWN_RIGHT:
                         entity.boundingBox.x += entity.speed;
                         entity.boundingBox.y += entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
@@ -259,7 +259,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "up":
+                    case Entity.Direction.UP:
                         entity.boundingBox.y -= entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
                             if (gp.objectsArray[i].isSolid) {
@@ -271,7 +271,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "down":
+                    case Entity.Direction.DOWN:
                         entity.boundingBox.y += entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
                             if (gp.objectsArray[i].isSolid) {
@@ -283,7 +283,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "left":
+                    case Entity.Direction.LEFT:
                         entity.boundingBox.x -= entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
                             if (gp.objectsArray[i].isSolid) {
@@ -295,7 +295,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "right":
+                    case Entity.Direction.RIGHT:
                         entity.boundingBox.x += entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
                             if (gp.objectsArray[i].isSolid) {
@@ -314,8 +314,6 @@ public class CollisionManager {
             }
         }
         return index;
-
-         return -1;
     }
 
     public int checkEntity(Entity entity, Entity[] target) {
@@ -330,7 +328,7 @@ public class CollisionManager {
                 target[i].boundingBox.y = target[i].worldY + target[i].boundingBox.y;
 
                 switch (entity.currentDirection) {
-                    case "up-left":
+                    case Entity.Direction.UP_LEFT:
                         entity.boundingBox.x -= entity.speed;
                         entity.boundingBox.y -= entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
@@ -339,7 +337,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "up-right":
+                    case Entity.Direction.UP_RIGHT:
                         entity.boundingBox.x += entity.speed;
                         entity.boundingBox.y -= entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
@@ -348,7 +346,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "down-left":
+                    case Entity.Direction.DOWN_LEFT:
                         entity.boundingBox.x -= entity.speed;
                         entity.boundingBox.y += entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
@@ -357,7 +355,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "down-right":
+                    case Entity.Direction.DOWN_RIGHT:
                         entity.boundingBox.x += entity.speed;
                         entity.boundingBox.y += entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
@@ -366,7 +364,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "up":
+                    case Entity.Direction.UP:
                         entity.boundingBox.y -= entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
                             index = i;
@@ -374,7 +372,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "down":
+                    case Entity.Direction.DOWN:
                         entity.boundingBox.y += entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
                             index = i;
@@ -382,7 +380,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "left":
+                    case Entity.Direction.LEFT:
                         entity.boundingBox.x -= entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
                             index = i;
@@ -390,7 +388,7 @@ public class CollisionManager {
                         }
                         break;
 
-                    case "right":
+                    case Entity.Direction.RIGHT:
                         entity.boundingBox.x += entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
                             index = i;
@@ -415,7 +413,7 @@ public class CollisionManager {
         gp.player.boundingBox.y = gp.player.worldY + gp.player.boundingBox.y;
 
         switch (entity.currentDirection) {
-            case "up-left":
+            case Entity.Direction.UP_LEFT:
                 entity.boundingBox.x -= entity.speed;
                 entity.boundingBox.y -= entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
@@ -424,7 +422,7 @@ public class CollisionManager {
                 }
                 break;
 
-            case "up-right":
+            case Entity.Direction.UP_RIGHT:
                 entity.boundingBox.x += entity.speed;
                 entity.boundingBox.y -= entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
@@ -432,7 +430,7 @@ public class CollisionManager {
                 }
                 break;
 
-            case "down-left":
+            case Entity.Direction.DOWN_LEFT:
                 entity.boundingBox.x -= entity.speed;
                 entity.boundingBox.y += entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
@@ -440,7 +438,7 @@ public class CollisionManager {
                 }
                 break;
 
-            case "down-right":
+            case Entity.Direction.DOWN_RIGHT:
                 entity.boundingBox.x += entity.speed;
                 entity.boundingBox.y += entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
@@ -448,28 +446,28 @@ public class CollisionManager {
                 }
                 break;
 
-            case "up":
+            case Entity.Direction.UP:
                 entity.boundingBox.y -= entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
                     entity.isCollidingWithEntity = true;
                 }
                 break;
 
-            case "down":
+            case Entity.Direction.DOWN:
                 entity.boundingBox.y += entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
                     entity.isCollidingWithEntity = true;
                 }
                 break;
 
-            case "left":
+            case Entity.Direction.LEFT:
                 entity.boundingBox.x -= entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
                     entity.isCollidingWithEntity = true;
                 }
                 break;
 
-            case "right":
+            case Entity.Direction.RIGHT:
                 entity.boundingBox.x += entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
                     entity.isCollidingWithEntity = true;

@@ -143,7 +143,7 @@ public class GamePanel extends JPanel implements Runnable {
     private void updateComponents() {
         if(gameStatus == GameStatus.RUNNING) {
             player.update();
-           // npcArray[0].update();
+           npcArray[0].update();
 
         }
     }
@@ -177,7 +177,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         for(int i = 0; i < npcArray.length; i++) {
             if(npcArray[i] != null) {
-//                npcArray[i].draw(g2d);
+                npcArray[i].draw(g2d);
             }
         }
 

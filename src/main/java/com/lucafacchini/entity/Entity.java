@@ -13,6 +13,11 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 
+/**
+ * @brief The Entity class is the superclass of all entities in the game.
+ *
+ *  It contains the properties and methods that are common to all entities.
+ */
 public class Entity {
 
     // ---------------------------------------------- //
@@ -30,21 +35,38 @@ public class Entity {
 
                 // SPRITES //
 
-    // NOTE: This enumerator is only used to initialize the keys of the hashmap. The actual direction is stored in the currentDirection variable.
-    // and for backend drawing
-    // SpriteImagesEnum is an enumerator that contains all the possible directions of the entity.
-    // It is used to initialize the keys of the hashmap that contains the sprite images of the entity.
-    // The actual direction of the Entity is not stored in this enumerator, but in the currentDirection variable,
-    // which is another enumerator.
+    /**
+     * @brief Enumerator that contains all the possible directions of the entity.
+     *
+     * @note This enumerator is only used to initialize the keys of the hashmap.
+     * The actual direction is stored in the currentDirection variable and for backend drawing.
+     *
+     * SpriteImagesEnum is an enumerator that contains all the possible directions of the entity.
+     * It is used to initialize the keys of the hashmap that contains the sprite images of the entity.
+     * The actual direction of the Entity is not stored in this enumerator, but in the currentDirection variable,
+     * which is another enumerator.
+     */
     public enum SpriteImagesEnum {
         UP_MOVING, DOWN_MOVING, LEFT_MOVING, RIGHT_MOVING,
         UP_IDLING, DOWN_IDLING, LEFT_IDLING, RIGHT_IDLING
     };
 
-    // The hashmap that contains the sprite images of the entity.
-    // The keys are the directions of the entity, and the values are the sprite images of the entity.
-    private HashMap<SpriteImagesEnum, ArrayList<BufferedImage>> spriteImages = new HashMap<>();
 
+    /**
+     * @brief The hashmap that contains the sprite images of the entity.
+     *
+     * The keys are the directions of the entity, and the values are the sprite images of the entity.
+     */
+    public HashMap<SpriteImagesEnum, ArrayList<BufferedImage>> spriteImages = new HashMap<>();
+
+    /**
+     * @brief Variables to manage the sprite images of the entity.
+     *
+     * spriteCounterMultiplier is used to check the sprite animation speed. It's incremented by 1 every frame.
+     * spriteFramesCounter is the number of frames that has passed since the last sprite change.
+     * spriteImageNum is the current sprite num.
+     * NUM_MOVING_SPRITES is the number of moving sprites (the images).
+     */
     protected int spriteCounterMultiplier; // This variable is used to check the sprite animation speed. It's incremented by 1 every frame.
     protected int spriteFramesCounter = 0; // Frames that has passed since the last sprite change.
     protected int spriteImageNum = 1; // The current sprite num
@@ -85,8 +107,8 @@ public class Entity {
 
     GamePanel gp;
 
-//    String[] dialogues = new String[20]; // TODO: Change to HashMap
-//    int dialogueIndex = 0;
+    String[] dialogues = new String[20]; // TODO: Change to HashMap
+    int dialogueIndex = 0;
 
     public Entity(GamePanel gp) {
         this.gp = gp;
@@ -197,7 +219,7 @@ public class Entity {
     public void speak() {}
 
     public void update() {
-       // setAction();
+       setAction();
 
         spriteFramesCounter++;
 
@@ -235,14 +257,6 @@ public class Entity {
         }
     }
 
-    public void updateSprite() {
-        spriteFramesCounter++; // Increase the counter every frame
-
-        if (spriteFramesCounter >= spriteCounterMultiplier) {
-            spriteFramesCounter = 0;
-            spriteImageNum++;
-        }
-    }
 
     public void move() {
         switch (currentDirection) {
