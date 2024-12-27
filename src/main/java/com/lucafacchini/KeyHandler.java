@@ -50,8 +50,8 @@ public class KeyHandler implements KeyListener {
         int key = e.getKeyCode();
 
         // Debugging logs
-        System.out.println("Key released: " + KeyEvent.getKeyText(key));
-        System.out.println("Current game status: " + gp.gameStatus);
+//        System.out.println("Key released: " + KeyEvent.getKeyText(key));
+//        System.out.println("Current game status: " + gp.gameStatus);
 
         if (gp.gameStatus == GamePanel.GameStatus.RUNNING) {
             // Handle movement keys
