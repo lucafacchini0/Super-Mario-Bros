@@ -3,6 +3,7 @@ package com.lucafacchini.entity;
 import com.lucafacchini.GamePanel;
 import com.lucafacchini.Utilities;
 
+import java.awt.*;
 import java.util.Random;
 
 public class NPC_OldMan extends Entity{

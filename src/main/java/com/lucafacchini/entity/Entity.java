@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 
 
 /**
- * @brief The Entity class is the superclass of all entities in the game.
- *
+ * {@code @brief} The Entity class is the superclass of all entities in the game.
+ * <p>
  *  It contains the properties and methods that are common to all entities.
  */
 public class Entity {
@@ -36,11 +36,11 @@ public class Entity {
                 // SPRITES //
 
     /**
-     * @brief Enumerator that contains all the possible directions of the entity.
-     *
-     * @note This enumerator is only used to initialize the keys of the hashmap.
+     * {@code @brief} Enumerator that contains all the possible directions of the entity.
+     * <p>
+     * {@code @note} This enumerator is only used to initialize the keys of the hashmap.
      * The actual direction is stored in the currentDirection variable and for backend drawing.
-     *
+     * <p>
      * SpriteImagesEnum is an enumerator that contains all the possible directions of the entity.
      * It is used to initialize the keys of the hashmap that contains the sprite images of the entity.
      * The actual direction of the Entity is not stored in this enumerator, but in the currentDirection variable,
@@ -49,7 +49,7 @@ public class Entity {
     public enum SpriteImagesEnum {
         UP_MOVING, DOWN_MOVING, LEFT_MOVING, RIGHT_MOVING,
         UP_IDLING, DOWN_IDLING, LEFT_IDLING, RIGHT_IDLING
-    };
+    }
 
 
     /**
@@ -61,7 +61,7 @@ public class Entity {
 
     /**
      * @brief Variables to manage the sprite images of the entity.
-     *
+     * <p>
      * spriteCounterMultiplier is used to check the sprite animation speed. It's incremented by 1 every frame.
      * spriteFramesCounter is the number of frames that has passed since the last sprite change.
      * spriteImageNum is the current sprite num.
@@ -91,7 +91,7 @@ public class Entity {
     // ---------------------------------------------- //
 
     // Utilities, used for rescaling images.
-    private Utilities utilities = new Utilities();
+    private final Utilities utilities = new Utilities();
 
     // ---------------------------------------------- //
 
@@ -112,7 +112,7 @@ public class Entity {
 
     public Entity(GamePanel gp) {
         this.gp = gp;
-        boundingBox = new Rectangle(0, 0, 0, 0);
+        boundingBox = new Rectangle(0, 0, gp.TILE_SIZE, gp.TILE_SIZE);
     }
 
     // ---------------------------------------------- //
@@ -281,7 +281,7 @@ public class Entity {
                 worldY - gp.TILE_SIZE < gp.player.worldY + gp.player.screenY) {
 
             SpriteImagesEnum direction = getSpriteDirection();
-            BufferedImage image = null;
+            BufferedImage image;
 
             ArrayList<BufferedImage> frames = spriteImages.get(direction);
 

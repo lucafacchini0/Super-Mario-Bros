@@ -3,66 +3,35 @@ package com.lucafacchini.entity;
 import com.lucafacchini.GamePanel;
 import com.lucafacchini.KeyHandler;
 
-import java.awt.*;
 import java.util.logging.Logger;
 
 /**
- * @brief Represents the player entity in the game.
+ * Represents the player entity in the game.
  *
  * This class defines the player's attributes, controls, and interactions
  * within the game world, including movement, sprite animations, and collision.
  */
 public class Player extends Entity {
 
-    // ---------------------------------------------- //
     // Debugging
-
     public int hasKey = 0;
     private static final Logger LOGGER = Logger.getLogger(Entity.class.getName());
 
-    // ---------------------------------------------- //
     // Sprite settings
-
-    /**
-     * @brief Number of sprites used for  animations.
-     */
     public final int NUM_MOVING_SPRITES = 6;
     public final int NUM_IDLING_SPRITES = 4;
-
-    /**
-     * @brief Size of the sprite in pixels.
-     */
     public final int SPRITE_HEIGHT_PX = 19;
     public final int SPRITE_WIDTH_PX = 11;
-
-    /**
-     * @brief Rescaled sprite size in pixels, adjusted to the game scale.
-     */
     public final int RESCALED_SPRITE_HEIGHT_PX;
     public final int RESCALED_SPRITE_WIDTH_PX;
-
-    /**
-     * @brief Time (in frames) between updates of moving sprites.
-     */
     public final int MOVING_SPRITE_UPDATE_TIME = 5;
-
-    /**
-     * @brief Multiplier for idle sprite update time.
-     */
     public final int IDLING_SPRITE_MULTIPLIER_UPDATE_TIME = 120;
-
-    /**
-     * @brief Multiplier for idle sprite update time when the eyes are closed.
-     */
     public final int IDLING_SPRITE_MULTIPLIER_EYES_CLOSED = MOVING_SPRITE_UPDATE_TIME;
 
-    // ---------------------------------------------- //
     // Player settings
 
     /**
-     * @brief Default player speed in pixels per frame.
-     *
-     * @BUG: The higher the value of DEFAULT_PLAYER_SPEED, and "more space" is added between the player and the walls.
+     * @BUG The higher the value of DEFAULT_PLAYER_SPEED, and "more space" is added between the player and the walls.
      *
      *     The BoundingBox of both the player and the tile don't change, but the player collides with the tile before reaching it.
      *     The distance between the player and the tile changes based on the position of the player, and it's not the same.
@@ -73,18 +42,10 @@ public class Player extends Entity {
      */
     public final int DEFAULT_PLAYER_SPEED = 5;
 
-    /**
-     * @brief Player's screen coords (always centered on the screen).
-     */
     public final int screenX;
     public final int screenY;
 
-    // ---------------------------------------------- //
     // KeyHandler
-
-    /**
-     * @brief Handles player input from the keyboard.
-     */
     KeyHandler kh;
 
     /**
@@ -104,7 +65,10 @@ public class Player extends Entity {
         screenY = gp.WINDOW_HEIGHT / 2 - gp.TILE_SIZE / 2;
 
         // Initialize bounding box dimensions and default values
-        boundingBox = new Rectangle(0, 20, gp.TILE_SIZE - 20, gp.TILE_SIZE - 10);
+        boundingBox.x = 0;
+        boundingBox.y = 20;
+        boundingBox.width = gp.TILE_SIZE - 20;
+        boundingBox.height = gp.TILE_SIZE - 10;
         boundingBoxDefaultX = boundingBox.x;
         boundingBoxDefaultY = boundingBox.y;
 
@@ -127,7 +91,7 @@ public class Player extends Entity {
      * Sets the spawn location and movement speed of the player.
      */
     void setDefaultValues() {
-        // Set player spawn location (center of the map)
+        // Set player spawn location
         worldX = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
         worldY = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
 
@@ -150,9 +114,10 @@ public class Player extends Entity {
      *
      * Determines whether the player is moving or idling and updates
      * the player's current direction accordingly.
+     *
+     * TODO: Optimize direction checking using a combined boolean flag. (Ex: isMoving = kh.isWASDPressed)
      */
     private void updateDirection() {
-        // TODO: Optimize direction checking using a combined boolean flag.
         boolean isMoving = kh.isUpPressed || kh.isDownPressed || kh.isLeftPressed || kh.isRightPressed;
         boolean isIdle = !isMoving;
 
@@ -180,9 +145,7 @@ public class Player extends Entity {
      */
     public void updateSprite() {
         spriteFramesCounter++;
-
-        // Adjust sprite animation delays based on direction and status
-        setMultiplier(spriteImageNum);
+        setMultiplier(spriteImageNum); // Adjust animation speed based on player status and sprite frame
 
         if (currentStatus == Status.IDLING && spriteImageNum > NUM_IDLING_SPRITES) {
             spriteImageNum = 1;
@@ -213,7 +176,7 @@ public class Player extends Entity {
     }
 
     /**
-     * @brief Updates the player's position in the game world.
+     * @brief Updates the player's position in the game world
      *
      * Handles collision detection and resolves movement based on the
      * player's current direction and interactions.
@@ -264,38 +227,57 @@ public class Player extends Entity {
 
     /**
      * @brief Handles diagonal movement collision resolution.
-     *
-     * Resolves diagonal movement collisions with objects and tiles.
      */
 // TODO: Fix this method. Diagonal movement is not working while colliding with Objects.
     private void handleDiagonalCollision() {
-        switch(currentDirection) {
+        boolean collidingLeft = gp.collisionManager.isCollidingFromLeft(this);
+        boolean collidingRight = gp.collisionManager.isCollidingFromRight(this);
+        boolean collidingTop = gp.collisionManager.isCollidingFromTop(this);
+        boolean collidingBottom = gp.collisionManager.isCollidingFromBottom(this);
+
+        switch (currentDirection) {
             case UP_LEFT -> {
-                if(gp.collisionManager.isCollidingFromLeft(this) && gp.collisionManager.isCollidingFromTop(this)) {}
-                else if(gp.collisionManager.isCollidingFromLeft(this)) { worldY -= diagonalMove(speed); }
-                else if(gp.collisionManager.isCollidingFromTop(this)) { worldX -= diagonalMove(speed); }
-                else { worldY -= diagonalMove(speed); worldX -= diagonalMove(speed); } // NOTE: Might be unnecessary, because the method is called only if the player is colliding with a tile. Will check later.
+                if (!collidingLeft && !collidingTop) {
+                    worldY -= diagonalMove(speed);
+                    worldX -= diagonalMove(speed);
+                } else if (!collidingLeft) {
+                    worldX -= diagonalMove(speed);
+                } else if (!collidingTop) {
+                    worldY -= diagonalMove(speed);
+                }
             }
 
             case UP_RIGHT -> {
-                if(gp.collisionManager.isCollidingFromRight(this) && gp.collisionManager.isCollidingFromTop(this)) {}
-                else if(gp.collisionManager.isCollidingFromRight(this)) { worldY -= diagonalMove(speed); }
-                else if(gp.collisionManager.isCollidingFromTop(this)) { worldX += diagonalMove(speed); }
-                else { worldY -= diagonalMove(speed); worldX += diagonalMove(speed); }
+                if (!collidingRight && !collidingTop) {
+                    worldY -= diagonalMove(speed);
+                    worldX += diagonalMove(speed);
+                } else if (!collidingRight) {
+                    worldX += diagonalMove(speed);
+                } else if (!collidingTop) {
+                    worldY -= diagonalMove(speed);
+                }
             }
 
             case DOWN_LEFT -> {
-                if(gp.collisionManager.isCollidingFromLeft(this) && gp.collisionManager.isCollidingFromBottom(this)) {}
-                else if(gp.collisionManager.isCollidingFromLeft(this)) { worldY += diagonalMove(speed); }
-                else if(gp.collisionManager.isCollidingFromBottom(this)) { worldX -= diagonalMove(speed); }
-                else { worldY += diagonalMove(speed); worldX -= diagonalMove(speed); }
+                if (!collidingLeft && !collidingBottom) {
+                    worldY += diagonalMove(speed);
+                    worldX -= diagonalMove(speed);
+                } else if (!collidingLeft) {
+                    worldX -= diagonalMove(speed);
+                } else if (!collidingBottom) {
+                    worldY += diagonalMove(speed);
+                }
             }
 
             case DOWN_RIGHT -> {
-                if(gp.collisionManager.isCollidingFromRight(this) && gp.collisionManager.isCollidingFromBottom(this)) {}
-                else if(gp.collisionManager.isCollidingFromRight(this)) { worldY += diagonalMove(speed); }
-                else if(gp.collisionManager.isCollidingFromBottom(this)) { worldX += diagonalMove(speed); }
-                else { worldY += diagonalMove(speed); worldX += diagonalMove(speed); }
+                if (!collidingRight && !collidingBottom) {
+                    worldY += diagonalMove(speed);
+                    worldX += diagonalMove(speed);
+                } else if (!collidingRight) {
+                    worldX += diagonalMove(speed);
+                } else if (!collidingBottom) {
+                    worldY += diagonalMove(speed);
+                }
             }
         }
     }
