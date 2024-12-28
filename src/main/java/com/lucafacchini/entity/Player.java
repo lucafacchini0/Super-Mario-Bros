@@ -29,9 +29,8 @@ public class Player extends Entity {
     public final int IDLING_SPRITE_MULTIPLIER_EYES_CLOSED = MOVING_SPRITE_UPDATE_TIME;
 
     // Player settings
-
     /**
-     * @BUG The higher the value of DEFAULT_PLAYER_SPEED, and "more space" is added between the player and the walls.
+     * @BUG The higher the value of DEFAULT_SPEED, and "more space" is added between the player and the walls.
      *
      *     The BoundingBox of both the player and the tile don't change, but the player collides with the tile before reaching it.
      *     The distance between the player and the tile changes based on the position of the player, and it's not the same.
@@ -40,8 +39,14 @@ public class Player extends Entity {
      *     but, maybe, at X:52, Y:14, the player collides 3px on the right side before reaching the tile and 6px on the bottom side
      *
      */
-    public final int DEFAULT_PLAYER_SPEED = 5;
+    public final int DEFAULT_SPEED = 5;
 
+    /**
+     * @brief screenX and screenY are the coordinates of the player on the screen.
+     * They are used to center the player on the screen. Their purpose is to
+     * make the player "static" on the screen while the world moves. This will make
+     * the illusion that the player is moving.
+     */
     public final int screenX;
     public final int screenY;
 
@@ -50,7 +55,6 @@ public class Player extends Entity {
 
     /**
      * @brief Constructs a Player object with initial settings.
-     *
      * Initializes sprite dimensions, default values, and key handler setup.
      *
      * @param gp the GamePanel object providing game settings and state.
@@ -87,7 +91,6 @@ public class Player extends Entity {
 
     /**
      * @brief Initializes the player's default attributes.
-     *
      * Sets the spawn location and movement speed of the player.
      */
     void setDefaultValues() {
@@ -96,7 +99,7 @@ public class Player extends Entity {
         worldY = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
 
         // Set player speed
-        speed = DEFAULT_PLAYER_SPEED;
+        speed = DEFAULT_SPEED;
     }
 
     /**
@@ -111,7 +114,6 @@ public class Player extends Entity {
 
     /**
      * @brief Updates the player's movement direction based on keyboard input.
-     *
      * Determines whether the player is moving or idling and updates
      * the player's current direction accordingly.
      *
@@ -139,7 +141,6 @@ public class Player extends Entity {
 
     /**
      * @brief Updates the player's sprite animation.
-     *
      * Adjusts the current sprite frame based on the player's status
      * and ensures smooth animation transitions.
      */
@@ -162,7 +163,6 @@ public class Player extends Entity {
 
     /**
      * @brief Sets the multiplier for sprite animation delays.
-     *
      * Adjusts animation speed based on the player's status and sprite frame.
      *
      * @param spriteImageNum The current sprite frame number.
@@ -177,7 +177,6 @@ public class Player extends Entity {
 
     /**
      * @brief Updates the player's position in the game world
-     *
      * Handles collision detection and resolves movement based on the
      * player's current direction and interactions.
      */
@@ -207,7 +206,6 @@ public class Player extends Entity {
 
     /**
      * @brief Moves the player entity in the current direction.
-     *
      * Supports diagonal movement and overrides the base entity movement behavior.
      */
     @Override
@@ -223,7 +221,6 @@ public class Player extends Entity {
             case RIGHT -> worldX += speed;
         }
     }
-
 
     /**
      * @brief Handles diagonal movement collision resolution.

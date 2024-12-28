@@ -1,69 +1,58 @@
 package com.lucafacchini.entity;
 
 import com.lucafacchini.GamePanel;
-import com.lucafacchini.Utilities;
 
-import java.awt.*;
-import java.util.Random;
+import java.util.logging.Logger;
 
-public class NPC_OldMan extends Entity{
-    public final int NPC_HEIGHT = 19;
-    public final int NPC_WIDTH = 11;
-    public final int RESCALED_NPC_HEIGTH;
-    public final int RESCALED_NPC_WIDTH;
-    public final int DEFAULT_NPC_SPEED = 1;
+public class NPC_OldMan extends Entity {
 
+    // Debugging
+    private static final Logger LOGGER = Logger.getLogger(NPC_OldMan.class.getName());
 
+    // Sprite settings
+    public final int NUM_MOVING_SPRITES = 2;
+    public final int NUM_IDLING_SPRITES = 2;
+    public final int SPRITE_HEIGHT_PX = 19;
+    public final int SPRITE_WIDTH_PX = 11;
+    public final int RESCALED_SPRITE_HEIGHT_PX;
+    public final int RESCALED_SPRITE_WIDTH_PX;
+    public final int MOVING_SPRITE_UPDATE_TIME = 5;
 
-    /**
-     * @brief Number of sprites used for  animations.
-     */
-    public final int NUM_MOVING_SPRITES = 6;
-    public final int NUM_IDLING_SPRITES = 4;
-
-    private int updateFrameCounter = 0;
-
-    Utilities utilities = new Utilities();
+    // NPC Settings
+    public final int DEFAULT_SPEED = 1;
 
     public NPC_OldMan(GamePanel gp) {
         super(gp);
-        RESCALED_NPC_HEIGTH = NPC_HEIGHT * gp.SCALE;
-        RESCALED_NPC_WIDTH = NPC_WIDTH * gp.SCALE;
-        setDefaultValues();
+
+        // Initialize bounding box dimensions and default values
+        boundingBox.x = 0;
+        boundingBox.y = 20;
+        boundingBox.width = gp.TILE_SIZE - 20;
+        boundingBox.height = gp.TILE_SIZE - 10;
+        boundingBoxDefaultX = boundingBox.x;
+        boundingBoxDefaultY = boundingBox.y;
+
+        // Calculate rescaled sprite dimensions based on game scale
+        RESCALED_SPRITE_HEIGHT_PX = SPRITE_HEIGHT_PX * gp.SCALE;
+        RESCALED_SPRITE_WIDTH_PX = SPRITE_WIDTH_PX * gp.SCALE;
+
+        // Load and rescale player sprites
         loadSprites("player", NUM_MOVING_SPRITES, NUM_IDLING_SPRITES);
-        rescaleSprites(RESCALED_NPC_WIDTH, RESCALED_NPC_HEIGTH);
+        rescaleSprites(RESCALED_SPRITE_WIDTH_PX, RESCALED_SPRITE_HEIGHT_PX);
+
+        // Set default values
+        setDefaultValues();
+        setSpriteTimers(MOVING_SPRITE_UPDATE_TIME, NUM_MOVING_SPRITES);
         setDialogue();
-
-        // TODO: Pass variables
-        setSpriteTimers(4, 6);
-
     }
 
     void setDefaultValues() {
         worldX = gp.TILE_SIZE * 24 - gp.TILE_SIZE; // Spawn at the center of the map
         worldY = gp.TILE_SIZE * 26 - gp.TILE_SIZE; // Spawn at the center of the map
 
-        speed = 1;
+        speed = DEFAULT_SPEED;
     }
 
-
-
-    @Override
-    public void setAction() {
-        updateFrameCounter++;
-        if (updateFrameCounter >= 120) {
-            Random random = new Random();
-            int index = random.nextInt(4); // Random number between 0 and 3
-
-            switch (index) {
-                case 0 -> currentDirection = Direction.UP;
-                case 1 -> currentDirection = Direction.DOWN;
-                case 2 -> currentDirection = Direction.LEFT;
-                case 3 -> currentDirection = Direction.RIGHT;
-            }
-            updateFrameCounter = 0;
-        }
-    }
 
     public void setDialogue() {
         dialogues[0] = "Hello, welcome to FacchiniRPG!";
@@ -78,6 +67,4 @@ public class NPC_OldMan extends Entity{
             dialogueIndex++;
         }
     }
-
-
 }
