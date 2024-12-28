@@ -85,13 +85,16 @@ public class Entity {
 
     // Actions 
     public int actionCounter = 0; // Counter that tracks how much time before next action.
-    
+
+
     // Dialogues
     String[] dialogues = new String[20]; // TODO: Change to HashMap
     public int dialogueIndex = 0;
 
+
     // GamePanel
     GamePanel gp;
+
 
     /**
      * @brief Constructor of the Entity class.
@@ -103,8 +106,6 @@ public class Entity {
         this.gp = gp;
         boundingBox = new Rectangle(0, 0, gp.TILE_SIZE, gp.TILE_SIZE);
     }
-
-    // ---------------------------------------------- //
 
 
     /**
@@ -161,6 +162,7 @@ public class Entity {
         }
     }
 
+
     /**
      * @brief Secondary method that loads the sprite images of the entity.
      * @param folderPath the path of the folder containing the sprite images.
@@ -197,6 +199,7 @@ public class Entity {
         }
     }
 
+
     /**
      * @brief Method that rescales the sprite images of the entity.
      * @param WIDTH the width of the sprite. (Width should represent the width already rescaled in px.)
@@ -215,6 +218,7 @@ public class Entity {
             }
         }
     }
+
 
     /**
      * @brief Method used to set action of the entity.
@@ -235,12 +239,13 @@ public class Entity {
         }
     }
 
+
     /**
      * @brief Method used to update the entity.
      * This is called every frame.
      */
     public void update() {
-       setAction();
+       setAction(); // So far, this updates the direction of the entity.
 
         spriteFramesCounter++;
 
@@ -252,15 +257,10 @@ public class Entity {
             spriteFramesCounter = 0;
         }
 
-        // Direction is updated in the subclass of NPCs.
-
-        // ---------------------------- //
-
         isCollidingWithTile = false;
         isCollidingWithEntity = false;
         isCollidingWithObject = false;
-
-        // Booleans are updated in the collision manager.
+        // Booleans are updated in the collision manager class.
 
         // Check tile collisions
         gp.collisionManager.checkTile(this);
@@ -271,14 +271,15 @@ public class Entity {
         // Check player collisions (for NPCs)
         gp.collisionManager.checkPlayer(this);
 
-        // ---------------------------- //
-
         if(!isCollidingWithTile && !isCollidingWithEntity && !isCollidingWithObject) {
             move();
         }
     }
 
 
+    /**
+     * @brief Method used to move the entity.
+     */
     public void move() {
         switch (currentDirection) {
             case UP -> worldY -= speed;
@@ -288,6 +289,18 @@ public class Entity {
         }
     }
 
+
+    /**
+     * @brief Method used to draw the entity.
+     * First of all, the method calculates the screen position of the entity.
+     * It is necessary to check if the entity is in the screen before drawing it.
+     * If it's not, the method doesn't draw the entity. This is done to optimize the game.
+     * and avoid drawing entities that are not visible. (Does it even make sense? xD)
+     *
+     * The method then gets the sprite direction of the entity and draws the sprite image.
+     *
+     * @param g2d the Graphics2D object used to draw the entity.
+     */
     public void draw(Graphics2D g2d) {
         int screenX = worldX - gp.player.worldX + gp.player.screenX;
         int screenY = worldY - gp.player.worldY + gp.player.screenY;
@@ -315,6 +328,11 @@ public class Entity {
         }
     }
 
+
+    /**
+     * @brief Method used to get the sprite direction of the entity.
+     * @return the sprite direction of the entity.
+     */
     public SpriteImagesEnum getSpriteDirection() {
         SpriteImagesEnum direction;
 
@@ -335,6 +353,7 @@ public class Entity {
         }
         return direction;
     }
+
 
     /**
      * @brief Method used to make the NPC speak.

@@ -4,6 +4,9 @@ import com.lucafacchini.GamePanel;
 
 import java.util.logging.Logger;
 
+/**
+ * Represents an NPC entity in the game.
+ */
 public class NPC_OldMan extends Entity {
 
     // Debugging
@@ -21,6 +24,10 @@ public class NPC_OldMan extends Entity {
     // NPC Settings
     public final int DEFAULT_SPEED = 1;
 
+    /**
+     * @brief Constructor for the NPC_OldMan class.
+     * @param gp The GamePanel instance.
+     */
     public NPC_OldMan(GamePanel gp) {
         super(gp);
 
@@ -46,6 +53,10 @@ public class NPC_OldMan extends Entity {
         setDialogue();
     }
 
+
+    /**
+     * @brief Sets the default values for the NPC.
+     */
     void setDefaultValues() {
         worldX = gp.TILE_SIZE * 24 - gp.TILE_SIZE; // Spawn at the center of the map
         worldY = gp.TILE_SIZE * 26 - gp.TILE_SIZE; // Spawn at the center of the map
@@ -54,12 +65,19 @@ public class NPC_OldMan extends Entity {
     }
 
 
+    /**
+     * @brief Sets the dialogue for the NPC.
+     */
     public void setDialogue() {
         dialogues[0] = "Hello, welcome to FacchiniRPG!";
         dialogues[1] = "I'm so happy you've found me!";
         dialogues[2] = "Have a nice adventure!";
     }
 
+
+    /**
+     * @brief Makes the NPC speak.
+     */
     @Override
     public void speak() {
         gp.ui.currentDialogue = dialogues[dialogueIndex];

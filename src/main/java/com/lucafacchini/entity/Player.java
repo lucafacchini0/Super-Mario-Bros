@@ -89,6 +89,7 @@ public class Player extends Entity {
         setSpriteTimers(MOVING_SPRITE_UPDATE_TIME, NUM_MOVING_SPRITES);
     }
 
+
     /**
      * @brief Initializes the player's default attributes.
      * Sets the spawn location and movement speed of the player.
@@ -102,6 +103,7 @@ public class Player extends Entity {
         speed = DEFAULT_SPEED;
     }
 
+
     /**
      * @brief Updates the player's state during the game loop.
      */
@@ -111,6 +113,7 @@ public class Player extends Entity {
         updateSprite();
         updatePosition();
     }
+
 
     /**
      * @brief Updates the player's movement direction based on keyboard input.
@@ -139,6 +142,7 @@ public class Player extends Entity {
         }
     }
 
+
     /**
      * @brief Updates the player's sprite animation.
      * Adjusts the current sprite frame based on the player's status
@@ -161,6 +165,7 @@ public class Player extends Entity {
         }
     }
 
+
     /**
      * @brief Sets the multiplier for sprite animation delays.
      * Adjusts animation speed based on the player's status and sprite frame.
@@ -174,6 +179,7 @@ public class Player extends Entity {
             spriteCounterMultiplier = MOVING_SPRITE_UPDATE_TIME;
         }
     }
+
 
     /**
      * @brief Updates the player's position in the game world
@@ -204,6 +210,7 @@ public class Player extends Entity {
         }
     }
 
+
     /**
      * @brief Moves the player entity in the current direction.
      * Supports diagonal movement and overrides the base entity movement behavior.
@@ -221,6 +228,7 @@ public class Player extends Entity {
             case RIGHT -> worldX += speed;
         }
     }
+
 
     /**
      * @brief Handles diagonal movement collision resolution.
@@ -279,6 +287,7 @@ public class Player extends Entity {
         }
     }
 
+
 //    TODO: Fix: Check the sides of the Object. If the player is moving diagonally, check the sides of the object.
 //    public void handleCollisionWithObject(int objectIndex) {
 //        if (kh.isUpPressed && kh.isLeftPressed) {
@@ -307,6 +316,7 @@ public class Player extends Entity {
 //            }
 //        }
 //    }
+
 
     /**
      * @brief Handles diagonal movement speed.
@@ -352,6 +362,7 @@ public class Player extends Entity {
             }
         }
     }
+
 
     /**
      * @brief Handles player interaction with NPCs.
