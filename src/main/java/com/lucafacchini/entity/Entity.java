@@ -27,6 +27,7 @@ public class Entity {
     // Debugging
     private static final Logger LOGGER = Logger.getLogger(Entity.class.getName());
 
+    public boolean blockMovement = false;
 
     // Sprite settings and declarations
     /**
@@ -281,6 +282,8 @@ public class Entity {
      * @brief Method used to move the entity.
      */
     public void move() {
+        if(blockMovement) return;
+
         switch (currentDirection) {
             case UP -> worldY -= speed;
             case DOWN -> worldY += speed;
@@ -369,4 +372,12 @@ public class Entity {
      * @brief Method used to make the NPC speak.
      */
     public void speak() {}
+
+
+
+
+    // Debugging
+    public void blockNPC(int index) {
+
+    }
 }

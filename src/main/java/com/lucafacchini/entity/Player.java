@@ -16,6 +16,8 @@ public class Player extends Entity {
     // Debugging
     public int hasKey = 0;
     private static final Logger LOGGER = Logger.getLogger(Entity.class.getName());
+    boolean hasJustCollided = false;
+    int previousIndex = -1;
 
     // Sprite settings
     public final int NUM_MOVING_SPRITES = 6;
@@ -201,11 +203,15 @@ public class Player extends Entity {
             int npcIndex = gp.cm.checkEntity(this, gp.npcArray);
             interactionWithNPC(npcIndex);
 
+
+
             // Resolve movement based on collision results
             if (!isCollidingWithTile && !isCollidingWithObject && !isCollidingWithEntity) {
                 move();
-            } else if (isCollidingWithTile && !isCollidingWithObject) {
+            } else if (isCollidingWithTile && !isCollidingWithObject && !isCollidingWithEntity) {
                 handleDiagonalCollision(); // TODO: Fix diagonal movement when colliding.
+            } else if(isCollidingWithEntity && !isCollidingWithTile && !isCollidingWithObject) {
+                LOGGER.info("Colliding with entity");
             }
         }
     }
@@ -371,8 +377,29 @@ public class Player extends Entity {
      */
     public void interactionWithNPC(int index) {
         if(index != -1) {
-            gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
-            gp.npcArray[index].speak();
+
+            gp.npcArray[index].blockMovement = true;
+
+            System.out.println("movement blocked");
+
+            if(kh.isEnterPressed) {
+                System.out.println("Interacting with NPC");
+                kh.isUpPressed = false;
+                kh.isDownPressed = false;
+                kh.isLeftPressed = false;
+                kh.isRightPressed = false;
+
+                gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
+                gp.npcArray[index].speak();
+            }
+
         }
+
+//        if(hasJustCollided) {
+//            hasJustCollided = false;
+//            gp.npcArray[previousIndex].blockMovement = false;
+//        }
+
+
     }
 }

@@ -76,11 +76,10 @@ public class UI {
             // Do stuff
         }
         if(gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
-            // Do stuff
+            drawDialogueScreen();
         }
         if(gp.gameStatus == GamePanel.GameStatus.PAUSED) {
-            isDrawing = true;
-            drawDialogueScreen();
+            // Do stuff
         }
     }
 
@@ -97,6 +96,7 @@ public class UI {
 
         drawSubWindow(x, y, width, height);
 
+        g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 32F));
         x += gp.TILE_SIZE;
         y += gp.TILE_SIZE;
         g2d.drawString(currentDialogue, x, y);
@@ -104,15 +104,20 @@ public class UI {
 
 
     /**
-     * Draws a sub window on the screen.
+     * Draws a sub window on the screen. (the background)
      *
      * @param x the x coordinate of the window.
      * @param y the y coordinate of the window.
      * @param width the width of the window.
      * @param height the height of the window.
+     *
+     * @BUG: The draw sub window is called each frame. It can easily be fixed with a boolean flag.
      */
     public void drawSubWindow(int x, int y, int width, int height) {
-        Color color = new Color(0, 0,0, 200);
+        // Debug
+        // LOGGER.info("Drawing sub window at x: " + x + " y: " + y + " width: " + width + " height: " + height);
+
+        Color color = new Color(0, 0,0, 5);
         g2d.setColor(color);
         g2d.fillRoundRect(x, y, width, height, 50, 50);
 

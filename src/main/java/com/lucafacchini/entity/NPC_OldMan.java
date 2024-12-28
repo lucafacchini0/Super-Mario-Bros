@@ -80,9 +80,10 @@ public class NPC_OldMan extends Entity {
      */
     @Override
     public void speak() {
-        gp.ui.currentDialogue = dialogues[dialogueIndex];
-        if(dialogues[dialogueIndex + 1] != null) {
-            dialogueIndex++;
+        if(dialogues[dialogueIndex] == null) {
+            dialogueIndex = 0;
         }
+        gp.ui.currentDialogue = dialogues[dialogueIndex];
+        dialogueIndex++;
     }
 }

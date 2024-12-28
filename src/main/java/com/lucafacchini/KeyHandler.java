@@ -15,6 +15,7 @@ public class KeyHandler implements KeyListener {
     public boolean isRightPressed = false;
     public boolean isUpPressed = false;
     public boolean isDownPressed = false;
+    public boolean isEnterPressed = false;
     private final GamePanel gp;
 
     /**
@@ -56,6 +57,9 @@ public class KeyHandler implements KeyListener {
             if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
                 isDownPressed = true;
             }
+            if (key == KeyEvent.VK_ENTER) {
+                isEnterPressed = true;
+            }
         }
     }
 
@@ -75,6 +79,7 @@ public class KeyHandler implements KeyListener {
             if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) isRightPressed = false;
             if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) isUpPressed = false;
             if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) isDownPressed = false;
+            if (key == KeyEvent.VK_ENTER) isEnterPressed = false;
 
             // Handle pause toggle
             handlePauseToggle(key);
