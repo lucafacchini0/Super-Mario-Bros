@@ -8,26 +8,28 @@ import com.lucafacchini.tiles.TileManager;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Represents the game panel where the game is rendered and updated.
+ *
+ * This class handles the initialization, updating, and rendering of the game.
+ * It implements the Runnable interface to run the game loop in a separate thread.
+ */
 public class GamePanel extends JPanel implements Runnable {
 
-    // ---------------------------------------------- //
-
     // Game status
+    /**
+     * @brief Enumerator that contains all the possible statuses of the game.
+     * This enumerator is used to determine the current status of the game.
+     */
     public enum GameStatus {
-        RUNNING,
-        PAUSED,
-        DIALOGUE
+        RUNNING, PAUSED, DIALOGUE
     }
     public GameStatus gameStatus = GameStatus.RUNNING;
-
-    // ---------------------------------------------- //
 
     // Tile settings
     public final int ORIGINAL_TILE_SIZE = 16;
     public final int SCALE = 4;
     public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;
-
-    // ---------------------------------------------- //
 
     // Window settings
     public final int WINDOW_ROWS = 12;
@@ -36,8 +38,6 @@ public class GamePanel extends JPanel implements Runnable {
     public final int WINDOW_HEIGHT = TILE_SIZE * WINDOW_ROWS;
     public final int FPS = 60;
 
-    // ---------------------------------------------- //
-
     // Map settings
     public final int MAX_WORLD_COLUMNS = 50;
     public final int MAX_WORLD_ROWS = 50;
@@ -45,80 +45,72 @@ public class GamePanel extends JPanel implements Runnable {
     TileManager[] maps = {
             new TileManager(this, "background.csv"),
             new TileManager(this, "groundDecoration.csv"),
-            new TileManager(this, "background.csv") // TODO: Remove this
+            new TileManager(this, "background.csv")
     };
-
-    // ---------------------------------------------- //
 
     // Thread management
     Thread gameThread;
 
-    // ---------------------------------------------- //
-
     // Manage the key events
     KeyHandler kh = new KeyHandler(this);
-
-    // ---------------------------------------------- //
 
     // Entities
     public Entity[] npcArray = new Entity[10]; // Max number of NPCs in the game
     public Player player = new Player(this, kh); // The player
 
-        // Entities -- Collision Manager
-        public CollisionManager collisionManager = new CollisionManager(this);
-
-    // ---------------------------------------------- //
+    /**
+     * @brief Manages collisions between entities, objects, and tiles.
+     */
+    public CollisionManager cm = new CollisionManager(this);
 
     // Objects
     public final int MAX_OBJECTS_ARRAY = 15;
     public SuperObject[] objectsArray = new SuperObject[MAX_OBJECTS_ARRAY]; // Max number of objects in the game. This array will store all the objects in the world.
     public AssetSetter assetSetter = new AssetSetter(this); // This class will place objects in the game.
 
-    // ---------------------------------------------- //
-
     // Music and sound
-    private Sound music = new Sound();
-    private Sound sound = new Sound();
-
-    // ---------------------------------------------- //
+    private final Sound music = new Sound();
+    private final Sound sound = new Sound();
 
     // UI
     public UI ui = new UI(this);
 
-    // ---------------------------------------------- //
-
-    // Constructor
+    /**
+     * @brief Constructor of the GamePanel class.
+     * Initializes the game panel, sets its properties, and starts the main theme music.
+     */
     public GamePanel() {
-        this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-        this.setBackground(Color.BLACK);
-        this.setDoubleBuffered(true);
+        setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        setBackground(Color.BLACK);
+        setDoubleBuffered(true);
 
-        this.addKeyListener(kh);
-        this.setFocusable(true);
+        addKeyListener(kh);
+        setFocusable(true);
 
         playMusic(0); // 0: Main theme
     }
 
-    // ---------------------------------------------- //
-
-
-    // --------------- INIT GAME ------------------- //
-
+    /**
+     * @brief Initializes the game by placing objects and NPCs.
+     */
     public void initializeGame() {
         assetSetter.placeObject();
         assetSetter.placeNPC();
     }
 
-    // called from the main class
+    /**
+     * @brief Starts the game thread.
+     * This method is called from the main class.
+     */
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
     }
 
-    // ------------END INIT GAME ------------------- //
-
-
-    // Game loop
+    /**
+     * @brief The main game loop, which handles updating and rendering the game.
+     * This method is called repeatedly to keep the game running.
+     */
     @Override
     public void run() {
         double targetFrameTime = 1_000_000_000.0 / FPS; // The delay between frames in nanoseconds.
@@ -140,44 +132,54 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * @brief Updates the components of the game.
+     * This method is called every frame to update the game state.
+     */
     private void updateComponents() {
-        if(gameStatus == GameStatus.RUNNING) {
+        if (gameStatus == GameStatus.RUNNING) {
             player.update();
-           npcArray[0].update();
-
+            npcArray[0].update();
         }
     }
 
+    /**
+     * @brief Paints the components of the game panel.
+     * This method is called every frame to render the game.
+     * @param g the Graphics object used to draw the components.
+     */
     @Override
-    public void paintComponent(Graphics g)  {
-        if(gameStatus == GameStatus.RUNNING) {
+    public void paintComponent(Graphics g) {
+        if (gameStatus == GameStatus.RUNNING) {
             super.paintComponent(g);
 
-            Graphics2D g2d = (Graphics2D)g;
+            Graphics2D g2d = (Graphics2D) g;
 
             drawAllComponents(g2d);
 
             g2d.dispose();
-        } else if(gameStatus == GameStatus.DIALOGUE && !ui.isDrawing) {
-            ui.draw((Graphics2D)g);
+        } else if (gameStatus == GameStatus.DIALOGUE && !ui.isDrawing) {
+            ui.draw((Graphics2D) g);
         }
-
     }
 
-    // Draw the components of the panel.
+    /**
+     * @brief Draws all the components of the game panel.
+     * This method draws the map, objects, NPCs, player, and UI.
+     * @param g2d the Graphics2D object used to draw the components.
+     */
     private void drawAllComponents(Graphics2D g2d) {
-
         maps[0].draw(g2d);
 
-        for(int i = 0; i < objectsArray.length; i++) {
-            if(objectsArray[i] != null) {
-                objectsArray[i].draw(g2d, this);
+        for (SuperObject object : objectsArray) {
+            if (object != null) {
+                object.draw(g2d, this);
             }
         }
 
-        for(int i = 0; i < npcArray.length; i++) {
-            if(npcArray[i] != null) {
-                npcArray[i].draw(g2d);
+        for (Entity npc : npcArray) {
+            if (npc != null) {
+                npc.draw(g2d);
             }
         }
 
@@ -186,16 +188,27 @@ public class GamePanel extends JPanel implements Runnable {
         ui.draw(g2d);
     }
 
+    /**
+     * @brief Plays the specified music track.
+     * @param index the index of the music track to play.
+     */
     public void playMusic(int index) {
         music.setFile(index);
         music.play();
         music.loop();
     }
 
+    /**
+     * @brief Stops the currently playing music.
+     */
     public void stopMusic() {
         music.stop();
     }
 
+    /**
+     * @brief Plays the specified sound effect.
+     * @param index the index of the sound effect to play.
+     */
     public void playSound(int index) {
         sound.setFile(index);
         sound.play();

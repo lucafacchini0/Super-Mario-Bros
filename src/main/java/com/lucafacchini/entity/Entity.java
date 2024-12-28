@@ -263,13 +263,13 @@ public class Entity {
         // Booleans are updated in the collision manager class.
 
         // Check tile collisions
-        gp.collisionManager.checkTile(this);
+        gp.cm.checkTile(this);
 
         // Check object collisions
-        gp.collisionManager.checkObject(this, false);
+        gp.cm.checkObject(this, false);
 
         // Check player collisions (for NPCs)
-        gp.collisionManager.checkPlayer(this);
+        gp.cm.checkPlayer(this);
 
         if(!isCollidingWithTile && !isCollidingWithEntity && !isCollidingWithObject) {
             move();

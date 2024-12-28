@@ -3,6 +3,12 @@ package com.lucafacchini;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 
+/**
+ * Handles key events for the game.
+ *
+ * This class implements the KeyListener interface to manage keyboard input.
+ * It updates the state of key presses and handles game status changes.
+ */
 public class KeyHandler implements KeyListener {
 
     public boolean isLeftPressed = false;
@@ -11,10 +17,12 @@ public class KeyHandler implements KeyListener {
     public boolean isDownPressed = false;
     private final GamePanel gp;
 
-    // Minimum time in milliseconds before toggling the pause state
-//    private static final long TIME_BEFORE_NEXT_PAUSE_SCREEN = 500; // 500ms
-//    private long lastPauseTime = 0;
-
+    /**
+     * @brief Constructor of the KeyHandler class.
+     * Initializes the key handler with the given GamePanel.
+     *
+     * @param gp the GamePanel object to interact with.
+     */
     public KeyHandler(GamePanel gp) {
         this.gp = gp;
     }
@@ -24,12 +32,18 @@ public class KeyHandler implements KeyListener {
         // Not used
     }
 
+    /**
+     * @brief Invoked when a key has been pressed.
+     * Updates the state of key presses for movement keys.
+     *
+     * @param e the event to be processed.
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
         // Handle movement keys only if the game is not paused or in dialogue state
-        if (gp.gameStatus != GamePanel.GameStatus.PAUSED && GamePanel.GameStatus.RUNNING != GamePanel.GameStatus.DIALOGUE) {
+        if (gp.gameStatus != GamePanel.GameStatus.PAUSED) {
             if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
                 isLeftPressed = true;
             }
@@ -45,13 +59,15 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    /**
+     * @brief Invoked when a key has been released.
+     * Updates the state of key releases and handles game status changes.
+     *
+     * @param e the event to be processed.
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
-
-        // Debugging logs
-//        System.out.println("Key released: " + KeyEvent.getKeyText(key));
-//        System.out.println("Current game status: " + gp.gameStatus);
 
         if (gp.gameStatus == GamePanel.GameStatus.RUNNING) {
             // Handle movement keys
@@ -75,6 +91,12 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    /**
+     * @brief Toggles the pause state of the game.
+     * This method is called when the pause key is released.
+     *
+     * @param key the key code of the released key.
+     */
     private void handlePauseToggle(int key) {
         if (key == KeyEvent.VK_T) {
             if (gp.gameStatus == GamePanel.GameStatus.RUNNING) {

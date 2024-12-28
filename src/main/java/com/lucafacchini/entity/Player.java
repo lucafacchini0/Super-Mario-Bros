@@ -195,10 +195,10 @@ public class Player extends Entity {
             isCollidingWithEntity = false;
 
             // Perform collision checks
-            gp.collisionManager.checkTile(this);
-            int objectIndex = gp.collisionManager.checkObject(this, true);
+            gp.cm.checkTile(this);
+            int objectIndex = gp.cm.checkObject(this, true);
             pickUpObject(objectIndex);
-            int npcIndex = gp.collisionManager.checkEntity(this, gp.npcArray);
+            int npcIndex = gp.cm.checkEntity(this, gp.npcArray);
             interractionWithNPC(npcIndex);
 
             // Resolve movement based on collision results
@@ -235,10 +235,10 @@ public class Player extends Entity {
      */
 // TODO: Fix this method. Diagonal movement is not working while colliding with Objects.
     private void handleDiagonalCollision() {
-        boolean collidingLeft = gp.collisionManager.isCollidingFromLeft(this);
-        boolean collidingRight = gp.collisionManager.isCollidingFromRight(this);
-        boolean collidingTop = gp.collisionManager.isCollidingFromTop(this);
-        boolean collidingBottom = gp.collisionManager.isCollidingFromBottom(this);
+        boolean collidingLeft = gp.cm.isCollidingFromLeft(this);
+        boolean collidingRight = gp.cm.isCollidingFromRight(this);
+        boolean collidingTop = gp.cm.isCollidingFromTop(this);
+        boolean collidingBottom = gp.cm.isCollidingFromBottom(this);
 
         switch (currentDirection) {
             case UP_LEFT -> {
