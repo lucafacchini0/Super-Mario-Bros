@@ -1,25 +1,39 @@
 package com.lucafacchini;
 
 import com.lucafacchini.objects.Key_Object;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
+import java.util.logging.Logger;
 
+/**
+ * Manages the user interface of the game.
+ *
+ * This class handles drawing the UI elements on the screen.
+ * @note: This is still experimental code, it has to be tested.
+ */
 public class UI {
 
+    // Debugging
+    private static final Logger LOGGER = Logger.getLogger(UI.class.getName());
+
+    // Fonts
+    Font arial_30 = new Font("Arial", Font.PLAIN, 30);
+    Font arial_50 = new Font("Arial", Font.PLAIN, 50);
+
+    // Dialogues
     public boolean isDrawing = false;
     public String currentDialogue = "";
-
-    GamePanel gp;
-    Graphics2D g2d;
-    Font arial_30;
-    Font arial_50;
-
     public boolean messageOn = false;
     public String message = "";
 
     int messageCounter = 0;
+
+    // GamePanel instance
+    GamePanel gp;
+
+    // Graphics2D object
+    Graphics2D g2d;
 
     public boolean gameFinished = false;
 
@@ -28,18 +42,30 @@ public class UI {
 
     BufferedImage keyImage;
 
+    /**
+     * Constructor of the UI class.
+     *
+     * @param gp the GamePanel instance.
+     */
     public UI(GamePanel gp) {
         this.gp = gp;
-        arial_30 = new Font("Arial", Font.PLAIN, 30);
-        arial_50 = new Font("Arial", Font.PLAIN, 50);
-
         Key_Object key_object = new Key_Object(gp, new Utilities());
         keyImage = key_object.image;
     }
 
+    /**
+     * Displays a message on the screen.
+     *
+     * @param text the message to be displayed.
+     */
     public void showMessage(String text) {
     }
 
+    /**
+     * Draws the UI elements on the screen.
+     *
+     * @param g2d the Graphics2D object used to draw the elements.
+     */
     public void draw(Graphics2D g2d) {
         this.g2d = g2d;
 
@@ -58,6 +84,9 @@ public class UI {
         }
     }
 
+    /**
+     * Draws the dialogue screen.
+     */
     public void drawDialogueScreen() {
         int x, y, width, height;
 
@@ -73,6 +102,15 @@ public class UI {
         g2d.drawString(currentDialogue, x, y);
     }
 
+
+    /**
+     * Draws a sub window on the screen.
+     *
+     * @param x the x coordinate of the window.
+     * @param y the y coordinate of the window.
+     * @param width the width of the window.
+     * @param height the height of the window.
+     */
     public void drawSubWindow(int x, int y, int width, int height) {
         Color color = new Color(0, 0,0, 200);
         g2d.setColor(color);

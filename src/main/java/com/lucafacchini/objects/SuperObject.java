@@ -1,30 +1,44 @@
 package com.lucafacchini.objects;
 
 import com.lucafacchini.GamePanel;
-import com.lucafacchini.Utilities;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.logging.Logger;
 
+/**
+ * SuperObject class represents the superclass of all objects in the game.
+ * It contains the properties and methods that are common to all objects.
+ */
 public class SuperObject {
-    // Coordinates
-    public int worldX, worldY;
-    public int screenX, screenY;
 
-    // TODO: Implement a constructor to construct every object faster and resize it automatically.
+    // Debugging
+    private static final Logger LOGGER = Logger.getLogger(SuperObject.class.getName());
 
-    // Properties
-    public boolean isSolid = false;
-
-    // Objects
-    public BufferedImage image;
+    // SuperObject properties
     public String name;
-    public Rectangle boundingBox = new Rectangle(0, 0, 64, 64); // TODO: Replace size with gp.TILE_SIZE
-    public Utilities utilities = new Utilities();
 
+    public int worldX, worldY; // The actual position of the object in the world.
+    public int screenX, screenY; // The position of the object on the screen. It is calculated based on the player's position.
+
+    public boolean isSolid = false; // If the object is solid, the player cannot walk through it.
+
+    // TODO: Replace size with gp.TILE_SIZE. Must use a constructor to pass gp.TILE_SIZE.
+    public Rectangle boundingBox = new Rectangle(0, 0, 64, 64);
     public int boundingBoxDefaultX = 0;
     public int boundingBoxDefaultY = 0;
 
+    public BufferedImage image; // The image of the object.
+
+
+    /**
+     * @brief This method is used to draw the object on the screen.
+     * It calculates the screenX and screenY based on the player's position.
+     * It also checks if the object is within the screen boundaries before drawing it. (Optimization)
+     *
+     * @param g2d The Graphics2D object.
+     * @param gp The GamePanel instance.
+     */
     public void draw(Graphics2D g2d, GamePanel gp) {
         screenX = worldX - gp.player.worldX + gp.player.screenX;
         screenY = worldY - gp.player.worldY + gp.player.screenY;

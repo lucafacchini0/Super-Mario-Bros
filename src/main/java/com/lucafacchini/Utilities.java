@@ -3,7 +3,6 @@ package com.lucafacchini;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-
 public class Utilities {
     // Rescale image to new width and height
     public BufferedImage rescaleImage(BufferedImage originalImage, int width, int height) {

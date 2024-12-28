@@ -199,7 +199,7 @@ public class Player extends Entity {
             int objectIndex = gp.cm.checkObject(this, true);
             pickUpObject(objectIndex);
             int npcIndex = gp.cm.checkEntity(this, gp.npcArray);
-            interractionWithNPC(npcIndex);
+            interactionWithNPC(npcIndex);
 
             // Resolve movement based on collision results
             if (!isCollidingWithTile && !isCollidingWithObject && !isCollidingWithEntity) {
@@ -369,7 +369,7 @@ public class Player extends Entity {
      *
      * @param index The index of the NPC in the npcArray.
      */
-    public void interractionWithNPC(int index) {
+    public void interactionWithNPC(int index) {
         if(index != -1) {
             gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
             gp.npcArray[index].speak();

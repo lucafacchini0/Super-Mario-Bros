@@ -4,18 +4,36 @@ import com.lucafacchini.entity.Entity;
 import com.lucafacchini.objects.SuperObject;
 import com.lucafacchini.tiles.TileManager;
 
+import java.util.logging.Logger;
+
+/**
+ * CollisionManager class
+ */
 public class CollisionManager {
 
+    // Debugging
+    private static final Logger LOGGER = Logger.getLogger(CollisionManager.class.getName());
+
+    // GamePanel instance
     GamePanel gp;
 
-    // ------------------- Constructor -------------------
-
+    /**
+     * @brief Constructor for the CollisionManager class.
+     *
+     * @param gp The GamePanel instance.
+     */
     public CollisionManager(GamePanel gp) {
         this.gp = gp;
     }
 
-    // ------------------- Utility methods -------------------
 
+    /**
+     * @brief Check if the entity is colliding with a tile from any solid layer.
+     *
+     * @param tileNums The tile IDs to check for collision.
+     *
+     * @return True if the entity is colliding with a solid tile, false otherwise.
+     */
     // TODO: Refactor this to make it work dynamically with maps.
     private boolean isTileColliding(int... tileNums) {
         for (int tileNum : tileNums) {
@@ -28,23 +46,33 @@ public class CollisionManager {
         return false;
     }
 
+
+    /**
+     * @brief Check if the entity is colliding with a tile from any solid layer.
+     *
+     * @param tileNum The tile IDs to check for collision.
+     *
+     * @return True if the entity is colliding with a solid tile, false otherwise.
+     */
     private boolean isTileSolid(int tileNum, TileManager layer) {
         return layer != null && layer.tileMap.get(tileNum) != null && layer.tileMap.get(tileNum).isSolid;
     }
 
-    private void resetEntityBoundingBox(Entity entity) {
-        entity.boundingBox.x = entity.boundingBoxDefaultX;
-        entity.boundingBox.y = entity.boundingBoxDefaultY;
-    }
 
-    private void resetObjectBoundingBox(SuperObject object) {
-        object.boundingBox.x = object.boundingBoxDefaultX;
-        object.boundingBox.y = object.boundingBoxDefaultY;
-    }
-
-
-    // ------------------- Collision methods -------------------
-
+    /**
+     * @brief Check if the entity is colliding with a tile from any solid layer.
+     *
+     * First of all, it stores the tile IDs of the top and bottom tiles.
+     * Then, it checks if the entity is colliding with any of the tiles.
+     *
+     * @param entity The entity to check for collision.
+     * @param entityLeftColumn The left column of the entity.
+     * @param entityRightColumn The right column of the entity.
+     * @param entityTopRow The top row of the entity.
+     * @param entityBottomRow The bottom row of the entity.
+     *
+     * TODO: This has to completely be redone to make it work dynamically with maps.
+     */
     private void checkTileCollision(Entity entity, int entityLeftColumn, int entityRightColumn, int entityTopRow, int entityBottomRow) {
         int[] topTiles = {
                 gp.maps[0].GAME_MAP[entityLeftColumn][entityTopRow],
@@ -69,10 +97,19 @@ public class CollisionManager {
         }
     }
 
-
-
-    // ------------------- Directional collision methods -------------------
-
+    /**
+     * @brief Check if the entity is colliding with a tile from any solid layer.
+     *
+     * First of all, it calculates the world coordinates of the entity. (Like, the "edges" of the entity)
+     * Then, it calculates the column and row of the entity, so that it can check the surrounding tiles.
+     * (it does this so that it can refer to the file map and check if the entity is colliding with any solid tile)
+     *
+     * Then, it calls the checkTileCollision method to check if the entity is colliding with any solid tile.
+     *
+     * TODO: This has to completely be redone to make it work dynamically with maps.
+     *
+     * @param entity The entity to check for collision.
+     */
     public void checkTile(Entity entity) {
         int entityLeftWorldX = entity.worldX + entity.boundingBox.x;
         int entityRightWorldX = entity.worldX + entity.boundingBox.x + entity.boundingBox.width;
@@ -125,9 +162,11 @@ public class CollisionManager {
     }
 
 
-
-    // ------------------- Side collision methods -------------------
-
+    /**
+     * @brief Check if it's colliding with a tile from the left.
+     * @param entity The entity to check for collision.
+     * @return True if the entity is colliding with a tile from the left, false otherwise.
+     */
     public boolean isCollidingFromLeft(Entity entity) {
         int entityLeftWorldX = entity.worldX + entity.boundingBox.x;
         int nextLeftWorldX = entityLeftWorldX - entity.speed;
@@ -143,6 +182,12 @@ public class CollisionManager {
         );
     }
 
+
+    /**
+     * @brief Check if it's colliding with a tile from the right.
+     * @param entity The entity to check for collision.
+     * @return True if the entity is colliding with a tile from the right, false otherwise.
+     */
     public boolean isCollidingFromRight(Entity entity) {
         int entityRightWorldX = entity.worldX + entity.boundingBox.x + entity.boundingBox.width;
         int nextRightWorldX = entityRightWorldX + entity.speed;
@@ -158,6 +203,12 @@ public class CollisionManager {
         );
     }
 
+
+    /**
+     * @brief Check if it's colliding with a tile from the bottom.
+     * @param entity The entity to check for collision.
+     * @return True if the entity is colliding with a tile from the bottom, false otherwise.
+     */
     public boolean isCollidingFromBottom(Entity entity) {
         int entityBottomWorldY = entity.worldY + entity.boundingBox.y + entity.boundingBox.height;
         int nextBottomWorldY = entityBottomWorldY + entity.speed;
@@ -173,6 +224,12 @@ public class CollisionManager {
         );
     }
 
+
+    /**
+     * @brief Check if it's colliding with a tile from the top.
+     * @param entity The entity to check for collision.
+     * @return True if the entity is colliding with a tile from the top, false otherwise.
+     */
     public boolean isCollidingFromTop(Entity entity) {
         int entityTopWorldY = entity.worldY + entity.boundingBox.y;
         int nextTopWorldY = entityTopWorldY - entity.speed;
@@ -190,11 +247,16 @@ public class CollisionManager {
 
 
 
-    // ------------------- Object collision methods -------------------
 
+
+    /**
+     * @brief Check if the entity is colliding with an object.
+     *
+     * First of all, it iterates over the objectsArray and checks if the entity is colliding with any object.
+     *
+     * @param entity The entity to check for collision.
+     */
     // TODO: Fix this method. Integrate with handleCollisionWithObject method in Player class.
-
-    // IMPORTANT TODO: Uncomment and remove return -1
     public int checkObject(Entity entity, boolean isPlayer) {
         int index = -1;
 

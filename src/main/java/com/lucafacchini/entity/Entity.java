@@ -109,16 +109,16 @@ public class Entity {
 
 
     /**
-     * @brief Utility ethod that calculates the diagonal movement of the entity.
-     * @param speed
+     * @brief Utility method that calculates the diagonal movement of the entity.
+     * @param speed is the speed of the entity.
      * @return the integer representing the distance of movement.
      */
     int diagonalMove(int speed) { return (int)(speed * Math.sqrt(2) / 2); }
 
     /**
      * @brief Method that sets the sprite timers.
-     * @param spriteCounterMultiplier
-     * @param NUM_MOVING_SPRITES
+     * @param spriteCounterMultiplier the sprite counter multiplier. (After how many frames the sprite should change.)
+     * @param NUM_MOVING_SPRITES the number of moving sprites. (The number of sprite images for each direction.)
      */
     void setSpriteTimers(int spriteCounterMultiplier, int NUM_MOVING_SPRITES) {
         this.spriteCounterMultiplier = spriteCounterMultiplier;
@@ -305,11 +305,7 @@ public class Entity {
         int screenX = worldX - gp.player.worldX + gp.player.screenX;
         int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-        if (worldX + gp.TILE_SIZE > gp.player.worldX - gp.player.screenX &&
-                worldX - gp.TILE_SIZE < gp.player.worldX + gp.player.screenX &&
-                worldY + gp.TILE_SIZE > gp.player.worldY - gp.player.screenY &&
-                worldY - gp.TILE_SIZE < gp.player.worldY + gp.player.screenY) {
-
+        if (isVisible()) {
             SpriteImagesEnum direction = getSpriteDirection();
             BufferedImage image;
 
@@ -326,6 +322,20 @@ public class Entity {
             // TODO: bounding box of NPCs is unexpectedly small. it's represented by a pixel at 0,0.
             g2d.drawRect(screenX + boundingBox.x, screenY + boundingBox.y, boundingBox.width, boundingBox.height);
         }
+    }
+
+
+    /**
+     * @brief This method checks if the tile is visible on the screen.
+     * It calculates the boundaries of the tile and checks if it is within the screen boundaries.
+     *
+     * @return true if the tile is visible, false otherwise.
+     */
+    protected boolean isVisible() {
+        return worldX + gp.TILE_SIZE > gp.player.worldX - gp.player.screenX &&
+                worldX - gp.TILE_SIZE < gp.player.worldX + gp.player.screenX &&
+                worldY + gp.TILE_SIZE > gp.player.worldY - gp.player.screenY &&
+                worldY - gp.TILE_SIZE < gp.player.worldY + gp.player.screenY;
     }
 
 

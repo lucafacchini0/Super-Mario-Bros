@@ -2,13 +2,14 @@ package com.lucafacchini.tiles;
 
 import java.awt.image.BufferedImage;
 
-public class Tile{
-
-    // ------------------- Fields -------------------
+/**
+ * Represents a tile in the game.
+ */
+public class Tile {
 
     // Properties
-    public boolean isSolid = false;
+    public boolean isSolid = false; // Indicates if the tile is solid
 
     // Image
-    public BufferedImage image;
+    public BufferedImage image; // The image representing the tile
 }
