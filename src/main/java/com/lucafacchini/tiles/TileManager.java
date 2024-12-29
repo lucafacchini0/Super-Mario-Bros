@@ -50,6 +50,9 @@ public class TileManager {
         // Load the map
         loadMap(MAPS_PATH + path);
         rescaleAllTileImages();
+
+        setSolid(38193); // DEBUG
+
     }
 
 
