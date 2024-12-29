@@ -22,7 +22,7 @@ public class Boots_Object extends SuperObject {
      */
     public Boots_Object(GamePanel gp, Utilities utilities) {
 
-        name = "Boots";
+        objectType = ObjectType.BOOTS;
 
         try {
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/boots.png")));

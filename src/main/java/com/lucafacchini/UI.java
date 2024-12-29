@@ -35,6 +35,9 @@ public class UI {
     // Graphics2D object
     Graphics2D g2d;
 
+    // KeyHandler
+    KeyHandler kh;
+
     public boolean gameFinished = false;
 
     double playTime = 0;
@@ -47,8 +50,9 @@ public class UI {
      *
      * @param gp the GamePanel instance.
      */
-    public UI(GamePanel gp) {
+    public UI(GamePanel gp, KeyHandler kh) {
         this.gp = gp;
+        this.kh = kh;
         Key_Object key_object = new Key_Object(gp, new Utilities());
         keyImage = key_object.image;
     }
@@ -66,7 +70,7 @@ public class UI {
      *
      * @param g2d the Graphics2D object used to draw the elements.
      */
-    public void draw(Graphics2D g2d) {
+    public void draw(Graphics2D g2d, int NPCIndex) {
         this.g2d = g2d;
 
         g2d.setFont(arial_30);
@@ -76,7 +80,24 @@ public class UI {
             // Do stuff
         }
         if(gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
-            drawDialogueScreen();
+            if(NPCIndex != -1) {
+                drawDialogueScreen(NPCIndex);
+
+//                if(kh.isEnterPressed) {
+//
+//                    if(gp.npcArray[NPCIndex].hasFinishedTalking()) {
+//                        gp.gameStatus = GamePanel.GameStatus.RUNNING;
+//                    } else {
+//                        gp.npcArray[NPCIndex].nextDialogue();
+//                    }
+//                }
+
+                if(kh.isEnterPressed) {
+                    if (gp.npcArray[NPCIndex].hasFinishedTalking()) {
+                        gp.gameStatus = GamePanel.GameStatus.RUNNING;
+                    }
+                }
+            }
         }
         if(gp.gameStatus == GamePanel.GameStatus.PAUSED) {
             // Do stuff
@@ -86,7 +107,7 @@ public class UI {
     /**
      * Draws the dialogue screen.
      */
-    public void drawDialogueScreen() {
+    public void drawDialogueScreen(int NPCIndex) {
         int x, y, width, height;
 
         x = gp.TILE_SIZE * 2;

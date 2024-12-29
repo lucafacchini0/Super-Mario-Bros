@@ -44,10 +44,6 @@ public class GamePanel extends JPanel implements Runnable {
     public final int MAX_WORLD_COLUMNS = 50;
     public final int MAX_WORLD_ROWS = 50;
 
-    TileManager[] x = {
-            new TileManager(this, "background.csv"),
-    };
-
     public enum MapType {
         BACKGROUND
     }
@@ -79,7 +75,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final Sound sound = new Sound();
 
     // UI
-    public UI ui = new UI(this);
+    public UI ui = new UI(this, kh);
 
     /**
      * @brief Constructor of the GamePanel class.
@@ -121,6 +117,7 @@ public class GamePanel extends JPanel implements Runnable {
      */
     @Override
     public void run() {
+
         double targetFrameTime = 1_000_000_000.0 / FPS; // The delay between frames in nanoseconds.
         double nextFrameTime = System.nanoTime() + targetFrameTime; // The time when the next frame should be drawn.
 
@@ -148,6 +145,9 @@ public class GamePanel extends JPanel implements Runnable {
         if (gameStatus == GameStatus.RUNNING) {
             player.update();
             npcArray[0].update();
+            kh.updateKeyStates();
+        } else if (gameStatus == GameStatus.DIALOGUE) {
+            kh.updateKeyStates();
         }
     }
 
@@ -166,8 +166,11 @@ public class GamePanel extends JPanel implements Runnable {
             drawAllComponents(g2d);
 
             g2d.dispose();
-        } else if (gameStatus == GameStatus.DIALOGUE && !ui.isDrawing) {
-            ui.draw((Graphics2D) g);
+        }
+
+        if(gameStatus == GameStatus.DIALOGUE) {
+            ui.draw((Graphics2D) g, player.npcIndex);
+
         }
     }
 
@@ -194,7 +197,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.draw(g2d);
-        ui.draw(g2d);
+        ui.draw(g2d, player.npcIndex);
     }
 
     /**

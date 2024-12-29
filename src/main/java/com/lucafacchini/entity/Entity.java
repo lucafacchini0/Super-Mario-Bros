@@ -89,8 +89,10 @@ public class Entity {
 
 
     // Dialogues
-    String[] dialogues = new String[20]; // TODO: Change to HashMap
+    public String[] dialogues = new String[20]; // TODO: Change to HashMap
     public int dialogueIndex = 0;
+    // Has the NPC finished talking?
+    public boolean finishedTalking = false;
 
 
     // GamePanel
@@ -364,7 +366,10 @@ public class Entity {
     /**
      * @brief Method used to make the NPC speak.
      */
-    public void speak() {}
+    public void speak() {
+        System.out.println("Speaking");
+        gp.ui.currentDialogue = dialogues[dialogueIndex];
+    }
 
 
 
@@ -372,5 +377,19 @@ public class Entity {
     // Debugging
     public void blockNPC(int index) {
 
+    }
+
+
+
+    public boolean hasFinishedTalking() {
+        dialogueIndex++;
+
+        if(dialogues[dialogueIndex] == null) {
+            dialogueIndex = 0;
+            return true;
+        }
+
+        gp.ui.currentDialogue = dialogues[dialogueIndex];
+        return false;
     }
 }

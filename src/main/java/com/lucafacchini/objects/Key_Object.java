@@ -22,7 +22,7 @@ public class Key_Object extends SuperObject {
      */
     public Key_Object(GamePanel gp, Utilities utilities) {
 
-        name = "Key";
+        objectType = ObjectType.KEY;
 
         try {
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/key.png")));

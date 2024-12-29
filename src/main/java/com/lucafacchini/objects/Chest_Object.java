@@ -22,7 +22,7 @@ public class Chest_Object extends SuperObject {
      */
     public Chest_Object(GamePanel gp, Utilities utilities) {
 
-        name = "Chest";
+        objectType = ObjectType.CHEST;
 
         try {
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/chest.png")));

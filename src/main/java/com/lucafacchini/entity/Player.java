@@ -2,6 +2,7 @@ package com.lucafacchini.entity;
 
 import com.lucafacchini.GamePanel;
 import com.lucafacchini.KeyHandler;
+import com.lucafacchini.objects.SuperObject;
 
 import java.util.logging.Logger;
 
@@ -28,6 +29,10 @@ public class Player extends Entity {
     public final int IDLING_SPRITE_MULTIPLIER_UPDATE_TIME = 120;
     public final int IDLING_SPRITE_MULTIPLIER_EYES_CLOSED = MOVING_SPRITE_UPDATE_TIME;
 
+    // Indexes of objects and entities
+    public int objectIndex;
+    public int npcIndex;
+
     // Player settings
     /**
      * @BUG The higher the value of DEFAULT_SPEED, and "more space" is added between the player and the walls.
@@ -39,7 +44,7 @@ public class Player extends Entity {
      *     but, maybe, at X:52, Y:14, the player collides 3px on the right side before reaching the tile and 6px on the bottom side
      *
      */
-    public final int DEFAULT_SPEED = 4;
+    public final int DEFAULT_SPEED = 8;
 
     /**
      * @brief screenX and screenY are the coordinates of the player on the screen.
@@ -69,9 +74,9 @@ public class Player extends Entity {
         screenY = gp.WINDOW_HEIGHT / 2 - gp.TILE_SIZE / 2;
 
         boundingBox.x = 0;
-        boundingBox.y = 20;
-        boundingBox.width = gp.TILE_SIZE - 20;
-        boundingBox.height = gp.TILE_SIZE - 10;
+        boundingBox.y = 0;
+        boundingBox.width =  gp.TILE_SIZE;
+        boundingBox.height = gp.TILE_SIZE;
         boundingBoxDefaultX = boundingBox.x;
         boundingBoxDefaultY = boundingBox.y;
 
@@ -197,9 +202,11 @@ public class Player extends Entity {
 
             // Perform collision checks
             gp.cm.checkTile(this, true);
-            int objectIndex = gp.cm.checkObject(this, true);
+
+            objectIndex = gp.cm.checkObject(this, true);
             pickUpObject(objectIndex);
-            int npcIndex = gp.cm.checkEntity(this, gp.npcArray);
+
+            npcIndex = gp.cm.checkEntity(this, gp.npcArray);
             interactionWithNPC(npcIndex);
 
 
@@ -232,42 +239,41 @@ public class Player extends Entity {
      *
      * @param index The index of the object in the objectsArray.
      */
-    // TODO: Use more specific sound titles (e.g. "key_pickup", "door_open", etc.)
     private void pickUpObject(int index) {
         if(index != -1) {
-            String objectName = gp.objectsArray[index].name;
+            SuperObject.ObjectType objectName = gp.objectsArray[index].objectType;
 
             switch(objectName) {
-                case "Key":
-                    gp.playSound(1);
+                case KEY -> {
                     hasKey++;
                     gp.ui.showMessage("You picked up a key!");
                     gp.objectsArray[index] = null;
-                    break;
+                    gp.playSound(1);
+                }
 
-                case "Door":
+                case DOOR -> {
                     if(hasKey > 0) {
                         gp.ui.showMessage("You used a key!");
-                        gp.playSound(3);
-                        hasKey--;
                         gp.objectsArray[index] = null;
+                        hasKey--;
+                        gp.playSound(3);
                     } else {
                         gp.ui.showMessage("You need a key to open this door!");
                     }
-                    break;
+                }
 
-                case "Boots":
+                case BOOTS -> {
                     gp.ui.showMessage("You picked up boots!");
-                    gp.playSound(2);
                     speed *= 2;
                     gp.objectsArray[index] = null;
-                    break;
+                    gp.playSound(2);
+                }
 
-                case "Chest":
+                case CHEST -> {
                     gp.stopMusic();
                     gp.playSound(4);
                     gp.ui.gameFinished = true;
-                    break;
+                }
             }
         }
     }
@@ -280,22 +286,12 @@ public class Player extends Entity {
      */
     public void interactionWithNPC(int index) {
         if(index != -1) {
-
-            gp.npcArray[index].blockMovement = true;
-
-            System.out.println("movement blocked");
-
-            if(kh.isEnterPressed) {
-                System.out.println("Interacting with NPC");
-                kh.isUpPressed = false;
-                kh.isDownPressed = false;
-                kh.isLeftPressed = false;
-                kh.isRightPressed = false;
-
                 gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
                 gp.npcArray[index].speak();
-            }
+        }
 
+        else {
+            gp.gameStatus = GamePanel.GameStatus.RUNNING;
         }
 
 //        if(hasJustCollided) {
