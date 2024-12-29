@@ -1,5 +1,6 @@
 package com.lucafacchini.tiles;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**

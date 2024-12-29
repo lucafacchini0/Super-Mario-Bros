@@ -209,4 +209,16 @@ public class TileManager {
                 worldY + gp.TILE_SIZE > gp.player.worldY - gp.player.screenY &&
                 worldY - gp.TILE_SIZE < gp.player.worldY + gp.player.screenY;
     }
+
+
+
+
+
+
+
+
+    public boolean isTileSolid(int tileID) {
+        Tile tile = tileMap.get(tileID);
+        return tile != null && tile.isSolid;
+    }
 }

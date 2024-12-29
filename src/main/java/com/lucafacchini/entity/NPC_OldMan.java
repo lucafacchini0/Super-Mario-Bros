@@ -32,12 +32,14 @@ public class NPC_OldMan extends Entity {
         super(gp);
 
         // Initialize bounding box dimensions and default values
-        boundingBox.x = 0;
-        boundingBox.y = 20;
-        boundingBox.width = gp.TILE_SIZE - 20;
-        boundingBox.height = gp.TILE_SIZE - 10;
+        boundingBox.x = -15;
+        boundingBox.y = 5;
+        boundingBox.width = gp.TILE_SIZE + 15;
+        boundingBox.height = gp.TILE_SIZE + 20;
         boundingBoxDefaultX = boundingBox.x;
         boundingBoxDefaultY = boundingBox.y;
+        boundingBoxDefaultHeight = boundingBox.height;
+        boundingBoxDefaultWidth = boundingBox.width;
 
         // Calculate rescaled sprite dimensions based on game scale
         RESCALED_SPRITE_HEIGHT_PX = SPRITE_HEIGHT_PX * gp.SCALE;

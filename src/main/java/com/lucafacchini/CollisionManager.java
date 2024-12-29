@@ -1,7 +1,6 @@
 package com.lucafacchini;
 
 import com.lucafacchini.entity.Entity;
-import com.lucafacchini.objects.SuperObject;
 import com.lucafacchini.tiles.TileManager;
 
 import java.util.logging.Logger;
@@ -27,43 +26,125 @@ public class CollisionManager {
     }
 
 
+    /* TILE COLLISION CHECKING METHODS */
+
+
     /**
      * @brief Check if the entity is colliding with a tile from any solid layer.
      *
-     * @param tileNums The tile IDs to check for collision.
+     * This is the only method is called by the entity's update method. It operates the following way:
      *
-     * @return True if the entity is colliding with a solid tile, false otherwise.
+     * - It calculates the entity's position in the world. It does so by calculating the coordinates
+     *   of its bounding box. (the bounding box as a rectangle that surrounds the entity).
+     *
+     * - It calculates the entity's position in the map. It does that by dividing the player
+     *   coordinates by the tile size, to get a valid index for the map array.
+     *
+     * - After that, based on the current direction of the entity, it recalculates the position of the
+     *   entity in the map. It does so by adding or subtracting the entity's speed to the entity's
+     *   This because, otherwise, the player would "step-inside" the tile before the collision is detected.
+     *   @note This can be improved. I don't know yet how to, but I'm sure it can be improved, and I'll think about it.
+     *
+     * @param entity The entity to check for collision. (Player, NPC, etc.)
      */
-    // TODO: Refactor this to make it work dynamically with maps.
-    private boolean isTileColliding(int... tileNums) {
-        for (int tileNum : tileNums) {
-            if (tileNum >= 0) {
-                if(isTileSolid(tileNum, gp.maps[0])) { return true; }
-                if(isTileSolid(tileNum, gp.maps[1])) { return true; }
-                if(isTileSolid(tileNum, gp.maps[2])) { return true; }
+    public void checkTile(Entity entity, boolean isPlayer) {
+
+        /*
+         * This calculates the actual coordinates of the bounding box of the entity.
+         *
+         * Imagine having a player at position worldX = 80, worldY = 38 in the world, and
+         * the bounding box of the player being x = 0; y = 0; width = 64; height = 64.
+         *
+         * EntityLeftWorldX = 80 + 0 = 80 = 80
+         * EntityRightWorldX = 80 + 0 + 64 = 144
+         *
+         * And therefore, the player occupies spaces between x: 80 and x: 144 in the world.
+         *
+         * The same logic applies to the y-axis.
+         */
+        int entityLeftWorldX = entity.worldX + entity.boundingBox.x;
+        int entityRightWorldX = entity.worldX + entity.boundingBox.x + entity.boundingBox.width;
+        int entityTopWorldY = entity.worldY + entity.boundingBox.y;
+        int entityBottomWorldY = entity.worldY + entity.boundingBox.y + entity.boundingBox.height;
+
+        /*
+         * After having the actual coordinates of the bounding box of the entity, we can calculate
+         * the position of the entity in the map. We do so by dividing the entity coordinates by the tile size.
+         *
+         * This is because, the player entity are in pixels, and the map is in tiles.
+         * If the tile size is 64px, and the entity is at x: 70, we need to know in which tile the entity is.
+         * We do so by dividing 70 by 64, which gives us 1.09375. We can then round it down to 1, and we know
+         * that entity is in the first tile.
+         *
+         * Remember that, we calculated both the LeftWorldX and RightWorldX (by adding the width of the bounding box)
+         * This means that, if the entity is even 1px inside the next tile, it will be considered as being in the next tile.
+         *
+         * This way, the entity will always have two tiles to check for collision. And since the entity will occupy
+         * maximum 1 tile of space, it's impossible that a collision occurs with more than 2 tiles of distance.
+         */
+        int entityLeftColumn = entityLeftWorldX / gp.TILE_SIZE;
+        int entityRightColumn = entityRightWorldX / gp.TILE_SIZE;
+        int entityTopRow = entityTopWorldY / gp.TILE_SIZE;
+        int entityBottomRow = entityBottomWorldY / gp.TILE_SIZE;
+
+        // Debugging
+
+        /*
+         * Based on the current direction of the entity, we recalculate the position of the entity in the map.
+         *
+         * This is because, if the entity is moving to the right, we need to check prevent the entity from moving
+         * "inside" the tile before the collision is detected. This is done by removing the entity's speed from the
+         * entity's position in the map.
+         *
+         * Note: this is fore sure not the best way to handle this, but it works for now.
+         * I'll think about a better way to handle this.
+         */
+        switch(entity.currentDirection) {
+            case Entity.Direction.UP -> entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
+            case Entity.Direction.DOWN -> entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
+            case Entity.Direction.LEFT -> entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
+            case Entity.Direction.RIGHT -> entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
+
+            case Entity.Direction.UP_LEFT -> {
+                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
+                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
+            }
+            case Entity.Direction.UP_RIGHT -> {
+                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
+                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
+            }
+            case Entity.Direction.DOWN_LEFT -> {
+                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
+                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
+            }
+            case Entity.Direction.DOWN_RIGHT -> {
+                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
+                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
             }
         }
-        return false;
+
+        // Debugging
+        if(isPlayer) {
+            // worldx and worldy
+            System.out.println("worldX: " + entity.worldX + " worldY: " + entity.worldY);
+            //System.out.println("entityLeftWorldX: " + entityLeftWorldX + " entityRightWorldX: " + entityRightWorldX + " entityTopWorldY: " + entityTopWorldY + " entityBottomWorldY: " + entityBottomWorldY);
+        }
+        /*
+         * Once we have recalculated the position of the entity in the map, we can check if the entity is colliding
+         */
+        checkTileCollision(entity, entityLeftColumn, entityRightColumn, entityTopRow, entityBottomRow);
     }
 
 
     /**
-     * @brief Check if the entity is colliding with a tile from any solid layer.
+     * @brief Prepare arrays of tiles to check for collision.
      *
-     * @param tileNum The tile IDs to check for collision.
+     * This method is always called by the checkTile method.
+     * It operates the following way
      *
-     * @return True if the entity is colliding with a solid tile, false otherwise.
-     */
-    private boolean isTileSolid(int tileNum, TileManager layer) {
-        return layer != null && layer.tileMap.get(tileNum) != null && layer.tileMap.get(tileNum).isSolid;
-    }
-
-
-    /**
-     * @brief Check if the entity is colliding with a tile from any solid layer.
-     *
-     * First of all, it stores the tile IDs of the top and bottom tiles.
-     * Then, it checks if the entity is colliding with any of the tiles.
+     * - In the checkTile method, we calculated the position of the entity in the map.
+     *   This method now retrieves the tile IDs of the tiles that the entity is "standing on"
+     *   and stores them in two arrays: topTiles and bottomTiles.
      *
      * @param entity The entity to check for collision.
      * @param entityLeftColumn The left column of the entity.
@@ -71,25 +152,17 @@ public class CollisionManager {
      * @param entityTopRow The top row of the entity.
      * @param entityBottomRow The bottom row of the entity.
      *
-     * TODO: This has to completely be redone to make it work dynamically with maps.
+     *
      */
     private void checkTileCollision(Entity entity, int entityLeftColumn, int entityRightColumn, int entityTopRow, int entityBottomRow) {
         int[] topTiles = {
-                gp.maps[0].GAME_MAP[entityLeftColumn][entityTopRow],
-                gp.maps[0].GAME_MAP[entityRightColumn][entityTopRow],
-                gp.maps[1].GAME_MAP[entityLeftColumn][entityTopRow],
-                gp.maps[1].GAME_MAP[entityRightColumn][entityTopRow],
-                gp.maps[2].GAME_MAP[entityLeftColumn][entityTopRow],
-                gp.maps[2].GAME_MAP[entityRightColumn][entityTopRow]
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[entityLeftColumn][entityTopRow],
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[entityRightColumn][entityTopRow]
         };
 
         int[] bottomTiles = {
-                gp.maps[0].GAME_MAP[entityLeftColumn][entityBottomRow],
-                gp.maps[0].GAME_MAP[entityRightColumn][entityBottomRow],
-                gp.maps[1].GAME_MAP[entityLeftColumn][entityBottomRow],
-                gp.maps[1].GAME_MAP[entityRightColumn][entityBottomRow],
-                gp.maps[2].GAME_MAP[entityLeftColumn][entityBottomRow],
-                gp.maps[2].GAME_MAP[entityRightColumn][entityBottomRow]
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[entityLeftColumn][entityBottomRow],
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[entityRightColumn][entityBottomRow]
         };
 
         if (isTileColliding(topTiles) || isTileColliding(bottomTiles)) {
@@ -97,68 +170,25 @@ public class CollisionManager {
         }
     }
 
+
     /**
      * @brief Check if the entity is colliding with a tile from any solid layer.
      *
-     * First of all, it calculates the world coordinates of the entity. (Like, the "edges" of the entity)
-     * Then, it calculates the column and row of the entity, so that it can check the surrounding tiles.
-     * (it does this so that it can refer to the file map and check if the entity is colliding with any solid tile)
+     * @param tileNums The tile IDs to check for collision.
      *
-     * Then, it calls the checkTileCollision method to check if the entity is colliding with any solid tile.
-     *
-     * TODO: This has to completely be redone to make it work dynamically with maps.
-     *
-     * @param entity The entity to check for collision.
+     * @return True if the entity is colliding with a solid tile, false otherwise.
      */
-    public void checkTile(Entity entity) {
-        int entityLeftWorldX = entity.worldX + entity.boundingBox.x;
-        int entityRightWorldX = entity.worldX + entity.boundingBox.x + entity.boundingBox.width;
-        int entityTopWorldY = entity.worldY + entity.boundingBox.y;
-        int entityBottomWorldY = entity.worldY + entity.boundingBox.y + entity.boundingBox.height;
-
-        int entityLeftColumn = entityLeftWorldX / gp.TILE_SIZE;
-        int entityRightColumn = entityRightWorldX / gp.TILE_SIZE;
-        int entityTopRow = entityTopWorldY / gp.TILE_SIZE;
-        int entityBottomRow = entityBottomWorldY / gp.TILE_SIZE;
-
-        switch (entity.currentDirection) {
-            case Entity.Direction.UP:
-                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
-                break;
-
-            case Entity.Direction.DOWN:
-                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
-                break;
-
-            case Entity.Direction.LEFT:
-                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
-                break;
-
-            case Entity.Direction.RIGHT:
-                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
-                break;
-
-            case Entity.Direction.UP_LEFT:
-                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
-                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
-                break;
-
-            case Entity.Direction.UP_RIGHT:
-                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
-                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
-                break;
-
-            case Entity.Direction.DOWN_LEFT:
-                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
-                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
-                break;
-
-            case Entity.Direction.DOWN_RIGHT:
-                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
-                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
-                break;
+    private boolean isTileColliding(int... tileNums) {
+        for (int tileNum : tileNums) {
+            if (tileNum >= 0) {
+                for (TileManager tileManager : gp.maps.values()) {
+                    if (tileManager.isTileSolid(tileNum)) {
+                        return true;
+                    }
+                }
+            }
         }
-        checkTileCollision(entity, entityLeftColumn, entityRightColumn, entityTopRow, entityBottomRow);
+        return false;
     }
 
 
@@ -176,12 +206,10 @@ public class CollisionManager {
         int bottomTile = (entity.worldY + entity.boundingBox.y + entity.boundingBox.height) / gp.TILE_SIZE;
 
         return isTileColliding(
-                gp.maps[0].GAME_MAP[leftTile][topTile], gp.maps[0].GAME_MAP[leftTile][bottomTile],
-                gp.maps[1].GAME_MAP[leftTile][topTile], gp.maps[1].GAME_MAP[leftTile][bottomTile],
-                gp.maps[2].GAME_MAP[leftTile][topTile], gp.maps[2].GAME_MAP[leftTile][bottomTile]
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[leftTile][topTile],
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[leftTile][bottomTile]
         );
     }
-
 
     /**
      * @brief Check if it's colliding with a tile from the right.
@@ -197,12 +225,10 @@ public class CollisionManager {
         int bottomTile = (entity.worldY + entity.boundingBox.y + entity.boundingBox.height) / gp.TILE_SIZE;
 
         return isTileColliding(
-                gp.maps[0].GAME_MAP[rightTile][topTile], gp.maps[0].GAME_MAP[rightTile][bottomTile],
-                gp.maps[1].GAME_MAP[rightTile][topTile], gp.maps[1].GAME_MAP[rightTile][bottomTile],
-                gp.maps[2].GAME_MAP[rightTile][topTile], gp.maps[2].GAME_MAP[rightTile][bottomTile]
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[rightTile][topTile],
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[rightTile][bottomTile]
         );
     }
-
 
     /**
      * @brief Check if it's colliding with a tile from the bottom.
@@ -218,12 +244,10 @@ public class CollisionManager {
         int bottomTile = nextBottomWorldY / gp.TILE_SIZE;
 
         return isTileColliding(
-                gp.maps[0].GAME_MAP[leftTile][bottomTile], gp.maps[0].GAME_MAP[rightTile][bottomTile],
-                gp.maps[1].GAME_MAP[leftTile][bottomTile], gp.maps[1].GAME_MAP[rightTile][bottomTile],
-                gp.maps[2].GAME_MAP[leftTile][bottomTile], gp.maps[2].GAME_MAP[rightTile][bottomTile]
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[leftTile][bottomTile],
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[rightTile][bottomTile]
         );
     }
-
 
     /**
      * @brief Check if it's colliding with a tile from the top.
@@ -239,11 +263,19 @@ public class CollisionManager {
         int topTile = nextTopWorldY / gp.TILE_SIZE;
 
         return isTileColliding(
-                gp.maps[0].GAME_MAP[leftTile][topTile], gp.maps[0].GAME_MAP[rightTile][topTile],
-                gp.maps[1].GAME_MAP[leftTile][topTile], gp.maps[1].GAME_MAP[rightTile][topTile],
-                gp.maps[2].GAME_MAP[leftTile][topTile], gp.maps[2].GAME_MAP[rightTile][topTile]
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[leftTile][topTile],
+                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[rightTile][topTile]
         );
     }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -378,6 +410,16 @@ public class CollisionManager {
         return index;
     }
 
+
+
+
+
+
+
+
+
+
+    // *
     public int checkEntity(Entity entity, Entity[] target) {
         int index = -1;
 
@@ -462,10 +504,24 @@ public class CollisionManager {
                 entity.boundingBox.y = entity.boundingBoxDefaultY;
                 target[i].boundingBox.x = target[i].boundingBoxDefaultX;
                 target[i].boundingBox.y = target[i].boundingBoxDefaultY;
+                target[i].boundingBox.width = target[i].boundingBoxDefaultWidth;
+                target[i].boundingBox.height = target[i].boundingBoxDefaultHeight;
             }
         }
         return index;
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void checkPlayer(Entity entity) {
         entity.boundingBox.x = entity.worldX + entity.boundingBox.x;

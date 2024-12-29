@@ -75,8 +75,16 @@ public class Player extends Entity {
         boundingBox.y = 20;
         boundingBox.width = gp.TILE_SIZE - 20;
         boundingBox.height = gp.TILE_SIZE - 10;
+
+        // Debug
+        boundingBox.x = 0;
+        boundingBox.y = 0;
+        boundingBox.width = gp.TILE_SIZE;
+        boundingBox.height = gp.TILE_SIZE;
         boundingBoxDefaultX = boundingBox.x;
         boundingBoxDefaultY = boundingBox.y;
+        boundingBoxDefaultHeight = boundingBox.height;
+        boundingBoxDefaultWidth = boundingBox.width;
 
         // Calculate rescaled sprite dimensions based on game scale
         RESCALED_SPRITE_HEIGHT_PX = SPRITE_HEIGHT_PX * gp.SCALE;
@@ -98,8 +106,8 @@ public class Player extends Entity {
      */
     void setDefaultValues() {
         // Set player spawn location
-        worldX = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
-        worldY = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
+        worldX = gp.TILE_SIZE * 1 - gp.TILE_SIZE;
+        worldY = gp.TILE_SIZE * 1 - gp.TILE_SIZE;
 
         // Set player speed
         speed = DEFAULT_SPEED;
@@ -197,7 +205,7 @@ public class Player extends Entity {
             isCollidingWithEntity = false;
 
             // Perform collision checks
-            gp.cm.checkTile(this);
+            gp.cm.checkTile(this, true);
             int objectIndex = gp.cm.checkObject(this, true);
             pickUpObject(objectIndex);
             int npcIndex = gp.cm.checkEntity(this, gp.npcArray);
