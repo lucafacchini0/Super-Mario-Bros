@@ -192,6 +192,12 @@ public class TileManager {
                     if (tile != null && tile.image != null) {
                         g2d.drawImage(tile.image, screenX, screenY, null);
                     }
+
+                    // draw grid
+
+                        g2d.setColor(Color.BLACK);
+                        g2d.drawRect(screenX, screenY, gp.TILE_SIZE, gp.TILE_SIZE);
+
                 }
             }
         }

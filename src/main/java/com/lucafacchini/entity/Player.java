@@ -16,8 +16,6 @@ public class Player extends Entity {
     // Debugging
     public int hasKey = 0;
     private static final Logger LOGGER = Logger.getLogger(Entity.class.getName());
-    boolean hasJustCollided = false;
-    int previousIndex = -1;
 
     // Sprite settings
     public final int NUM_MOVING_SPRITES = 6;
@@ -41,7 +39,7 @@ public class Player extends Entity {
      *     but, maybe, at X:52, Y:14, the player collides 3px on the right side before reaching the tile and 6px on the bottom side
      *
      */
-    public final int DEFAULT_SPEED = 5;
+    public final int DEFAULT_SPEED = 4;
 
     /**
      * @brief screenX and screenY are the coordinates of the player on the screen.
@@ -70,19 +68,16 @@ public class Player extends Entity {
         screenX = gp.WINDOW_WIDTH / 2 - gp.TILE_SIZE / 2;
         screenY = gp.WINDOW_HEIGHT / 2 - gp.TILE_SIZE / 2;
 
-        // Initialize bounding box dimensions and default values
         boundingBox.x = 0;
         boundingBox.y = 20;
         boundingBox.width = gp.TILE_SIZE - 20;
         boundingBox.height = gp.TILE_SIZE - 10;
-
-        // Debug
-        boundingBox.x = 0;
-        boundingBox.y = 0;
-        boundingBox.width = gp.TILE_SIZE;
-        boundingBox.height = gp.TILE_SIZE;
         boundingBoxDefaultX = boundingBox.x;
         boundingBoxDefaultY = boundingBox.y;
+
+        /*
+         * @NOTE this might be useless.
+         */
         boundingBoxDefaultHeight = boundingBox.height;
         boundingBoxDefaultWidth = boundingBox.width;
 
@@ -106,8 +101,8 @@ public class Player extends Entity {
      */
     void setDefaultValues() {
         // Set player spawn location
-        worldX = gp.TILE_SIZE * 1 - gp.TILE_SIZE;
-        worldY = gp.TILE_SIZE * 1 - gp.TILE_SIZE;
+        worldX = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
+        worldY = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
 
         // Set player speed
         speed = DEFAULT_SPEED;
@@ -141,11 +136,7 @@ public class Player extends Entity {
         } else {
             currentStatus = Status.MOVING;
 
-            if (kh.isUpPressed && kh.isLeftPressed) { currentDirection = Direction.UP_LEFT; }
-            else if (kh.isUpPressed && kh.isRightPressed) { currentDirection = Direction.UP_RIGHT; }
-            else if (kh.isDownPressed && kh.isLeftPressed) { currentDirection = Direction.DOWN_LEFT; }
-            else if (kh.isDownPressed && kh.isRightPressed) { currentDirection = Direction.DOWN_RIGHT; }
-            else if (kh.isUpPressed) { currentDirection = Direction.UP; }
+            if (kh.isUpPressed) { currentDirection = Direction.UP; }
             else if (kh.isDownPressed) { currentDirection = Direction.DOWN; }
             else if (kh.isLeftPressed) { currentDirection = Direction.LEFT; }
             else { currentDirection = Direction.RIGHT; }
@@ -212,12 +203,9 @@ public class Player extends Entity {
             interactionWithNPC(npcIndex);
 
 
-
-            // Resolve movement based on collision results
             if (!isCollidingWithTile && !isCollidingWithObject && !isCollidingWithEntity) {
                 move();
-            } else if (isCollidingWithTile && !isCollidingWithObject && !isCollidingWithEntity) {
-                handleDiagonalCollision(); // TODO: Fix diagonal movement when colliding.
+
             } else if(isCollidingWithEntity && !isCollidingWithTile && !isCollidingWithObject) {
                 LOGGER.info("Colliding with entity");
             }
@@ -227,15 +215,10 @@ public class Player extends Entity {
 
     /**
      * @brief Moves the player entity in the current direction.
-     * Supports diagonal movement and overrides the base entity movement behavior.
      */
     @Override
     public void move() {
         switch (currentDirection) {
-            case UP_LEFT -> { worldY -= diagonalMove(speed); worldX -= diagonalMove(speed); }
-            case UP_RIGHT -> { worldY -= diagonalMove(speed); worldX += diagonalMove(speed); }
-            case DOWN_LEFT -> { worldY += diagonalMove(speed); worldX -= diagonalMove(speed); }
-            case DOWN_RIGHT -> { worldY += diagonalMove(speed); worldX += diagonalMove(speed); }
             case UP -> worldY -= speed;
             case DOWN -> worldY += speed;
             case LEFT -> worldX -= speed;
@@ -245,95 +228,7 @@ public class Player extends Entity {
 
 
     /**
-     * @brief Handles diagonal movement collision resolution.
-     */
-// TODO: Fix this method. Diagonal movement is not working while colliding with Objects.
-    private void handleDiagonalCollision() {
-        boolean collidingLeft = gp.cm.isCollidingFromLeft(this);
-        boolean collidingRight = gp.cm.isCollidingFromRight(this);
-        boolean collidingTop = gp.cm.isCollidingFromTop(this);
-        boolean collidingBottom = gp.cm.isCollidingFromBottom(this);
-
-        switch (currentDirection) {
-            case UP_LEFT -> {
-                if (!collidingLeft && !collidingTop) {
-                    worldY -= diagonalMove(speed);
-                    worldX -= diagonalMove(speed);
-                } else if (!collidingLeft) {
-                    worldX -= diagonalMove(speed);
-                } else if (!collidingTop) {
-                    worldY -= diagonalMove(speed);
-                }
-            }
-
-            case UP_RIGHT -> {
-                if (!collidingRight && !collidingTop) {
-                    worldY -= diagonalMove(speed);
-                    worldX += diagonalMove(speed);
-                } else if (!collidingRight) {
-                    worldX += diagonalMove(speed);
-                } else if (!collidingTop) {
-                    worldY -= diagonalMove(speed);
-                }
-            }
-
-            case DOWN_LEFT -> {
-                if (!collidingLeft && !collidingBottom) {
-                    worldY += diagonalMove(speed);
-                    worldX -= diagonalMove(speed);
-                } else if (!collidingLeft) {
-                    worldX -= diagonalMove(speed);
-                } else if (!collidingBottom) {
-                    worldY += diagonalMove(speed);
-                }
-            }
-
-            case DOWN_RIGHT -> {
-                if (!collidingRight && !collidingBottom) {
-                    worldY += diagonalMove(speed);
-                    worldX += diagonalMove(speed);
-                } else if (!collidingRight) {
-                    worldX += diagonalMove(speed);
-                } else if (!collidingBottom) {
-                    worldY += diagonalMove(speed);
-                }
-            }
-        }
-    }
-
-
-//    TODO: Fix: Check the sides of the Object. If the player is moving diagonally, check the sides of the object.
-//    public void handleCollisionWithObject(int objectIndex) {
-//        if (kh.isUpPressed && kh.isLeftPressed) {
-//            System.out.println("UP-LEFT DETECTED");
-//
-//            // Check for collision with the object
-//            System.out.println("NOT HITTING OBJECT BB FROM UP-LEFT" + boundingBox);
-//            if (boundingBox.intersects(gp.objectsArray[objectIndex].boundingBox)) {
-//                System.out.println("UP-LEFT INTERSECTION DETECTED");
-//
-//                // Check if the player is coming from the left
-//                // Player is coming from the left if the player's right side intersects with the object's left side
-//                // and there's vertical overlap.
-//                if (boundingBox.getMaxX() > gp.objectsArray[objectIndex].boundingBox.getMinX() &&
-//                        boundingBox.getMinX() < gp.objectsArray[objectIndex].boundingBox.getMaxX() && // The player is left of the object
-//                        boundingBox.getMinY() < gp.objectsArray[objectIndex].boundingBox.getMaxY() &&
-//                        boundingBox.getMaxY() > gp.objectsArray[objectIndex].boundingBox.getMinY() &&
-//                        boundingBox.getMaxY() <= gp.objectsArray[objectIndex].boundingBox.getMaxY()) { // Ensure player is not hitting from below
-//                    // Move up
-//                    worldY -= (int) (speed * Math.sqrt(2) / 2); // Move up
-//                    System.out.println("Player coming from left, moved up");
-//                }
-//                // Check if the player is coming from below
-//                // Player is coming from below if the player's bottom side intersects with the object's top side
-//                // and there's horizontal overlap.
-//            }
-//        }
-//    }
-
-
-    /**
-     * @brief Handles diagonal movement speed.
+     * @brief Handles player interaction with objects in the game world.
      *
      * @param index The index of the object in the objectsArray.
      */
