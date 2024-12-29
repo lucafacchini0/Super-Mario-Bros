@@ -104,9 +104,9 @@ public class CollisionManager {
          * I'll think about a better way to handle this.
          */
         switch(entity.currentDirection) {
-            case Entity.Direction.UP -> entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE; // @DEBUG WORKS
-            case Entity.Direction.DOWN -> entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE; // @DEBUG NOT WORKING. if i set a value < than entity.speed, there is no gap between, but then i can't move.
-            case Entity.Direction.LEFT -> entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE; // @DEBUG WORKS
+            case Entity.Direction.UP -> entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
+            case Entity.Direction.DOWN -> entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
+            case Entity.Direction.LEFT -> entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
             case Entity.Direction.RIGHT -> entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
         }
 
@@ -115,7 +115,6 @@ public class CollisionManager {
          */
         checkTileCollision(entity, entityLeftColumn, entityRightColumn, entityTopRow, entityBottomRow);
     }
-
 
     /**
      * @brief Prepare arrays of tiles to check for collision.

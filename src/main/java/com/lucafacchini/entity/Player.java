@@ -16,8 +16,6 @@ public class Player extends Entity {
     // Debugging
     public int hasKey = 0;
     private static final Logger LOGGER = Logger.getLogger(Entity.class.getName());
-    boolean hasJustCollided = false;
-    int previousIndex = -1;
 
     // Sprite settings
     public final int NUM_MOVING_SPRITES = 6;
@@ -70,20 +68,16 @@ public class Player extends Entity {
         screenX = gp.WINDOW_WIDTH / 2 - gp.TILE_SIZE / 2;
         screenY = gp.WINDOW_HEIGHT / 2 - gp.TILE_SIZE / 2;
 
-        // Initialize bounding box dimensions and default values
         boundingBox.x = 0;
         boundingBox.y = 20;
         boundingBox.width = gp.TILE_SIZE - 20;
         boundingBox.height = gp.TILE_SIZE - 10;
-
-        // @DEBUG
-        boundingBox.x = 0;
-        boundingBox.y = 0;
-        boundingBox.width = gp.TILE_SIZE;
-        boundingBox.height = gp.TILE_SIZE ;
         boundingBoxDefaultX = boundingBox.x;
         boundingBoxDefaultY = boundingBox.y;
 
+        /*
+         * @NOTE this might be useless.
+         */
         boundingBoxDefaultHeight = boundingBox.height;
         boundingBoxDefaultWidth = boundingBox.width;
 
@@ -120,10 +114,6 @@ public class Player extends Entity {
      */
     @Override
     public void update() {
-
-        // @DEBUG
-        System.out.println("Player X: " + worldX + " Player Y: " + worldY);
-
         updateDirection();
         updateSprite();
         updatePosition();
@@ -238,7 +228,7 @@ public class Player extends Entity {
 
 
     /**
-     * @brief Handles diagonal movement speed.
+     * @brief Handles player interaction with objects in the game world.
      *
      * @param index The index of the object in the objectsArray.
      */

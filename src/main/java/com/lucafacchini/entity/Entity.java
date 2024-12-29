@@ -110,13 +110,6 @@ public class Entity {
 
 
     /**
-     * @brief Utility method that calculates the diagonal movement of the entity.
-     * @param speed is the speed of the entity.
-     * @return the integer representing the distance of movement.
-     */
-    int diagonalMove(int speed) { return (int)(speed * Math.sqrt(2) / 2); }
-
-    /**
      * @brief Method that sets the sprite timers.
      * @param spriteCounterMultiplier the sprite counter multiplier. (After how many frames the sprite should change.)
      * @param NUM_MOVING_SPRITES the number of moving sprites. (The number of sprite images for each direction.)
