@@ -277,6 +277,10 @@ public class CollisionManager {
 
 
 
+
+
+
+
     /**
      * @brief Check if the entity is colliding with an object.
      *
@@ -408,6 +412,13 @@ public class CollisionManager {
 
 
 
+
+
+
+
+
+
+
     // *
     public int checkEntity(Entity entity, Entity[] target) {
         int index = -1;
@@ -499,6 +510,18 @@ public class CollisionManager {
         }
         return index;
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void checkPlayer(Entity entity) {
         entity.boundingBox.x = entity.worldX + entity.boundingBox.x;
