@@ -71,7 +71,7 @@ public class Entity {
     public int speed;
 
     public Rectangle boundingBox; // The bounding box of the entity.
-    public int boundingBoxDefaultX, boundingBoxDefaultY;
+    public int boundingBoxDefaultX, boundingBoxDefaultY, boundingBoxDefaultWidth, boundingBoxDefaultHeight;
 
 
     // Utilities
@@ -264,7 +264,7 @@ public class Entity {
         // Booleans are updated in the collision manager class.
 
         // Check tile collisions
-        gp.cm.checkTile(this);
+        gp.cm.checkTile(this, false);
 
         // Check object collisions
         gp.cm.checkObject(this, false);

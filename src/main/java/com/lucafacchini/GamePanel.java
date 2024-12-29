@@ -7,6 +7,8 @@ import com.lucafacchini.tiles.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Represents the game panel where the game is rendered and updated.
@@ -42,11 +44,15 @@ public class GamePanel extends JPanel implements Runnable {
     public final int MAX_WORLD_COLUMNS = 50;
     public final int MAX_WORLD_ROWS = 50;
 
-    TileManager[] maps = {
+    TileManager[] x = {
             new TileManager(this, "background.csv"),
-            new TileManager(this, "groundDecoration.csv"),
-            new TileManager(this, "background.csv")
     };
+
+    public enum MapType {
+        BACKGROUND
+    }
+
+    public HashMap<MapType, TileManager> maps = new HashMap<>();
 
     // Thread management
     Thread gameThread;
@@ -94,6 +100,8 @@ public class GamePanel extends JPanel implements Runnable {
      * @brief Initializes the game by placing objects and NPCs.
      */
     public void initializeGame() {
+        // Set maps
+        maps.put(MapType.BACKGROUND, new TileManager(this, "background.csv"));
         assetSetter.placeObject();
         assetSetter.placeNPC();
     }
@@ -169,7 +177,9 @@ public class GamePanel extends JPanel implements Runnable {
      * @param g2d the Graphics2D object used to draw the components.
      */
     private void drawAllComponents(Graphics2D g2d) {
-        maps[0].draw(g2d);
+        for (TileManager tileManager : maps.values()) {
+            tileManager.draw(g2d);
+        }
 
         for (SuperObject object : objectsArray) {
             if (object != null) {
@@ -184,7 +194,6 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.draw(g2d);
-        maps[1].draw(g2d);
         ui.draw(g2d);
     }
 
