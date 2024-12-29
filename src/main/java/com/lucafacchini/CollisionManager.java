@@ -26,7 +26,11 @@ public class CollisionManager {
     }
 
 
+
+
+
     /* TILE COLLISION CHECKING METHODS */
+
 
 
     /**
@@ -104,31 +108,8 @@ public class CollisionManager {
             case Entity.Direction.DOWN -> entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE; // @DEBUG NOT WORKING. if i set a value < than entity.speed, there is no gap between, but then i can't move.
             case Entity.Direction.LEFT -> entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE; // @DEBUG WORKS
             case Entity.Direction.RIGHT -> entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
-
-//            case Entity.Direction.UP_LEFT -> {
-//                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
-//                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
-//            }
-//            case Entity.Direction.UP_RIGHT -> {
-//                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
-//                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
-//            }
-//            case Entity.Direction.DOWN_LEFT -> {
-//                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
-//                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
-//            }
-//            case Entity.Direction.DOWN_RIGHT -> {
-//                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
-//                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
-//            }
         }
 
-        // @DEBUG
-        if(isPlayer) {
-            // worldx and worldy
-            // System.out.println("worldX: " + entity.worldX + " worldY: " + entity.worldY);
-            //System.out.println("entityLeftWorldX: " + entityLeftWorldX + " entityRightWorldX: " + entityRightWorldX + " entityTopWorldY: " + entityTopWorldY + " entityBottomWorldY: " + entityBottomWorldY);
-        }
         /*
          * Once we have recalculated the position of the entity in the map, we can check if the entity is colliding
          */
@@ -192,103 +173,36 @@ public class CollisionManager {
     }
 
 
-    /**
-     * @brief Check if it's colliding with a tile from the left.
-     * @param entity The entity to check for collision.
-     * @return True if the entity is colliding with a tile from the left, false otherwise.
-     */
-    public boolean isCollidingFromLeft(Entity entity) {
-        int entityLeftWorldX = entity.worldX + entity.boundingBox.x;
-        int nextLeftWorldX = entityLeftWorldX - entity.speed;
-
-        int leftTile = nextLeftWorldX / gp.TILE_SIZE;
-        int topTile = (entity.worldY + entity.boundingBox.y) / gp.TILE_SIZE;
-        int bottomTile = (entity.worldY + entity.boundingBox.y + entity.boundingBox.height) / gp.TILE_SIZE;
-
-        return isTileColliding(
-                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[leftTile][topTile],
-                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[leftTile][bottomTile]
-        );
-    }
-
-    /**
-     * @brief Check if it's colliding with a tile from the right.
-     * @param entity The entity to check for collision.
-     * @return True if the entity is colliding with a tile from the right, false otherwise.
-     */
-    public boolean isCollidingFromRight(Entity entity) {
-        int entityRightWorldX = entity.worldX + entity.boundingBox.x + entity.boundingBox.width;
-        int nextRightWorldX = entityRightWorldX + entity.speed;
-
-        int rightTile = nextRightWorldX / gp.TILE_SIZE;
-        int topTile = (entity.worldY + entity.boundingBox.y) / gp.TILE_SIZE;
-        int bottomTile = (entity.worldY + entity.boundingBox.y + entity.boundingBox.height) / gp.TILE_SIZE;
-
-        return isTileColliding(
-                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[rightTile][topTile],
-                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[rightTile][bottomTile]
-        );
-    }
-
-    /**
-     * @brief Check if it's colliding with a tile from the bottom.
-     * @param entity The entity to check for collision.
-     * @return True if the entity is colliding with a tile from the bottom, false otherwise.
-     */
-    public boolean isCollidingFromBottom(Entity entity) {
-        int entityBottomWorldY = entity.worldY + entity.boundingBox.y + entity.boundingBox.height;
-        int nextBottomWorldY = entityBottomWorldY + entity.speed;
-
-        int leftTile = (entity.worldX + entity.boundingBox.x) / gp.TILE_SIZE;
-        int rightTile = (entity.worldX + entity.boundingBox.x + entity.boundingBox.width) / gp.TILE_SIZE;
-        int bottomTile = nextBottomWorldY / gp.TILE_SIZE;
-
-        return isTileColliding(
-                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[leftTile][bottomTile],
-                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[rightTile][bottomTile]
-        );
-    }
-
-    /**
-     * @brief Check if it's colliding with a tile from the top.
-     * @param entity The entity to check for collision.
-     * @return True if the entity is colliding with a tile from the top, false otherwise.
-     */
-    public boolean isCollidingFromTop(Entity entity) {
-        int entityTopWorldY = entity.worldY + entity.boundingBox.y;
-        int nextTopWorldY = entityTopWorldY - entity.speed;
-
-        int leftTile = (entity.worldX + entity.boundingBox.x) / gp.TILE_SIZE;
-        int rightTile = (entity.worldX + entity.boundingBox.x + entity.boundingBox.width) / gp.TILE_SIZE;
-        int topTile = nextTopWorldY / gp.TILE_SIZE;
-
-        return isTileColliding(
-                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[leftTile][topTile],
-                gp.maps.get(GamePanel.MapType.BACKGROUND).GAME_MAP[rightTile][topTile]
-        );
-    }
 
 
 
-
-
-
-
-
-
-
-
+    /* OBJECT COLLISION CHECKING METHODS */
 
 
 
     /**
      * @brief Check if the entity is colliding with an object.
      *
-     * First of all, it iterates over the objectsArray and checks if the entity is colliding with any object.
+     * First of all, it iterates over the objectsArray and checks if there is an object in the current index.
+     * (if there is not, it's skipped, for optimization purposes)
+     *
+     * After that, it calculates the actual coordinates of the bounding box of the entity.
+     * Imagine the BoundingBox as some sort of Entity, that has a position in the world.
+     * The BoundingBox width and height is already defined in the entity class.
+     *
+     * Therefore, to "move" the BoundingBox in the world, we need to add the entity's worldX and worldY to the BoundingBox x and y.
+     * It's like "attaching" the BoundingBox to the entity. to its x and y.
+     *
+     * We do the same for the object. We calculate the actual coordinates of the object's bounding box.
+     *
+     * Then, based on the entity current direction, we "move" the BoundingBox in the world, at the same position of the entity.
+     *
+     * If at some point, the BoundingBox intersects with the object's BoundingBox, we check if the object is solid,
+     * and we set the entity isCollidingWithObject to true. This boolean will be used in the Entity class to
+     * prevent the entity from moving in the direction of the collision.
      *
      * @param entity The entity to check for collision.
      */
-    // TODO: Fix this method. Integrate with handleCollisionWithObject method in Player class.
     public int checkObject(Entity entity, boolean isPlayer) {
         int index = -1;
 
@@ -300,107 +214,49 @@ public class CollisionManager {
                 gp.objectsArray[i].boundingBox.x = gp.objectsArray[i].worldX + gp.objectsArray[i].boundingBox.x;
                 gp.objectsArray[i].boundingBox.y = gp.objectsArray[i].worldY + gp.objectsArray[i].boundingBox.y;
 
-                switch (entity.currentDirection) {
-                    case Entity.Direction.UP_LEFT:
-                        entity.boundingBox.x -= entity.speed;
+
+                switch(entity.currentDirection) {
+                    case Entity.Direction.UP -> {
                         entity.boundingBox.y -= entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
                             if (gp.objectsArray[i].isSolid) {
                                 entity.isCollidingWithObject = true;
                             }
-                            if (isPlayer) {
-                                index = i;
-                            }
+                            if (isPlayer) index = i;
                         }
-                        break;
+                    }
 
-                    case Entity.Direction.UP_RIGHT:
-                        entity.boundingBox.x += entity.speed;
-                        entity.boundingBox.y -= entity.speed;
-                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-                            if (gp.objectsArray[i].isSolid) {
-                                entity.isCollidingWithObject = true;
-                            }
-                            if (isPlayer) {
-                                index = i;
-                            }
-                        }
-                        break;
-
-                    case Entity.Direction.DOWN_LEFT:
-                        entity.boundingBox.x -= entity.speed;
+                    case Entity.Direction.DOWN -> {
                         entity.boundingBox.y += entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
                             if (gp.objectsArray[i].isSolid) {
                                 entity.isCollidingWithObject = true;
                             }
-                            if (isPlayer) {
-                                index = i;
-                            }
+                            if (isPlayer) index = i;
                         }
-                        break;
+                    }
 
-                    case Entity.Direction.DOWN_RIGHT:
-                        entity.boundingBox.x += entity.speed;
-                        entity.boundingBox.y += entity.speed;
-                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-                            if (gp.objectsArray[i].isSolid) {
-                                entity.isCollidingWithObject = true;
-                            }
-                            if (isPlayer) {
-                                index = i;
-                            }
-                        }
-                        break;
-
-                    case Entity.Direction.UP:
-                        entity.boundingBox.y -= entity.speed;
-                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-                            if (gp.objectsArray[i].isSolid) {
-                                entity.isCollidingWithObject = true;
-                            }
-                            if (isPlayer) {
-                                index = i;
-                            }
-                        }
-                        break;
-
-                    case Entity.Direction.DOWN:
-                        entity.boundingBox.y += entity.speed;
-                        if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
-                            if (gp.objectsArray[i].isSolid) {
-                                entity.isCollidingWithObject = true;
-                            }
-                            if (isPlayer) {
-                                index = i;
-                            }
-                        }
-                        break;
-
-                    case Entity.Direction.LEFT:
+                    case Entity.Direction.LEFT -> {
                         entity.boundingBox.x -= entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
                             if (gp.objectsArray[i].isSolid) {
                                 entity.isCollidingWithObject = true;
                             }
-                            if (isPlayer) {
-                                index = i;
-                            }
+                            if (isPlayer) index = i;
                         }
-                        break;
+                    }
 
-                    case Entity.Direction.RIGHT:
+                    case Entity.Direction.RIGHT -> {
                         entity.boundingBox.x += entity.speed;
                         if (entity.boundingBox.intersects(gp.objectsArray[i].boundingBox)) {
                             if (gp.objectsArray[i].isSolid) {
                                 entity.isCollidingWithObject = true;
                             }
-                            if (isPlayer) {
-                                index = i;
-                            }
+                            if (isPlayer) index = i;
                         }
-                        break;
+                    }
                 }
+
                 entity.boundingBox.x = entity.boundingBoxDefaultX;
                 entity.boundingBox.y = entity.boundingBoxDefaultY;
                 gp.objectsArray[i].boundingBox.x = gp.objectsArray[i].boundingBoxDefaultX;
@@ -414,98 +270,84 @@ public class CollisionManager {
 
 
 
+    /* ENTITY COLLISION CHECKING METHODS */
 
 
 
-
-
-    // *
+    /**
+     * @brief Check if the entity is colliding with an object.
+     *
+     * First of all, it iterates over the objectsArray and checks if there is an object in the current index.
+     * (if there is not, it's skipped, for optimization purposes)
+     *
+     * After that, it calculates the actual coordinates of the bounding box of the entity.
+     * Imagine the BoundingBox as some sort of Entity, that has a position in the world.
+     * The BoundingBox width and height is already defined in the entity class.
+     *
+     * Therefore, to "move" the BoundingBox in the world, we need to add the entity's worldX and worldY to the BoundingBox x and y.
+     * It's like "attaching" the BoundingBox to the entity. to its x and y.
+     *
+     * We do the same for the object. We calculate the actual coordinates of the object's bounding box.
+     *
+     * Then, based on the entity current direction, we "move" the BoundingBox in the world, at the same position of the entity.
+     *
+     * If at some point, the BoundingBox intersects with the object's BoundingBox, we check if the object is solid,
+     * and we set the entity isCollidingWithObject to true. This boolean will be used in the Entity class to
+     * prevent the entity from moving in the direction of the collision.
+     *
+     * @param entity The entity to check for collision.
+     * @param target The array containing every entity
+     */
     public int checkEntity(Entity entity, Entity[] target) {
         int index = -1;
 
         for (int i = 0; i < target.length; i++) {
             if (target[i] != null) {
+
                 entity.boundingBox.x = entity.worldX + entity.boundingBox.x;
                 entity.boundingBox.y = entity.worldY + entity.boundingBox.y;
 
                 target[i].boundingBox.x = target[i].worldX + target[i].boundingBox.x;
                 target[i].boundingBox.y = target[i].worldY + target[i].boundingBox.y;
 
-                switch (entity.currentDirection) {
-                    case Entity.Direction.UP_LEFT:
-                        entity.boundingBox.x -= entity.speed;
+                switch(entity.currentDirection) {
+                    case Entity.Direction.UP -> {
                         entity.boundingBox.y -= entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
                             index = i;
                             entity.isCollidingWithEntity = true;
                         }
-                        break;
+                    }
 
-                    case Entity.Direction.UP_RIGHT:
-                        entity.boundingBox.x += entity.speed;
-                        entity.boundingBox.y -= entity.speed;
-                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-                            index = i;
-                            entity.isCollidingWithEntity = true;
-                        }
-                        break;
-
-                    case Entity.Direction.DOWN_LEFT:
-                        entity.boundingBox.x -= entity.speed;
+                    case Entity.Direction.DOWN -> {
                         entity.boundingBox.y += entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
                             index = i;
                             entity.isCollidingWithEntity = true;
                         }
-                        break;
+                    }
 
-                    case Entity.Direction.DOWN_RIGHT:
-                        entity.boundingBox.x += entity.speed;
-                        entity.boundingBox.y += entity.speed;
-                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-                            index = i;
-                            entity.isCollidingWithEntity = true;
-                        }
-                        break;
-
-                    case Entity.Direction.UP:
-                        entity.boundingBox.y -= entity.speed;
-                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-                            index = i;
-                            entity.isCollidingWithEntity = true;
-                        }
-                        break;
-
-                    case Entity.Direction.DOWN:
-                        entity.boundingBox.y += entity.speed;
-                        if (entity.boundingBox.intersects(target[i].boundingBox)) {
-                            index = i;
-                            entity.isCollidingWithEntity = true;
-                        }
-                        break;
-
-                    case Entity.Direction.LEFT:
+                    case Entity.Direction.LEFT -> {
                         entity.boundingBox.x -= entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
                             index = i;
                             entity.isCollidingWithEntity = true;
                         }
-                        break;
+                    }
 
-                    case Entity.Direction.RIGHT:
+                    case Entity.Direction.RIGHT -> {
                         entity.boundingBox.x += entity.speed;
                         if (entity.boundingBox.intersects(target[i].boundingBox)) {
                             index = i;
                             entity.isCollidingWithEntity = true;
                         }
-                        break;
+                    }
                 }
+
                 entity.boundingBox.x = entity.boundingBoxDefaultX;
                 entity.boundingBox.y = entity.boundingBoxDefaultY;
                 target[i].boundingBox.x = target[i].boundingBoxDefaultX;
                 target[i].boundingBox.y = target[i].boundingBoxDefaultY;
-                target[i].boundingBox.width = target[i].boundingBoxDefaultWidth;
-                target[i].boundingBox.height = target[i].boundingBoxDefaultHeight;
             }
         }
         return index;
@@ -515,83 +357,71 @@ public class CollisionManager {
 
 
 
+    /* PLAYER COLLISION CHECKING METHODS */
 
 
 
-
-
-
-
-
+    /**
+     * @brief Check if the entity is colliding with an object.
+     *
+     * First of all, it iterates over the objectsArray and checks if there is an object in the current index.
+     * (if there is not, it's skipped, for optimization purposes)
+     *
+     * After that, it calculates the actual coordinates of the bounding box of the entity.
+     * Imagine the BoundingBox as some sort of Entity, that has a position in the world.
+     * The BoundingBox width and height is already defined in the entity class.
+     *
+     * Therefore, to "move" the BoundingBox in the world, we need to add the entity's worldX and worldY to the BoundingBox x and y.
+     * It's like "attaching" the BoundingBox to the entity. to its x and y.
+     *
+     * We do the same for the object. We calculate the actual coordinates of the object's bounding box.
+     *
+     * Then, based on the entity current direction, we "move" the BoundingBox in the world, at the same position of the entity.
+     *
+     * If at some point, the BoundingBox intersects with the object's BoundingBox, we check if the object is solid,
+     * and we set the entity isCollidingWithObject to true. This boolean will be used in the Entity class to
+     * prevent the entity from moving in the direction of the collision.
+     *
+     * @param entity The entity to check for collision. (Entity won't ever be the player)
+     */
     public void checkPlayer(Entity entity) {
+
         entity.boundingBox.x = entity.worldX + entity.boundingBox.x;
         entity.boundingBox.y = entity.worldY + entity.boundingBox.y;
 
         gp.player.boundingBox.x = gp.player.worldX + gp.player.boundingBox.x;
         gp.player.boundingBox.y = gp.player.worldY + gp.player.boundingBox.y;
 
-        switch (entity.currentDirection) {
-            case Entity.Direction.UP_LEFT:
-                entity.boundingBox.x -= entity.speed;
-                entity.boundingBox.y -= entity.speed;
-                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-
-                    entity.isCollidingWithEntity = true;
-                }
-                break;
-
-            case Entity.Direction.UP_RIGHT:
-                entity.boundingBox.x += entity.speed;
+        switch(entity.currentDirection) {
+            case Entity.Direction.UP -> {
                 entity.boundingBox.y -= entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
                     entity.isCollidingWithEntity = true;
                 }
-                break;
+            }
 
-            case Entity.Direction.DOWN_LEFT:
-                entity.boundingBox.x -= entity.speed;
+            case Entity.Direction.DOWN -> {
                 entity.boundingBox.y += entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
                     entity.isCollidingWithEntity = true;
                 }
-                break;
+            }
 
-            case Entity.Direction.DOWN_RIGHT:
-                entity.boundingBox.x += entity.speed;
-                entity.boundingBox.y += entity.speed;
-                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-                    entity.isCollidingWithEntity = true;
-                }
-                break;
-
-            case Entity.Direction.UP:
-                entity.boundingBox.y -= entity.speed;
-                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-                    entity.isCollidingWithEntity = true;
-                }
-                break;
-
-            case Entity.Direction.DOWN:
-                entity.boundingBox.y += entity.speed;
-                if (entity.boundingBox.intersects(gp.player.boundingBox)) {
-                    entity.isCollidingWithEntity = true;
-                }
-                break;
-
-            case Entity.Direction.LEFT:
+            case Entity.Direction.LEFT -> {
                 entity.boundingBox.x -= entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
                     entity.isCollidingWithEntity = true;
                 }
-                break;
+            }
 
-            case Entity.Direction.RIGHT:
+            case Entity.Direction.RIGHT -> {
                 entity.boundingBox.x += entity.speed;
                 if (entity.boundingBox.intersects(gp.player.boundingBox)) {
                     entity.isCollidingWithEntity = true;
                 }
-                break;
+            }
         }
+
         entity.boundingBox.x = entity.boundingBoxDefaultX;
         entity.boundingBox.y = entity.boundingBoxDefaultY;
         gp.player.boundingBox.x = gp.player.boundingBoxDefaultX;

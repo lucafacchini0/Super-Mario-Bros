@@ -64,7 +64,7 @@ public class Entity {
      * This enumerator is used to determine the direction of the entity, and based on
      * this direction, the backend changes the sprite image using the SpriteImagesEnum enumerator.
      */
-    public enum Direction { UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT }
+    public enum Direction { UP, DOWN, LEFT, RIGHT }
     public Direction currentDirection = Direction.DOWN;
 
     public int worldX, worldY; // The position of the entity in the world.
@@ -351,15 +351,15 @@ public class Entity {
 
         if(currentStatus == Status.IDLING) {
             direction = switch(currentDirection) {
-                case Direction.UP, Direction.UP_LEFT, Direction.UP_RIGHT -> SpriteImagesEnum.UP_IDLING;
-                case Direction.DOWN, Direction.DOWN_LEFT, Direction.DOWN_RIGHT -> SpriteImagesEnum.DOWN_IDLING;
+                case Direction.UP -> SpriteImagesEnum.UP_IDLING;
+                case Direction.DOWN -> SpriteImagesEnum.DOWN_IDLING;
                 case Direction.LEFT -> SpriteImagesEnum.LEFT_IDLING;
                 case Direction.RIGHT -> SpriteImagesEnum.RIGHT_IDLING;
             };
         } else {
             direction = switch(currentDirection) {
-                case Direction.UP, Direction.UP_LEFT, Direction.UP_RIGHT -> SpriteImagesEnum.UP_MOVING;
-                case Direction.DOWN, Direction.DOWN_LEFT, Direction.DOWN_RIGHT -> SpriteImagesEnum.DOWN_MOVING;
+                case Direction.UP -> SpriteImagesEnum.UP_MOVING;
+                case Direction.DOWN -> SpriteImagesEnum.DOWN_MOVING;
                 case Direction.LEFT -> SpriteImagesEnum.LEFT_MOVING;
                 case Direction.RIGHT -> SpriteImagesEnum.RIGHT_MOVING;
             };
