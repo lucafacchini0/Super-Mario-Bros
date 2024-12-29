@@ -63,9 +63,9 @@ public class CollisionManager {
          * The same logic applies to the y-axis.
          */
         int entityLeftWorldX = entity.worldX + entity.boundingBox.x;
-        int entityRightWorldX = entity.worldX + entity.boundingBox.x + entity.boundingBox.width;
+        int entityRightWorldX = entity.worldX + entity.boundingBox.x + entity.boundingBox.width - entity.speed;
         int entityTopWorldY = entity.worldY + entity.boundingBox.y;
-        int entityBottomWorldY = entity.worldY + entity.boundingBox.y + entity.boundingBox.height;
+        int entityBottomWorldY = entity.worldY + entity.boundingBox.y + entity.boundingBox.height - entity.speed;
 
         /*
          * After having the actual coordinates of the bounding box of the entity, we can calculate
@@ -100,33 +100,33 @@ public class CollisionManager {
          * I'll think about a better way to handle this.
          */
         switch(entity.currentDirection) {
-            case Entity.Direction.UP -> entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
-            case Entity.Direction.DOWN -> entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
-            case Entity.Direction.LEFT -> entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
+            case Entity.Direction.UP -> entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE; // @DEBUG WORKS
+            case Entity.Direction.DOWN -> entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE; // @DEBUG NOT WORKING. if i set a value < than entity.speed, there is no gap between, but then i can't move.
+            case Entity.Direction.LEFT -> entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE; // @DEBUG WORKS
             case Entity.Direction.RIGHT -> entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
 
-            case Entity.Direction.UP_LEFT -> {
-                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
-                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
-            }
-            case Entity.Direction.UP_RIGHT -> {
-                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
-                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
-            }
-            case Entity.Direction.DOWN_LEFT -> {
-                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
-                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
-            }
-            case Entity.Direction.DOWN_RIGHT -> {
-                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
-                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
-            }
+//            case Entity.Direction.UP_LEFT -> {
+//                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
+//                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
+//            }
+//            case Entity.Direction.UP_RIGHT -> {
+//                entityTopRow = (entityTopWorldY - entity.speed) / gp.TILE_SIZE;
+//                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
+//            }
+//            case Entity.Direction.DOWN_LEFT -> {
+//                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
+//                entityLeftColumn = (entityLeftWorldX - entity.speed) / gp.TILE_SIZE;
+//            }
+//            case Entity.Direction.DOWN_RIGHT -> {
+//                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.TILE_SIZE;
+//                entityRightColumn = (entityRightWorldX + entity.speed) / gp.TILE_SIZE;
+//            }
         }
 
-        // Debugging
+        // @DEBUG
         if(isPlayer) {
             // worldx and worldy
-            System.out.println("worldX: " + entity.worldX + " worldY: " + entity.worldY);
+            // System.out.println("worldX: " + entity.worldX + " worldY: " + entity.worldY);
             //System.out.println("entityLeftWorldX: " + entityLeftWorldX + " entityRightWorldX: " + entityRightWorldX + " entityTopWorldY: " + entityTopWorldY + " entityBottomWorldY: " + entityBottomWorldY);
         }
         /*

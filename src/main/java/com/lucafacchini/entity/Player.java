@@ -41,7 +41,7 @@ public class Player extends Entity {
      *     but, maybe, at X:52, Y:14, the player collides 3px on the right side before reaching the tile and 6px on the bottom side
      *
      */
-    public final int DEFAULT_SPEED = 5;
+    public final int DEFAULT_SPEED = 16;
 
     /**
      * @brief screenX and screenY are the coordinates of the player on the screen.
@@ -76,13 +76,14 @@ public class Player extends Entity {
         boundingBox.width = gp.TILE_SIZE - 20;
         boundingBox.height = gp.TILE_SIZE - 10;
 
-        // Debug
+        // @DEBUG
         boundingBox.x = 0;
         boundingBox.y = 0;
         boundingBox.width = gp.TILE_SIZE;
         boundingBox.height = gp.TILE_SIZE;
         boundingBoxDefaultX = boundingBox.x;
         boundingBoxDefaultY = boundingBox.y;
+
         boundingBoxDefaultHeight = boundingBox.height;
         boundingBoxDefaultWidth = boundingBox.width;
 
@@ -119,6 +120,10 @@ public class Player extends Entity {
      */
     @Override
     public void update() {
+
+        // @DEBUG
+        System.out.println("Player X: " + worldX + " Player Y: " + worldY);
+
         updateDirection();
         updateSprite();
         updatePosition();
@@ -141,11 +146,11 @@ public class Player extends Entity {
         } else {
             currentStatus = Status.MOVING;
 
-            if (kh.isUpPressed && kh.isLeftPressed) { currentDirection = Direction.UP_LEFT; }
-            else if (kh.isUpPressed && kh.isRightPressed) { currentDirection = Direction.UP_RIGHT; }
-            else if (kh.isDownPressed && kh.isLeftPressed) { currentDirection = Direction.DOWN_LEFT; }
-            else if (kh.isDownPressed && kh.isRightPressed) { currentDirection = Direction.DOWN_RIGHT; }
-            else if (kh.isUpPressed) { currentDirection = Direction.UP; }
+//            if (kh.isUpPressed && kh.isLeftPressed) { currentDirection = Direction.UP_LEFT; }
+//            else if (kh.isUpPressed && kh.isRightPressed) { currentDirection = Direction.UP_RIGHT; }
+//            else if (kh.isDownPressed && kh.isLeftPressed) { currentDirection = Direction.DOWN_LEFT; }
+//            else if (kh.isDownPressed && kh.isRightPressed) { currentDirection = Direction.DOWN_RIGHT; }
+            if (kh.isUpPressed) { currentDirection = Direction.UP; }
             else if (kh.isDownPressed) { currentDirection = Direction.DOWN; }
             else if (kh.isLeftPressed) { currentDirection = Direction.LEFT; }
             else { currentDirection = Direction.RIGHT; }
@@ -232,10 +237,10 @@ public class Player extends Entity {
     @Override
     public void move() {
         switch (currentDirection) {
-            case UP_LEFT -> { worldY -= diagonalMove(speed); worldX -= diagonalMove(speed); }
-            case UP_RIGHT -> { worldY -= diagonalMove(speed); worldX += diagonalMove(speed); }
-            case DOWN_LEFT -> { worldY += diagonalMove(speed); worldX -= diagonalMove(speed); }
-            case DOWN_RIGHT -> { worldY += diagonalMove(speed); worldX += diagonalMove(speed); }
+//            case UP_LEFT -> { worldY -= diagonalMove(speed); worldX -= diagonalMove(speed); }
+//            case UP_RIGHT -> { worldY -= diagonalMove(speed); worldX += diagonalMove(speed); }
+//            case DOWN_LEFT -> { worldY += diagonalMove(speed); worldX -= diagonalMove(speed); }
+//            case DOWN_RIGHT -> { worldY += diagonalMove(speed); worldX += diagonalMove(speed); }
             case UP -> worldY -= speed;
             case DOWN -> worldY += speed;
             case LEFT -> worldX -= speed;
