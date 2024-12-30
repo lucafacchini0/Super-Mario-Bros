@@ -82,21 +82,6 @@ public class UI {
         if(gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
             if(NPCIndex != -1) {
                 drawDialogueScreen(NPCIndex);
-
-//                if(kh.isEnterPressed) {
-//
-//                    if(gp.npcArray[NPCIndex].hasFinishedTalking()) {
-//                        gp.gameStatus = GamePanel.GameStatus.RUNNING;
-//                    } else {
-//                        gp.npcArray[NPCIndex].nextDialogue();
-//                    }
-//                }
-
-                if(kh.isEnterPressed) {
-                    if (gp.npcArray[NPCIndex].hasFinishedTalking()) {
-                        gp.gameStatus = GamePanel.GameStatus.RUNNING;
-                    }
-                }
             }
         }
         if(gp.gameStatus == GamePanel.GameStatus.PAUSED) {
@@ -108,6 +93,7 @@ public class UI {
      * Draws the dialogue screen.
      */
     public void drawDialogueScreen(int NPCIndex) {
+
         int x, y, width, height;
 
         x = gp.TILE_SIZE * 2;
@@ -121,6 +107,9 @@ public class UI {
         x += gp.TILE_SIZE;
         y += gp.TILE_SIZE;
         g2d.drawString(currentDialogue, x, y);
+
+
+
     }
 
 
@@ -138,7 +127,7 @@ public class UI {
         // Debug
         // LOGGER.info("Drawing sub window at x: " + x + " y: " + y + " width: " + width + " height: " + height);
 
-        Color color = new Color(0, 0,0, 5);
+        Color color = new Color(0, 0,0, 150);
         g2d.setColor(color);
         g2d.fillRoundRect(x, y, width, height, 50, 50);
 

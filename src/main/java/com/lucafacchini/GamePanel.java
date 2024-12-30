@@ -158,10 +158,10 @@ public class GamePanel extends JPanel implements Runnable {
      */
     @Override
     public void paintComponent(Graphics g) {
-        if (gameStatus == GameStatus.RUNNING) {
-            super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
 
-            Graphics2D g2d = (Graphics2D) g;
+        if (gameStatus != GameStatus.PAUSED) {
+            super.paintComponent(g);
 
             drawAllComponents(g2d);
 
@@ -169,8 +169,21 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         if(gameStatus == GameStatus.DIALOGUE) {
-            ui.draw((Graphics2D) g, player.npcIndex);
 
+            super.paintComponent(g);
+
+            if(!npcArray[player.npcIndex].isStillTalking) {
+                npcArray[player.npcIndex].isStillTalking = true;
+                ui.draw(g2d, player.npcIndex);
+            }
+
+
+
+            if(kh.isEnterPressed) {
+                if (npcArray[player.npcIndex].hasFinishedTalking()) {
+                    gameStatus = GamePanel.GameStatus.RUNNING;
+                }
+            }
         }
     }
 

@@ -92,7 +92,7 @@ public class Entity {
     public String[] dialogues = new String[20]; // TODO: Change to HashMap
     public int dialogueIndex = 0;
     // Has the NPC finished talking?
-    public boolean finishedTalking = false;
+    public boolean isStillTalking = false;
 
 
     // GamePanel
@@ -381,8 +381,10 @@ public class Entity {
 
 
 
+
     public boolean hasFinishedTalking() {
         dialogueIndex++;
+        isStillTalking = false;
 
         if(dialogues[dialogueIndex] == null) {
             dialogueIndex = 0;
