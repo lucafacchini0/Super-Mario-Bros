@@ -133,19 +133,25 @@ public class Player extends Entity {
      * TODO: Optimize direction checking using a combined boolean flag. (Ex: isMoving = kh.isWASDPressed)
      */
     private void updateDirection() {
-        boolean isMoving = kh.isUpPressed || kh.isDownPressed || kh.isLeftPressed || kh.isRightPressed;
-        boolean isIdle = !isMoving;
 
-        if (isIdle || (kh.isUpPressed && kh.isDownPressed) || (kh.isLeftPressed && kh.isRightPressed)) {
+        if(gp.gameStatus == GamePanel.GameStatus.RUNNING) {
+            boolean isMoving = kh.isUpPressed || kh.isDownPressed || kh.isLeftPressed || kh.isRightPressed;
+            boolean isIdle = !isMoving;
+
+            if (isIdle || (kh.isUpPressed && kh.isDownPressed) || (kh.isLeftPressed && kh.isRightPressed)) {
+                currentStatus = Status.IDLING;
+            } else {
+                currentStatus = Status.MOVING;
+
+                if (kh.isUpPressed) { currentDirection = Direction.UP; }
+                else if (kh.isDownPressed) { currentDirection = Direction.DOWN; }
+                else if (kh.isLeftPressed) { currentDirection = Direction.LEFT; }
+                else { currentDirection = Direction.RIGHT; }
+            }
+        } else if(gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
             currentStatus = Status.IDLING;
-        } else {
-            currentStatus = Status.MOVING;
-
-            if (kh.isUpPressed) { currentDirection = Direction.UP; }
-            else if (kh.isDownPressed) { currentDirection = Direction.DOWN; }
-            else if (kh.isLeftPressed) { currentDirection = Direction.LEFT; }
-            else { currentDirection = Direction.RIGHT; }
         }
+
     }
 
 

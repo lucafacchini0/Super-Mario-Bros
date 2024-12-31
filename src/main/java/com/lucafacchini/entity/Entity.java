@@ -66,6 +66,7 @@ public class Entity {
      */
     public enum Direction { UP, DOWN, LEFT, RIGHT }
     public Direction currentDirection = Direction.DOWN;
+    public Direction previousDirection = Direction.DOWN;
 
     public int worldX, worldY; // The position of the entity in the world.
     public int speed;
@@ -93,6 +94,8 @@ public class Entity {
     public int dialogueIndex = 0;
     // Has the NPC finished talking?
     public boolean isStillTalking = false;
+
+    public boolean hasJustStartedTalkingWithPlayer = false;
 
 
     // GamePanel
@@ -241,7 +244,32 @@ public class Entity {
      * This is called every frame.
      */
     public void update() {
-       setAction(); // So far, this updates the direction of the entity.
+        if(gp.gameStatus == GamePanel.GameStatus.RUNNING) {
+
+            if(hasJustStartedTalkingWithPlayer) {
+                hasJustStartedTalkingWithPlayer = false;
+                currentDirection = previousDirection;
+            }
+            blockMovement = false;
+            currentStatus = Status.MOVING;
+            System.out.println("Updating"); // @DEBUG
+            setAction(); // So far, this updates the direction of the entity.
+        } else {
+            blockMovement = true;
+            currentStatus = Status.IDLING;
+
+            if(!hasJustStartedTalkingWithPlayer) {
+                hasJustStartedTalkingWithPlayer = true;
+                previousDirection = currentDirection;
+            } else {
+                switch(gp.player.currentDirection) {
+                    case UP -> currentDirection = Direction.DOWN;
+                    case DOWN -> currentDirection = Direction.UP;
+                    case LEFT -> currentDirection = Direction.RIGHT;
+                    case RIGHT -> currentDirection = Direction.LEFT;
+                }
+            }
+        }
 
         spriteFramesCounter++;
 

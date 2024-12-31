@@ -13,8 +13,8 @@ public class NPC_OldMan extends Entity {
     private static final Logger LOGGER = Logger.getLogger(NPC_OldMan.class.getName());
 
     // Sprite settings
-    public final int NUM_MOVING_SPRITES = 2;
-    public final int NUM_IDLING_SPRITES = 2;
+    public final int NUM_MOVING_SPRITES = 6;
+    public final int NUM_IDLING_SPRITES = 4;
     public final int SPRITE_HEIGHT_PX = 19;
     public final int SPRITE_WIDTH_PX = 11;
     public final int RESCALED_SPRITE_HEIGHT_PX;

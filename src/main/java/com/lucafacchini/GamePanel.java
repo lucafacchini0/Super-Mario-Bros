@@ -142,7 +142,7 @@ public class GamePanel extends JPanel implements Runnable {
      * This method is called every frame to update the game state.
      */
     private void updateComponents() {
-        if (gameStatus == GameStatus.RUNNING) {
+        if (gameStatus != GameStatus.PAUSED) {
             player.update();
             npcArray[0].update();
             kh.updateKeyStates();
@@ -166,6 +166,7 @@ public class GamePanel extends JPanel implements Runnable {
             drawAllComponents(g2d);
 
             g2d.dispose();
+
         }
 
         if(gameStatus == GameStatus.DIALOGUE) {
@@ -184,6 +185,9 @@ public class GamePanel extends JPanel implements Runnable {
                     gameStatus = GamePanel.GameStatus.RUNNING;
                 }
             }
+
+            g2d.dispose();
+
         }
     }
 
