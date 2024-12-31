@@ -146,8 +146,6 @@ public class GamePanel extends JPanel implements Runnable {
             player.update();
             npcArray[0].update();
             kh.updateKeyStates();
-        } else if (gameStatus == GameStatus.DIALOGUE) {
-            kh.updateKeyStates();
         }
     }
 
