@@ -82,6 +82,7 @@ public class Entity {
     public boolean isCollidingWithTile = false;
     public boolean isCollidingWithObject = false;
     public boolean isCollidingWithEntity = false;
+    public boolean isNextToPlayer = false;
 
 
     // Actions 
@@ -258,15 +259,47 @@ public class Entity {
                 isInDialogueTransition = false; // Reset the dialogue transition flag.
                 currentDirection = previousDirection; // Restore the direction before the dialogue.
                 blockMovement = false; // Allow the entity to move again.
-                currentStatus = Status.MOVING; // Set the entity's status to moving.
+
+                if(!isNextToPlayer) {
+                    currentStatus = Status.MOVING; // Set the entity's status to moving.
+                }
             }
 
-            setAction();
             updateSprite();
             checkCollisions();
 
-            if(!isCollidingWithTile && !isCollidingWithEntity && !isCollidingWithObject) {
+            if(!isNextToPlayer) {
+                setAction();
+            }
+
+            boolean isColliding = isCollidingWithTile || isCollidingWithEntity || isCollidingWithObject;
+
+            if(!isColliding && !isNextToPlayer) {
+                currentStatus = Status.MOVING;
                 move();
+            } else if(!isColliding && isNextToPlayer) {
+                currentStatus = Status.IDLING;
+
+                // Calculate the difference in X and Y coordinates between the player and the Entity
+                int deltaX = gp.player.worldX - this.worldX;
+                int deltaY = gp.player.worldY - this.worldY;
+
+// Determine the direction based on the position of the player relative to the Entity
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    // Player is more to the left or right
+                    if (deltaX > 0) {
+                        currentDirection = Direction.RIGHT;
+                    } else {
+                        currentDirection = Direction.LEFT;
+                    }
+                } else {
+                    // Player is more above or below
+                    if (deltaY > 0) {
+                        currentDirection = Direction.DOWN;
+                    } else {
+                        currentDirection = Direction.UP;
+                    }
+                }
             }
         } else if (gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
 
@@ -316,6 +349,11 @@ public class Entity {
         isCollidingWithTile = false;
         isCollidingWithEntity = false;
         isCollidingWithObject = false;
+        isNextToPlayer = false;
+
+        // Check if the player is standing next to the entity
+        // @NOTE: It should stay here.
+        gp.cm.isNextToPlayer(this);
 
         // Check tile collisions
         gp.cm.checkTile(this, false);
@@ -325,6 +363,7 @@ public class Entity {
 
         // Check player collisions (for NPCs)
         gp.cm.checkPlayer(this);
+
     }
 
     /**

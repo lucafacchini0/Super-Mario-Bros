@@ -426,4 +426,27 @@ public class CollisionManager {
         gp.player.boundingBox.x = gp.player.boundingBoxDefaultX;
         gp.player.boundingBox.y = gp.player.boundingBoxDefaultY;
     }
+
+    public void isNextToPlayer(Entity entity) {
+
+        entity.boundingBox.x = entity.worldX + entity.boundingBox.x - gp.TILE_SIZE / 2;
+        entity.boundingBox.y = entity.worldY + entity.boundingBox.y - gp.TILE_SIZE / 2;
+        entity.boundingBox.width = entity.boundingBox.width + gp.TILE_SIZE;
+        entity.boundingBox.height = entity.boundingBox.height + gp.TILE_SIZE;
+
+        gp.player.boundingBox.x = gp.player.worldX + gp.player.boundingBox.x;
+        gp.player.boundingBox.y = gp.player.worldY + gp.player.boundingBox.y;
+
+        if (entity.boundingBox.intersects(gp.player.boundingBox)) {
+            entity.isNextToPlayer = true;
+        }
+
+        entity.boundingBox.x = entity.boundingBoxDefaultX;
+        entity.boundingBox.y = entity.boundingBoxDefaultY;
+        entity.boundingBox.width = entity.boundingBoxDefaultWidth;
+        entity.boundingBox.height = entity.boundingBoxDefaultHeight;
+
+        gp.player.boundingBox.x = gp.player.boundingBoxDefaultX;
+        gp.player.boundingBox.y = gp.player.boundingBoxDefaultY;
+    }
 }
