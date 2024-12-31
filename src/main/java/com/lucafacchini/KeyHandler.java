@@ -15,7 +15,10 @@ public class KeyHandler implements KeyListener {
     public boolean isRightPressed = false;
     public boolean isUpPressed = false;
     public boolean isDownPressed = false;
+
     public boolean isEnterPressed = false;
+    public boolean enterPressedHandled = false;
+
     private final GamePanel gp;
 
     /**
@@ -45,22 +48,12 @@ public class KeyHandler implements KeyListener {
 
         // Handle movement keys only if the game is not paused or in dialogue state
         if (gp.gameStatus != GamePanel.GameStatus.PAUSED) {
-            if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
-                isLeftPressed = true;
-            }
-            if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
-                isRightPressed = true;
-            }
-            if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
-                isUpPressed = true;
-            }
-            if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
-                isDownPressed = true;
-            }
-            if (key == KeyEvent.VK_ENTER) {
-                isEnterPressed = true;
-            }
+            if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) { isLeftPressed = true; }
+            if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) { isRightPressed = true; }
+            if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) { isUpPressed = true; }
+            if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) { isDownPressed = true; }
         }
+
     }
 
     /**
@@ -73,26 +66,20 @@ public class KeyHandler implements KeyListener {
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
 
-        if (gp.gameStatus == GamePanel.GameStatus.RUNNING) {
+        if (gp.gameStatus != GamePanel.GameStatus.PAUSED) {
             // Handle movement keys
             if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) isLeftPressed = false;
             if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) isRightPressed = false;
             if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) isUpPressed = false;
             if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) isDownPressed = false;
-            if (key == KeyEvent.VK_ENTER) isEnterPressed = false;
+
+            if(key == KeyEvent.VK_ENTER) {
+                isEnterPressed = true;
+                enterPressedHandled = false;
+            }
 
             // Handle pause toggle
             handlePauseToggle(key);
-
-        } else if (gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
-            if (key == KeyEvent.VK_ENTER) {
-                System.out.println("Dialogue state: Enter key pressed, exiting dialogue");
-                gp.gameStatus = GamePanel.GameStatus.RUNNING; // Attempting state transition
-                System.out.println("Game status changed to: " + gp.gameStatus);
-            }
-        } else if (gp.gameStatus == GamePanel.GameStatus.PAUSED) {
-            // Handle paused state actions
-            System.out.println("Paused state: Key released");
         }
     }
 
@@ -111,6 +98,14 @@ public class KeyHandler implements KeyListener {
                 System.out.println("UNPAUSE");
                 gp.gameStatus = GamePanel.GameStatus.RUNNING;
             }
+        }
+    }
+
+    public void updateKeyStates() {
+        if(isEnterPressed && !enterPressedHandled) {
+            enterPressedHandled = true;
+        } else {
+            isEnterPressed = false;
         }
     }
 }

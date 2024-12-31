@@ -15,8 +15,13 @@ public class SuperObject {
     // Debugging
     private static final Logger LOGGER = Logger.getLogger(SuperObject.class.getName());
 
-    // SuperObject properties
-    public String name;
+    public enum ObjectType {
+        KEY,
+        DOOR,
+        CHEST,
+        BOOTS
+    }
+    public ObjectType objectType;
 
     public int worldX, worldY; // The actual position of the object in the world.
     public int screenX, screenY; // The position of the object on the screen. It is calculated based on the player's position.

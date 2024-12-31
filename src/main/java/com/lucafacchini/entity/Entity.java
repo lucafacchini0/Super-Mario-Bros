@@ -27,8 +27,6 @@ public class Entity {
     // Debugging
     private static final Logger LOGGER = Logger.getLogger(Entity.class.getName());
 
-    public boolean blockMovement = false;
-
     // Sprite settings and declarations
     /**
      * @brief Enumerator that contains all the possible directions of the entity.
@@ -49,7 +47,7 @@ public class Entity {
 
     protected int spriteCounterMultiplier; // This variable is used to check the sprite animation speed. It's incremented by 1 every frame.
     protected int spriteFramesCounter = 0; // Frames that has passed since the last sprite change.
-    protected int spriteImageNum = 1; // The current sprite num
+    protected int spriteImageNum = 1; // The current sprite index
 
     // TODO: This variable is defined in every subclass. It should be defined here.
     private int NUM_MOVING_SPRITES;
@@ -66,12 +64,14 @@ public class Entity {
      */
     public enum Direction { UP, DOWN, LEFT, RIGHT }
     public Direction currentDirection = Direction.DOWN;
+    public Direction previousDirection = Direction.DOWN;
 
     public int worldX, worldY; // The position of the entity in the world.
-    public int speed;
+    public int speed; // The speed of the entity.
 
     public Rectangle boundingBox; // The bounding box of the entity.
-    public int boundingBoxDefaultX, boundingBoxDefaultY, boundingBoxDefaultWidth, boundingBoxDefaultHeight;
+    public int boundingBoxDefaultX, boundingBoxDefaultY;
+    public int boundingBoxDefaultWidth, boundingBoxDefaultHeight;
 
 
     // Utilities
@@ -89,8 +89,12 @@ public class Entity {
 
 
     // Dialogues
-    String[] dialogues = new String[20]; // TODO: Change to HashMap
-    public int dialogueIndex = 0;
+    public String[] dialogues = new String[20]; // TODO: Change to HashMap
+    public int dialogueIndex = 0; // The current dialogue index. It's used to track the current dialogue.
+
+    public boolean isStillTalking = false; // If the NPC hasn't finished its dialogue(s), this variable is true. This is used finish the dialogue(s) completely.
+    public boolean isInDialogueTransition = false; // If the NPC has just started talking, this variable is true. This is used to track the previous direction of the NPC.
+    public boolean blockMovement = false; // If true, the entity cannot move. It's used when the game is in dialogue state.
 
 
     // GamePanel
@@ -218,9 +222,14 @@ public class Entity {
      * @brief Method used to set action of the entity.
      */
     public void setAction() {
+
+        /*
+         * Change the direction of the entity.
+         * This is done by generating a random number between 0 and 3.
+         */
         actionCounter++;
-        if (actionCounter >= 120) {
-            Random random = new Random();
+        if (actionCounter >= 120) { // TODO: Pass a different value for each NPC
+            Random random = new Random(); // TODO: Initialize this in the constructor
             int index = random.nextInt(4); // Random number between 0 and 3
 
             switch (index) {
@@ -239,9 +248,56 @@ public class Entity {
      * This is called every frame.
      */
     public void update() {
-       setAction(); // So far, this updates the direction of the entity.
+        if (gp.gameStatus == GamePanel.GameStatus.RUNNING) {
 
-        spriteFramesCounter++;
+            /*
+             * Handles the transition from the dialogue state back to the running state.
+             * If the entity was previously in dialogue, it resumes its movement.
+             */
+            if (isInDialogueTransition) {
+                isInDialogueTransition = false; // Reset the dialogue transition flag.
+                currentDirection = previousDirection; // Restore the direction before the dialogue.
+                blockMovement = false; // Allow the entity to move again.
+                currentStatus = Status.MOVING; // Set the entity's status to moving.
+            }
+
+            setAction();
+            updateSprite();
+            checkCollisions();
+
+            if(!isCollidingWithTile && !isCollidingWithEntity && !isCollidingWithObject) {
+                move();
+            }
+        } else if (gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
+
+            /*
+             * Handles the transition from the running state to the dialogue state.
+             * The entity stops moving and faces the player during the dialogue.
+             */
+            if (!isInDialogueTransition) {
+                isInDialogueTransition = true; // Mark the start of the dialogue transition.
+                previousDirection = currentDirection; // Save the current direction for later.
+                blockMovement = true; // Prevent the entity from moving during dialogue.
+                currentStatus = Status.IDLING; // Set the entity's status to idling.
+            } else {
+                // Make the entity face the player during dialogue.
+                switch (gp.player.currentDirection) {
+                    case UP -> currentDirection = Direction.DOWN;
+                    case DOWN -> currentDirection = Direction.UP;
+                    case LEFT -> currentDirection = Direction.RIGHT;
+                    case RIGHT -> currentDirection = Direction.LEFT;
+                }
+            }
+            updateSprite();
+        }
+    }
+
+
+    /**
+     * @brief Method used to update the entity's sprite image.
+     */
+    private void updateSprite() {
+        spriteFramesCounter++; // Updated in order to change the sprite image when it reaches the spriteCounterMultiplier.
 
         if (spriteFramesCounter > spriteCounterMultiplier) {
             spriteImageNum++;
@@ -250,11 +306,16 @@ public class Entity {
             }
             spriteFramesCounter = 0;
         }
+    }
 
+
+    /**
+     * @brief Method used to check for collisions.
+     */
+    private void checkCollisions() {
         isCollidingWithTile = false;
         isCollidingWithEntity = false;
         isCollidingWithObject = false;
-        // Booleans are updated in the collision manager class.
 
         // Check tile collisions
         gp.cm.checkTile(this, false);
@@ -264,19 +325,12 @@ public class Entity {
 
         // Check player collisions (for NPCs)
         gp.cm.checkPlayer(this);
-
-        if(!isCollidingWithTile && !isCollidingWithEntity && !isCollidingWithObject) {
-            move();
-        }
     }
-
 
     /**
      * @brief Method used to move the entity.
      */
     public void move() {
-        if(blockMovement) return;
-
         switch (currentDirection) {
             case UP -> worldY -= speed;
             case DOWN -> worldY += speed;
@@ -364,7 +418,10 @@ public class Entity {
     /**
      * @brief Method used to make the NPC speak.
      */
-    public void speak() {}
+    public void speak() {
+        System.out.println("Speaking");
+        gp.ui.currentDialogue = dialogues[dialogueIndex];
+    }
 
 
 
@@ -372,5 +429,21 @@ public class Entity {
     // Debugging
     public void blockNPC(int index) {
 
+    }
+
+
+
+
+    public boolean hasFinishedTalking() {
+        dialogueIndex++;
+        isStillTalking = false;
+
+        if(dialogues[dialogueIndex] == null) {
+            dialogueIndex = 0;
+            return true;
+        }
+
+        gp.ui.currentDialogue = dialogues[dialogueIndex];
+        return false;
     }
 }

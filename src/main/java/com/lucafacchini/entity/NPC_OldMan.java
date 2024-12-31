@@ -13,8 +13,8 @@ public class NPC_OldMan extends Entity {
     private static final Logger LOGGER = Logger.getLogger(NPC_OldMan.class.getName());
 
     // Sprite settings
-    public final int NUM_MOVING_SPRITES = 2;
-    public final int NUM_IDLING_SPRITES = 2;
+    public final int NUM_MOVING_SPRITES = 6;
+    public final int NUM_IDLING_SPRITES = 4;
     public final int SPRITE_HEIGHT_PX = 19;
     public final int SPRITE_WIDTH_PX = 11;
     public final int RESCALED_SPRITE_HEIGHT_PX;
@@ -22,7 +22,7 @@ public class NPC_OldMan extends Entity {
     public final int MOVING_SPRITE_UPDATE_TIME = 5;
 
     // NPC Settings
-    public final int DEFAULT_SPEED = 1;
+    public final int DEFAULT_SPEED = 4;
 
     /**
      * @brief Constructor for the NPC_OldMan class.
@@ -30,6 +30,7 @@ public class NPC_OldMan extends Entity {
      */
     public NPC_OldMan(GamePanel gp) {
         super(gp);
+
 
         // Initialize bounding box dimensions and default values
         boundingBox.x = 0;
@@ -50,9 +51,10 @@ public class NPC_OldMan extends Entity {
         rescaleSprites(RESCALED_SPRITE_WIDTH_PX, RESCALED_SPRITE_HEIGHT_PX);
 
         // Set default values
+        setDialogue();
         setDefaultValues();
         setSpriteTimers(MOVING_SPRITE_UPDATE_TIME, NUM_MOVING_SPRITES);
-        setDialogue();
+
     }
 
 
@@ -82,10 +84,13 @@ public class NPC_OldMan extends Entity {
      */
     @Override
     public void speak() {
+        isStillTalking = false;
+
         if(dialogues[dialogueIndex] == null) {
             dialogueIndex = 0;
+            isStillTalking = true;
         }
+
         gp.ui.currentDialogue = dialogues[dialogueIndex];
-        dialogueIndex++;
     }
 }

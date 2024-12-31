@@ -22,7 +22,7 @@ public class Door_Object extends SuperObject {
      */
     public Door_Object(GamePanel gp, Utilities utilities) {
 
-        name = "Door";
+        objectType = ObjectType.DOOR;
 
         try {
             image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/objects/door.png")));
