@@ -151,7 +151,6 @@ public class Player extends Entity {
         } else if(gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
             currentStatus = Status.IDLING;
         }
-
     }
 
 
@@ -164,6 +163,7 @@ public class Player extends Entity {
         spriteFramesCounter++;
         setMultiplier(spriteImageNum); // Adjust animation speed based on player status and sprite frame
 
+        // if(NUM_MOVING_SPRITES > NUM_IDLING_SPRITES)
         if (currentStatus == Status.IDLING && spriteImageNum > NUM_IDLING_SPRITES) {
             spriteImageNum = 1;
         }
@@ -218,9 +218,6 @@ public class Player extends Entity {
 
             if (!isCollidingWithTile && !isCollidingWithObject && !isCollidingWithEntity) {
                 move();
-
-            } else if(isCollidingWithEntity && !isCollidingWithTile && !isCollidingWithObject) {
-                LOGGER.info("Colliding with entity");
             }
         }
     }
@@ -292,19 +289,10 @@ public class Player extends Entity {
      */
     public void interactionWithNPC(int index) {
         if(index != -1) {
-                gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
-                gp.npcArray[index].speak();
-        }
-
-        else {
+            gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
+            gp.npcArray[index].speak();
+        } else {
             gp.gameStatus = GamePanel.GameStatus.RUNNING;
         }
-
-//        if(hasJustCollided) {
-//            hasJustCollided = false;
-//            gp.npcArray[previousIndex].blockMovement = false;
-//        }
-
-
     }
 }
