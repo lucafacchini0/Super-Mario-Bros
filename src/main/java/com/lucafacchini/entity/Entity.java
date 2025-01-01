@@ -265,10 +265,10 @@ public class Entity {
                 }
             }
 
+            setAction();
             updateSprite();
             checkCollisions();
 
-                setAction();
 
 
             boolean isColliding = isCollidingWithTile || isCollidingWithEntity || isCollidingWithObject;
