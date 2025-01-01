@@ -106,7 +106,7 @@ public class Player extends Entity {
      */
     void setDefaultValues() {
         // Set player spawn location
-        worldX = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
+        worldX = gp.TILE_SIZE * 27 - gp.TILE_SIZE;
         worldY = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
 
         // Set player speed

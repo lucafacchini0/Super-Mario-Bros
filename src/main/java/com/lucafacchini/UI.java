@@ -1,5 +1,6 @@
 package com.lucafacchini;
 
+import com.lucafacchini.entity.Entity;
 import com.lucafacchini.objects.Key_Object;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -77,7 +78,12 @@ public class UI {
         g2d.setColor(Color.WHITE);
 
         if(gp.gameStatus == GamePanel.GameStatus.RUNNING) {
-            // Do stuff
+            // for all entities
+            for(Entity entity : gp.npcArray) {
+                if(entity != null && entity.isNextToPlayer) {
+                    drawBulb(entity);
+                }
+            }
         }
         if(gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
             if(NPCIndex != -1) {
@@ -89,6 +95,35 @@ public class UI {
         }
     }
 
+
+    /**
+     * Draws a bulb above the entity.
+     *
+     * @param entity the entity to draw the bulb above.
+     */
+
+    public void drawBulb(Entity entity) {
+        int x, y;
+
+        // Transform world coordinates to screen coordinates if necessary
+        x = entity.worldX - gp.player.worldX + gp.player.screenX;
+        y = entity.worldY - gp.player.worldY + gp.player.screenY - gp.TILE_SIZE;
+
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(x, y, gp.TILE_SIZE / 4, gp.TILE_SIZE / 4);
+
+        System.out.println("Drawing bulb at x: " + x + " y: " + y);
+    }
+
+    private int worldToScreenX(int worldX) {
+        // Add transformation logic if needed
+        return worldX - gp.player.worldX + gp.player.screenX;
+    }
+
+    private int worldToScreenY(int worldY) {
+        // Add transformation logic if needed
+        return worldY - gp.player.worldY + gp.player.screenY;
+    }
     /**
      * Draws the dialogue screen.
      */

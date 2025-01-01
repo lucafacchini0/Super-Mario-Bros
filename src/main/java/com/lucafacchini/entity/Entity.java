@@ -268,9 +268,8 @@ public class Entity {
             updateSprite();
             checkCollisions();
 
-            if(!isNextToPlayer) {
                 setAction();
-            }
+
 
             boolean isColliding = isCollidingWithTile || isCollidingWithEntity || isCollidingWithObject;
 

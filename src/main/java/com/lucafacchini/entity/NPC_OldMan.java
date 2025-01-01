@@ -63,7 +63,7 @@ public class NPC_OldMan extends Entity {
      */
     void setDefaultValues() {
         worldX = gp.TILE_SIZE * 24 - gp.TILE_SIZE; // Spawn at the center of the map
-        worldY = gp.TILE_SIZE * 26 - gp.TILE_SIZE; // Spawn at the center of the map
+        worldY = gp.TILE_SIZE * 22 - gp.TILE_SIZE; // Spawn at the center of the map
 
         speed = DEFAULT_SPEED;
     }
