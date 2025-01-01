@@ -458,6 +458,7 @@ public class Entity {
      */
     public void speak() {
         System.out.println("Speaking");
+        System.out.println("Dialogue index: " + dialogueIndex);
         gp.ui.currentDialogue = dialogues[dialogueIndex];
     }
 

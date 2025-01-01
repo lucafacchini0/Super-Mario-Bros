@@ -17,6 +17,8 @@ public class Player extends Entity {
     // Debugging
     public int hasKey = 0;
     private static final Logger LOGGER = Logger.getLogger(Entity.class.getName());
+    public int NOT_USED_YET_1 = 0;
+    public boolean isCurrentlyInDialogue = false;
 
     // Sprite settings
     public final int NUM_MOVING_SPRITES = 6;
@@ -122,6 +124,8 @@ public class Player extends Entity {
         updateDirection();
         updateSprite();
         updatePosition();
+
+        checkForDialogues();
     }
 
 
@@ -212,9 +216,8 @@ public class Player extends Entity {
             objectIndex = gp.cm.checkObject(this, true);
             pickUpObject(objectIndex);
 
-            npcIndex = gp.cm.checkEntity(this, gp.npcArray);
-            interactionWithNPC(npcIndex);
-
+            NOT_USED_YET_1 = gp.cm.checkEntity(this, gp.npcArray);
+           // interactionWithNPC(npcIndex);
 
             if (!isCollidingWithTile && !isCollidingWithObject && !isCollidingWithEntity) {
                 move();
@@ -222,6 +225,36 @@ public class Player extends Entity {
         }
     }
 
+
+
+    private boolean enterKeyProcessed = false;
+
+    private void checkForDialogues() {
+        for (int i = 0; i < gp.npcArray.length; i++) {
+            if (gp.npcArray[i] != null && gp.npcArray[i].isNextToPlayer) {
+                npcIndex = i;
+
+                if (kh.isEnterPressed && !enterKeyProcessed) {
+                    System.out.println("call npc" + i);
+                    gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
+
+                    System.out.println("currentdialogue index: " + gp.npcArray[i].dialogueIndex);
+                    gp.ui.currentDialogue = gp.npcArray[i].dialogues[gp.npcArray[i].dialogueIndex];
+
+                    if (gp.npcArray[i].hasFinishedTalking()) {
+                        gp.npcArray[i].dialogueIndex = 0;
+                        gp.gameStatus = GamePanel.GameStatus.RUNNING;
+                    } else {
+                        gp.npcArray[i].dialogueIndex++;
+                    }
+
+                    enterKeyProcessed = true; // Mark the key press as processed
+                } else if (!kh.isEnterPressed) {
+                    enterKeyProcessed = false; // Reset the flag when the key is released
+                }
+            }
+        }
+    }
 
     /**
      * @brief Moves the player entity in the current direction.

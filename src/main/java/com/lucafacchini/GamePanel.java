@@ -178,15 +178,15 @@ public class GamePanel extends JPanel implements Runnable {
 
 
 
-            if(kh.isEnterPressed) {
-                if (npcArray[player.npcIndex].hasFinishedTalking()) {
-                    npcArray[player.npcIndex].dialogueIndex = 0;
-                    gameStatus = GamePanel.GameStatus.RUNNING;
-                } else {
-                    npcArray[player.npcIndex].dialogueIndex++;
-                    ui.currentDialogue = npcArray[player.npcIndex].dialogues[npcArray[player.npcIndex].dialogueIndex];
-                }
-            }
+//            if(kh.isEnterPressed) {
+//                if (npcArray[player.npcIndex].hasFinishedTalking()) {
+//                    npcArray[player.npcIndex].dialogueIndex = 0;
+//                    gameStatus = GamePanel.GameStatus.RUNNING;
+//                } else {
+//                    npcArray[player.npcIndex].dialogueIndex++;
+//                    ui.currentDialogue = npcArray[player.npcIndex].dialogues[npcArray[player.npcIndex].dialogueIndex];
+//                }
+//            }
 
             g2d.dispose();
 
