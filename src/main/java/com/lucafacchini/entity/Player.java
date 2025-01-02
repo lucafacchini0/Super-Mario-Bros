@@ -216,6 +216,7 @@ public class Player extends Entity {
 
     // A flag to prevent multiple dialogues
     private boolean enterKeyProcessed = false;
+    public boolean isReadyForNextDialogue = false;
 
     /**
      * @brief Checks for dialogues with NPCs in the game world.
@@ -244,19 +245,38 @@ public class Player extends Entity {
      * @param npcIndex The index of the NPC in the npcArray.
      */
     private void handleDialogue(int npcIndex) {
-        this.npcIndex = npcIndex;
+        this.npcIndex = npcIndex; // @NOTE not used yet.
+        isReadyForNextDialogue = false;
 
-        if (kh.isEnterPressed && !enterKeyProcessed) {
+        /*
+         * If the player presses the enter key and the dialogue has finished printing,
+         * then the dialogue is displayed on the screen.
+         */
+        if (kh.isEnterPressed && !enterKeyProcessed && gp.ui.hasFinishedPrintingDialogue) {
             gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
             gp.npcArray[npcIndex].speak();
 
+            /*
+             * If this was the last dialogue, reset the dialogue index to
+             * 0 and set the game status to RUNNING.
+             *
+             * Note that the method to draw the dialogue on the screen,
+             * in the UI class, will be executed only if the game status is DIALOGUE.
+             *
+             * By doing this, the method won't be called anymore after the last dialogue
+             * because the game status will be set to RUNNING.
+             */
             if (gp.npcArray[npcIndex].hasFinishedDialogues()) {
                 gp.npcArray[npcIndex].dialogueIndex = 0;
                 gp.gameStatus = GamePanel.GameStatus.RUNNING;
             } else {
                 gp.npcArray[npcIndex].dialogueIndex++;
+                isReadyForNextDialogue = true;
             }
 
+            /*
+             * Set the flag to prevent multiple dialogues.
+             */
             enterKeyProcessed = true; // Set the flag to prevent multiple dialogues
         } else if (!kh.isEnterPressed) {
             enterKeyProcessed = false; // Reset the flag when the key is released

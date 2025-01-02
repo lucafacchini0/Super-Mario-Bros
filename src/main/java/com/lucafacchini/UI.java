@@ -3,6 +3,7 @@ package com.lucafacchini;
 import com.lucafacchini.entity.Entity;
 
 import java.awt.*;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -22,6 +23,10 @@ public class UI {
 
     // Dialogues
     public String currentDialogue = null;
+    public String dialogueToPrint = currentDialogue;
+    public int currentLetter = 1;
+    public boolean isPlayerReadyForNextDialogue = false;
+    public boolean hasFinishedPrintingDialogue = true;
 
     // GamePanel instance
     GamePanel gp;
@@ -145,7 +150,21 @@ public class UI {
         x += gp.TILE_SIZE;
         y += gp.TILE_SIZE;
 
-        g2d.drawString(dialogue, x, y);
+        if(isPlayerReadyForNextDialogue()) {
+            hasFinishedPrintingDialogue = false;
+            currentLetter = 1;
+        }
+
+        if (currentLetter > dialogue.length()) {
+            hasFinishedPrintingDialogue = true;
+            currentLetter = dialogue.length();
+        }
+
+        dialogueToPrint = dialogue.substring(0, currentLetter);
+
+        g2d.drawString(dialogueToPrint, x, y);
+
+        currentLetter++;
     }
 
 
@@ -189,5 +208,9 @@ public class UI {
 
     private int worldToScreenY(int worldY) {
         return worldY - gp.player.worldY + gp.player.screenY;
+    }
+
+    private boolean isPlayerReadyForNextDialogue() {
+        return gp.player.isReadyForNextDialogue;
     }
 }
