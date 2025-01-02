@@ -232,27 +232,29 @@ public class Player extends Entity {
     private void checkForDialogues() {
         for (int i = 0; i < gp.npcArray.length; i++) {
             if (gp.npcArray[i] != null && gp.npcArray[i].isNextToPlayer) {
-                npcIndex = i;
-
-                if (kh.isEnterPressed && !enterKeyProcessed) {
-                    System.out.println("call npc" + i);
-                    gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
-
-                    System.out.println("currentdialogue index: " + gp.npcArray[i].dialogueIndex);
-                    gp.ui.currentDialogue = gp.npcArray[i].dialogues[gp.npcArray[i].dialogueIndex];
-
-                    if (gp.npcArray[i].hasFinishedTalking()) {
-                        gp.npcArray[i].dialogueIndex = 0;
-                        gp.gameStatus = GamePanel.GameStatus.RUNNING;
-                    } else {
-                        gp.npcArray[i].dialogueIndex++;
-                    }
-
-                    enterKeyProcessed = true; // Mark the key press as processed
-                } else if (!kh.isEnterPressed) {
-                    enterKeyProcessed = false; // Reset the flag when the key is released
-                }
+                handleDialogue(i);
             }
+        }
+    }
+
+    // TODO: Distribute the methods to appropriate classes.
+    private void handleDialogue(int npcIndex) {
+        this.npcIndex = npcIndex;
+
+        if (kh.isEnterPressed && !enterKeyProcessed) {
+            gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
+            gp.ui.currentDialogue = gp.npcArray[npcIndex].dialogues[gp.npcArray[npcIndex].dialogueIndex];
+
+            if (gp.npcArray[npcIndex].hasFinishedTalking()) {
+                gp.npcArray[npcIndex].dialogueIndex = 0;
+                gp.gameStatus = GamePanel.GameStatus.RUNNING;
+            } else {
+                gp.npcArray[npcIndex].dialogueIndex++;
+            }
+
+            enterKeyProcessed = true; // Mark the key press as processed
+        } else if (!kh.isEnterPressed) {
+            enterKeyProcessed = false; // Reset the flag when the key is released
         }
     }
 

@@ -474,16 +474,9 @@ public class Entity {
 
 
     public boolean hasFinishedTalking() {
-        dialogueIndex++;
-    //    isStillTalking = false;
-
-        if(dialogues[dialogueIndex] == null) {
-            dialogueIndex--;
+        if (dialogueIndex >= dialogues.length || dialogues[dialogueIndex] == null) {
             return true;
         }
-
-    //    gp.ui.currentDialogue = dialogues[dialogueIndex];
-        dialogueIndex--;
         return false;
     }
 }
