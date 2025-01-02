@@ -74,10 +74,17 @@ public class KeyHandler implements KeyListener {
 
             else if(key == KeyEvent.VK_ENTER) {
                 if (gp.ui.titleScreenOption == 0) {
-                    gp.gameStatus = GamePanel.GameStatus.RUNNING;
-                } else if (gp.ui.titleScreenOption == 1) {
+                    switch(gp.ui.currentTitleScreenWindow) {
+                        case 1 -> gp.ui.currentTitleScreenWindow = 2;
+                        case 2 -> gp.gameStatus = GamePanel.GameStatus.RUNNING;
+                    }
+                }
+
+                else if (gp.ui.titleScreenOption == 1) {
                     // stuff
-                } else if (gp.ui.titleScreenOption == 2) {
+                }
+
+                else if (gp.ui.titleScreenOption == 2) {
                     System.exit(0);
                 }
             }
