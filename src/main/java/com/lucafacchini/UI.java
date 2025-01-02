@@ -22,6 +22,9 @@ public class UI {
     // Fonts
     Font dialogueFont;
 
+    // Title screen
+    public int titleScreenOption = 0;
+
     // Dialogues
     public String currentDialogue = null;
     public String dialogueToPrint = null;
@@ -68,15 +71,105 @@ public class UI {
         this.g2d = g2d;
 
 
-        if(gp.gameStatus == GamePanel.GameStatus.RUNNING) {
+
+
+        if(gp.gameStatus == GamePanel.GameStatus.TITLE_SCREEN) {
+            // Coordinates of the text
+            int x, y;
+            int width, height;
+
+            String text = null;
+
+            // Init font
+            g2d.setFont(dialogueFont);
+
+
+            // Title
+            g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 94F));
+            text = "Karolina & Kalsi";
+
+            x = getCenteredX(text);
+            y = gp.TILE_SIZE * 2;
+
+            g2d.setColor(Color.DARK_GRAY);
+            g2d.drawString(text, x + 5, y + 5);
+
+            g2d.setColor(Color.YELLOW);
+            g2d.drawString(text, x, y);
+
+
+            // Subtitle
+            g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 48F));
+            text = "Game by Luca Facchini";
+
+            x = getCenteredX(text);
+            y = gp.TILE_SIZE * 3;
+
+            g2d.setColor(Color.DARK_GRAY);
+            g2d.drawString(text, x + 3, y + 3);
+
+            g2d.setColor(Color.WHITE);
+            g2d.drawString(text, x, y);
+
+
+            // Options
+            g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 48F));
+
+            // First option
+            text = "PLAY GAME";
+
+            x = getCenteredX(text);
+            y = gp.TILE_SIZE * 8;
+
+            g2d.setColor(Color.WHITE);
+            g2d.drawString(text, x, y);
+
+            if(titleScreenOption == 0) {
+                g2d.setColor(Color.YELLOW);
+                g2d.drawString(">", x-gp.TILE_SIZE, y);
+            }
+
+
+
+            // Second option
+            text = "LOAD FILE";
+
+            x = getCenteredX(text);
+            y = gp.TILE_SIZE * 9;
+
+            g2d.setColor(Color.WHITE);
+            g2d.drawString(text, x, y);
+
+            if(titleScreenOption == 1) {
+                g2d.setColor(Color.YELLOW);
+                g2d.drawString(">", x-gp.TILE_SIZE, y);
+            }
+
+
+
+            // Third option
+            text = "EXIT";
+
+            x = getCenteredX(text);
+            y = gp.TILE_SIZE * 10;
+
+            g2d.setColor(Color.WHITE);
+            g2d.drawString(text, x, y);
+
+            if(titleScreenOption == 2) {
+                g2d.setColor(Color.YELLOW);
+                g2d.drawString(">", x-gp.TILE_SIZE, y);
+            }
+        }
+        else if(gp.gameStatus == GamePanel.GameStatus.RUNNING) {
             drawEntityRelatedStuff();
         }
 
-        if(gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
+        else if(gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
             drawDialogues();
         }
 
-        if(gp.gameStatus == GamePanel.GameStatus.PAUSED) {
+        else if(gp.gameStatus == GamePanel.GameStatus.PAUSED) {
             // Do stuff
         }
     }
