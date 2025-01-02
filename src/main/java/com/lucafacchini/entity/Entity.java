@@ -93,7 +93,6 @@ public class Entity {
     public String[] dialogues = new String[20]; // TODO: Change to HashMap
     public int dialogueIndex = 0; // The current dialogue index. It's used to track the current dialogue.
 
-    public boolean isStillTalking = false; // If the NPC hasn't finished its dialogue(s), this variable is true. This is used finish the dialogue(s) completely.
     public boolean isInDialogueTransition = false; // If the NPC has just started talking, this variable is true. This is used to track the previous direction of the NPC.
     public boolean blockMovement = false; // If true, the entity cannot move. It's used when the game is in dialogue state.
 

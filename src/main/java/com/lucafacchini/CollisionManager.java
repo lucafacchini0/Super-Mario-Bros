@@ -50,6 +50,7 @@ public class CollisionManager {
      *   @note This can be improved. I don't know yet how to, but I'm sure it can be improved, and I'll think about it.
      *
      * @param entity The entity to check for collision. (Player, NPC, etc.)
+     * @param isPlayer True if the entity is the player, false otherwise. (NOT USED YET)
      */
     public void checkTile(Entity entity, boolean isPlayer) {
 

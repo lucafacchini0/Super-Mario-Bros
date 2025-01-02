@@ -3,7 +3,8 @@ package com.lucafacchini;
 import com.lucafacchini.entity.Entity;
 
 import java.awt.*;
-import java.util.Objects;
+import java.io.BufferedReader;
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 /**
@@ -19,13 +20,13 @@ public class UI {
     public boolean gameFinished = false;
 
     // Fonts
+    Font dialogueFont;
     Font arial_30 = new Font("Arial", Font.PLAIN, 30);
 
     // Dialogues
     public String currentDialogue = null;
-    public String dialogueToPrint = currentDialogue;
+    public String dialogueToPrint = null;
     public int currentLetter = 1;
-    public boolean isPlayerReadyForNextDialogue = false;
     public boolean hasFinishedPrintingDialogue = true;
 
     // GamePanel instance
@@ -46,6 +47,14 @@ public class UI {
     public UI(GamePanel gp, KeyHandler kh) {
         this.gp = gp;
 //        this.kh = kh;
+
+        try {
+            InputStream is = getClass().getResourceAsStream("/fonts/Pixel-Life.ttf");
+            dialogueFont = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (Exception e) {
+            LOGGER.severe("Error loading font: " + e.getMessage());
+        }
+
     }
 
 
@@ -78,7 +87,7 @@ public class UI {
     public void draw(Graphics2D g2d) {
         this.g2d = g2d;
 
-        g2d.setFont(arial_30);
+        g2d.setFont(dialogueFont);
         g2d.setColor(Color.WHITE);
 
         if(gp.gameStatus == GamePanel.GameStatus.RUNNING) {
@@ -162,7 +171,12 @@ public class UI {
 
         dialogueToPrint = dialogue.substring(0, currentLetter);
 
+        g2d.setColor(Color.BLACK);
+        g2d.drawString(dialogueToPrint, x + 2, y + 2);
+        g2d.setColor(Color.WHITE);
         g2d.drawString(dialogueToPrint, x, y);
+
+
 
         currentLetter++;
     }
@@ -173,7 +187,7 @@ public class UI {
      *
      * @param entity the entity to draw the bulb above.
      */
-    public void drawBulb(Entity entity) {
+    private void drawBulb(Entity entity) {
         int x = worldToScreenX(entity.worldX);
         int y = worldToScreenY(entity.worldY) - gp.TILE_SIZE / 2;
 
