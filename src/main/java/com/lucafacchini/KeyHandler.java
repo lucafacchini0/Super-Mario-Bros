@@ -57,22 +57,25 @@ public class KeyHandler implements KeyListener {
         else if(gp.gameStatus == GamePanel.GameStatus.TITLE_SCREEN) {
 
 
-            if(key == KeyEvent.VK_W || key == KeyEvent.VK_UP) {
-                if(gp.ui.titleScreenOption == 0) {
-                    gp.ui.titleScreenOption = 2;
-                } else {
-                    gp.ui.titleScreenOption--;
-                }
-            } else if(key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) {
-                if(gp.ui.titleScreenOption == 2) {
-                    gp.ui.titleScreenOption = 0;
-                } else {
-                    gp.ui.titleScreenOption++;
+            if(gp.ui.currentTitleScreenWindow == 1) {
+                if(key == KeyEvent.VK_W || key == KeyEvent.VK_UP) {
+                    if(gp.ui.titleScreenOption == 0) {
+                        gp.ui.titleScreenOption = 2;
+                    } else {
+                        gp.ui.titleScreenOption--;
+                    }
+                } else if(key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) {
+                    if(gp.ui.titleScreenOption == 2) {
+                        gp.ui.titleScreenOption = 0;
+                    } else {
+                        gp.ui.titleScreenOption++;
+                    }
                 }
             }
 
 
-            else if(key == KeyEvent.VK_ENTER) {
+
+            if(key == KeyEvent.VK_ENTER) {
                 if (gp.ui.titleScreenOption == 0) {
                     switch(gp.ui.currentTitleScreenWindow) {
                         case 1 -> gp.ui.currentTitleScreenWindow = 2;
