@@ -23,6 +23,7 @@ public class UI {
 
     // Dialogues
     public String currentDialogue = null;
+    public String dialogueToPrint = currentDialogue;
     public int currentLetter = 1;
     public boolean isPlayerReadyForNextDialogue = false;
     public boolean hasFinishedPrintingDialogue = true;
@@ -145,14 +146,11 @@ public class UI {
      * @param dialogue the string to draw.
      */
     private void drawDialogueString(int x, int y, String dialogue) {
-
-        String dialogueToPrint = "";
-
         g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 32F));
         x += gp.TILE_SIZE;
         y += gp.TILE_SIZE;
 
-        if(isPlayerReadyForNextDialogue) {
+        if(isPlayerReadyForNextDialogue()) {
             hasFinishedPrintingDialogue = false;
             currentLetter = 1;
         }
@@ -210,5 +208,9 @@ public class UI {
 
     private int worldToScreenY(int worldY) {
         return worldY - gp.player.worldY + gp.player.screenY;
+    }
+
+    private boolean isPlayerReadyForNextDialogue() {
+        return gp.player.isReadyForNextDialogue;
     }
 }
