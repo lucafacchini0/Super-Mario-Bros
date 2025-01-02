@@ -47,13 +47,48 @@ public class KeyHandler implements KeyListener {
         int key = e.getKeyCode();
 
         // Handle movement keys only if the game is not paused or in dialogue state
-        if (gp.gameStatus != GamePanel.GameStatus.PAUSED) {
+        if (gp.gameStatus == GamePanel.GameStatus.RUNNING || gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
             if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) { isLeftPressed = true; }
             if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) { isRightPressed = true; }
             if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) { isUpPressed = true; }
             if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) { isDownPressed = true; }
         }
 
+        else if(gp.gameStatus == GamePanel.GameStatus.TITLE_SCREEN) {
+
+
+            if(key == KeyEvent.VK_W || key == KeyEvent.VK_UP) {
+                if(gp.ui.titleScreenOption == 0) {
+                    gp.ui.titleScreenOption = 2;
+                } else {
+                    gp.ui.titleScreenOption--;
+                }
+            } else if(key == KeyEvent.VK_S || key == KeyEvent.VK_DOWN) {
+                if(gp.ui.titleScreenOption == 2) {
+                    gp.ui.titleScreenOption = 0;
+                } else {
+                    gp.ui.titleScreenOption++;
+                }
+            }
+
+
+            else if(key == KeyEvent.VK_ENTER) {
+                if (gp.ui.titleScreenOption == 0) {
+                    switch(gp.ui.currentTitleScreenWindow) {
+                        case 1 -> gp.ui.currentTitleScreenWindow = 2;
+                        case 2 -> gp.gameStatus = GamePanel.GameStatus.RUNNING;
+                    }
+                }
+
+                else if (gp.ui.titleScreenOption == 1) {
+                    // stuff
+                }
+
+                else if (gp.ui.titleScreenOption == 2) {
+                    System.exit(0);
+                }
+            }
+        }
     }
 
     /**

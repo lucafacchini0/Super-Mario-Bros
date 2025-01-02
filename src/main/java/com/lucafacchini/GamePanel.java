@@ -23,9 +23,10 @@ public class GamePanel extends JPanel implements Runnable {
      * This enumerator is used to determine the current status of the game.
      */
     public enum GameStatus {
+        TITLE_SCREEN,
         RUNNING, PAUSED, DIALOGUE
     }
-    public GameStatus gameStatus = GameStatus.RUNNING;
+    public GameStatus gameStatus = GameStatus.TITLE_SCREEN;
 
     // Tile settings
     public final int ORIGINAL_TILE_SIZE = 16;
@@ -142,7 +143,7 @@ public class GamePanel extends JPanel implements Runnable {
      * This method is called every frame to update the game state.
      */
     private void updateComponents() {
-        if (gameStatus != GameStatus.PAUSED) {
+        if (gameStatus != GameStatus.PAUSED && gameStatus != GameStatus.TITLE_SCREEN) {
             player.update();
 
             for (Entity npc : npcArray) {
@@ -152,6 +153,8 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             kh.updateKeyStates(); // TODO: Look at this asap.
+        } else if (gameStatus == GameStatus.TITLE_SCREEN) {
+            // Do stuff
         }
     }
 
@@ -178,24 +181,29 @@ public class GamePanel extends JPanel implements Runnable {
      * @param g2d the Graphics2D object used to draw the components.
      */
     private void drawAllComponents(Graphics2D g2d) {
-        for (TileManager tileManager : maps.values()) {
-            tileManager.draw(g2d);
-        }
 
-        for (SuperObject object : objectsArray) {
-            if (object != null) {
-                object.draw(g2d, this);
+        if(gameStatus != GameStatus.PAUSED && gameStatus != GameStatus.TITLE_SCREEN) {
+            for (TileManager tileManager : maps.values()) {
+                tileManager.draw(g2d);
             }
-        }
 
-        for (Entity npc : npcArray) {
-            if (npc != null) {
-                npc.draw(g2d);
+            for (SuperObject object : objectsArray) {
+                if (object != null) {
+                    object.draw(g2d, this);
+                }
             }
-        }
 
-        player.draw(g2d);
-        ui.draw(g2d);
+            for (Entity npc : npcArray) {
+                if (npc != null) {
+                    npc.draw(g2d);
+                }
+            }
+
+            player.draw(g2d);
+            ui.draw(g2d);
+        } else if(gameStatus == GameStatus.TITLE_SCREEN) {
+            ui.draw(g2d);
+        }
     }
 
     /**
