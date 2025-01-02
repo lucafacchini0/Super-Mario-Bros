@@ -137,6 +137,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+
     /**
      * @brief Updates the components of the game.
      * This method is called every frame to update the game state.
@@ -144,10 +145,17 @@ public class GamePanel extends JPanel implements Runnable {
     private void updateComponents() {
         if (gameStatus != GameStatus.PAUSED) {
             player.update();
-            npcArray[0].update();
-            kh.updateKeyStates();
+
+            for (Entity npc : npcArray) {
+                if (npc != null) {
+                    npc.update();
+                }
+            }
+
+            kh.updateKeyStates(); // TODO: Look at this asap.
         }
     }
+
 
     /**
      * @brief Paints the components of the game panel.
@@ -160,36 +168,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (gameStatus != GameStatus.PAUSED) {
             super.paintComponent(g);
-
             drawAllComponents(g2d);
-
             g2d.dispose();
-
-        }
-
-        if(gameStatus == GameStatus.DIALOGUE) {
-
-            super.paintComponent(g);
-//
-//            if(!npcArray[player.npcIndex].isStillTalking) {
-//                npcArray[player.npcIndex].isStillTalking = true;
-//                ui.draw(g2d, player.npcIndex);
-//            }
-
-
-
-//            if(kh.isEnterPressed) {
-//                if (npcArray[player.npcIndex].hasFinishedTalking()) {
-//                    npcArray[player.npcIndex].dialogueIndex = 0;
-//                    gameStatus = GamePanel.GameStatus.RUNNING;
-//                } else {
-//                    npcArray[player.npcIndex].dialogueIndex++;
-//                    ui.currentDialogue = npcArray[player.npcIndex].dialogues[npcArray[player.npcIndex].dialogueIndex];
-//                }
-//            }
-
-            g2d.dispose();
-
         }
     }
 
@@ -216,7 +196,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.draw(g2d);
-        ui.draw(g2d, player.npcIndex);
+        ui.draw(g2d);
     }
 
     /**

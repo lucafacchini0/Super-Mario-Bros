@@ -78,19 +78,4 @@ public class NPC_OldMan extends Entity {
         dialogues[2] = "dialogue 3";
     }
 
-
-    /**
-     * @brief Makes the NPC speak.
-     */
-    @Override
-    public void speak() {
-        isStillTalking = false;
-
-        if(dialogues[dialogueIndex] == null) {
-            dialogueIndex = 0;
-            isStillTalking = true;
-        }
-
-        gp.ui.currentDialogue = dialogues[dialogueIndex];
-    }
 }

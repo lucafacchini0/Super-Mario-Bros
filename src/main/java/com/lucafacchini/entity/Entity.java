@@ -250,7 +250,6 @@ public class Entity {
      */
     public void update() {
         if (gp.gameStatus == GamePanel.GameStatus.RUNNING) {
-
             /*
              * Handles the transition from the dialogue state back to the running state.
              * If the entity was previously in dialogue, it resumes its movement.
@@ -265,11 +264,9 @@ public class Entity {
                 }
             }
 
-            setAction();
+            setAction(); // @NOTE: It has to stay before checkCollisions().
             updateSprite();
             checkCollisions();
-
-
 
             boolean isColliding = isCollidingWithTile || isCollidingWithEntity || isCollidingWithObject;
 
@@ -278,30 +275,9 @@ public class Entity {
                 move();
             } else if(!isColliding && isNextToPlayer) {
                 currentStatus = Status.IDLING;
-
-                // Calculate the difference in X and Y coordinates between the player and the Entity
-                int deltaX = gp.player.worldX - this.worldX;
-                int deltaY = gp.player.worldY - this.worldY;
-
-// Determine the direction based on the position of the player relative to the Entity
-                if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                    // Player is more to the left or right
-                    if (deltaX > 0) {
-                        currentDirection = Direction.RIGHT;
-                    } else {
-                        currentDirection = Direction.LEFT;
-                    }
-                } else {
-                    // Player is more above or below
-                    if (deltaY > 0) {
-                        currentDirection = Direction.DOWN;
-                    } else {
-                        currentDirection = Direction.UP;
-                    }
-                }
+                facePlayer();
             }
         } else if (gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
-
             /*
              * Handles the transition from the running state to the dialogue state.
              * The entity stops moving and faces the player during the dialogue.
@@ -321,6 +297,46 @@ public class Entity {
                 }
             }
             updateSprite();
+        }
+    }
+
+    /**
+     * @brief Method used to make the entity face the player.
+     *
+     * This method is called when the entity is next to the player.
+     * It works the following way:
+     *
+     * 1. Calculate the difference in X and Y coordinates between the player and the entity.
+     *    this is done to determine the direction of the player relative to the entity.
+     *    (is the player to the right, left, above, or below the entity?)
+     *
+     * 2. Determine the direction based on the position of the player relative to the entity.
+     *    (if the player is more to the left or right, the entity faces left or right, respectively.)
+     */
+    private void facePlayer() {
+        int deltaX = gp.player.worldX - this.worldX;
+        int deltaY = gp.player.worldY - this.worldY;
+
+        /*
+         * This if statement is used to determine the direction of the entity based on the player's position.
+         * If the player is more to the left or right of the entity, the entity faces left or right, respectively.
+         *
+         * Let's consider the following example:
+         *
+         * deltaX = 10, which means that the player is 10 units to the right of the entity.
+         * deltaY = 5, which means that the player is 5 units below the entity.
+         *
+         * We use the absolute value of deltaX and deltaY to determine the distance in units, regardless of the direction.
+         *
+         * Then, if, for example, deltaX is greater than zero, the player is to the right of the entity,
+         * and therefore the entity should face right.
+         */
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            if(deltaX > 0) currentDirection = Direction.RIGHT;
+            else currentDirection = Direction.LEFT;
+        } else {
+            if(deltaY > 0) currentDirection = Direction.DOWN;
+            else currentDirection = Direction.UP;
         }
     }
 
@@ -362,7 +378,6 @@ public class Entity {
 
         // Check player collisions (for NPCs)
         gp.cm.checkPlayer(this);
-
     }
 
     /**
@@ -407,7 +422,6 @@ public class Entity {
             g2d.drawImage(image, screenX, screenY, null);
             g2d.setColor(Color.RED);
 
-            // TODO: bounding box of NPCs is unexpectedly small. it's represented by a pixel at 0,0.
             g2d.drawRect(screenX + boundingBox.x, screenY + boundingBox.y, boundingBox.width, boundingBox.height);
         }
     }
@@ -453,30 +467,37 @@ public class Entity {
     }
 
 
+
+
+
+
+    // ********** DIALOGUE METHODS ********** //
+
+
+
     /**
      * @brief Method used to make the NPC speak.
+     *
+     * Actually, this method just sets the current dialogue of the NPC to
+     * the dialogue at the current index.
      */
     public void speak() {
-        System.out.println("Speaking");
-        System.out.println("Dialogue index: " + dialogueIndex);
         gp.ui.currentDialogue = dialogues[dialogueIndex];
     }
 
 
-
-
-    // Debugging
-    public void blockNPC(int index) {
-
-    }
-
-
-
-
-    public boolean hasFinishedTalking() {
-        if (dialogueIndex >= dialogues.length || dialogues[dialogueIndex] == null) {
-            return true;
-        }
-        return false;
+    /**
+     * @brief Method used to check if the NPC has finished talking.
+     *
+     * This is used to determine if the Entity is at the end of its dialogues.
+     * It's done by checking if the current dialogue index is greater or equal
+     * to the length of the dialogues array or if the current dialogue is null.
+     *
+     * It should never have a greater index than the length of the dialogues array.
+     *
+     * @return true if the NPC has finished talking, false otherwise.
+     */
+    public boolean hasFinishedDialogues() {
+        return dialogueIndex >= dialogues.length || dialogues[dialogueIndex] == null;
     }
 }
