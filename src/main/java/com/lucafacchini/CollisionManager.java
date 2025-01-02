@@ -202,6 +202,8 @@ public class CollisionManager {
      *
      * @param entity The entity to check for collision.
      */
+
+//TODO check if its solid before (performance)
     public int checkObject(Entity entity, boolean isPlayer) {
         int index = -1;
 
