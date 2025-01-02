@@ -73,9 +73,9 @@ public class NPC_OldMan extends Entity {
      * @brief Sets the dialogue for the NPC.
      */
     public void setDialogue() {
-        dialogues[0] = "dialogue 1";
-        dialogues[1] = "dialogue 2";
-        dialogues[2] = "dialogue 3";
+        dialogues[0] = "Hello how are you";
+        dialogues[1] = "I'm an old man";
+        dialogues[2] = "Tararararatgretytryr";
     }
 
 }

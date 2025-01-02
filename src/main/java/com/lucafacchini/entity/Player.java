@@ -245,9 +245,11 @@ public class Player extends Entity {
      */
     private void handleDialogue(int npcIndex) {
         this.npcIndex = npcIndex;
+        gp.ui.isPlayerReadyForNextDialogue = false;
 
-        if (kh.isEnterPressed && !enterKeyProcessed) {
+        if (kh.isEnterPressed && !enterKeyProcessed && gp.ui.hasFinishedPrintingDialogue) {
             gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
+            gp.ui.isPlayerReadyForNextDialogue = true;
             gp.npcArray[npcIndex].speak();
 
             if (gp.npcArray[npcIndex].hasFinishedDialogues()) {

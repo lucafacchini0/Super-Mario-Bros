@@ -3,6 +3,7 @@ package com.lucafacchini;
 import com.lucafacchini.entity.Entity;
 
 import java.awt.*;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -22,6 +23,9 @@ public class UI {
 
     // Dialogues
     public String currentDialogue = null;
+    public int currentLetter = 1;
+    public boolean isPlayerReadyForNextDialogue = false;
+    public boolean hasFinishedPrintingDialogue = true;
 
     // GamePanel instance
     GamePanel gp;
@@ -141,11 +145,28 @@ public class UI {
      * @param dialogue the string to draw.
      */
     private void drawDialogueString(int x, int y, String dialogue) {
+
+        String dialogueToPrint = "";
+
         g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 32F));
         x += gp.TILE_SIZE;
         y += gp.TILE_SIZE;
 
-        g2d.drawString(dialogue, x, y);
+        if(isPlayerReadyForNextDialogue) {
+            hasFinishedPrintingDialogue = false;
+            currentLetter = 1;
+        }
+
+        if (currentLetter > dialogue.length()) {
+            hasFinishedPrintingDialogue = true;
+            currentLetter = dialogue.length();
+        }
+
+        dialogueToPrint = dialogue.substring(0, currentLetter);
+
+        g2d.drawString(dialogueToPrint, x, y);
+
+        currentLetter++;
     }
 
 
