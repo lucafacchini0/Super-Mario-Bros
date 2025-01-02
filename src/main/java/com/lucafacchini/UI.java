@@ -3,8 +3,8 @@ package com.lucafacchini;
 import com.lucafacchini.entity.Entity;
 
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -21,7 +21,6 @@ public class UI {
 
     // Fonts
     Font dialogueFont;
-    Font arial_30 = new Font("Arial", Font.PLAIN, 30);
 
     // Dialogues
     public String currentDialogue = null;
@@ -35,26 +34,20 @@ public class UI {
     // Graphics2D object
     Graphics2D g2d;
 
-//    // KeyHandler @NOTE This is not used yet. I am not sure if it will be used.
-//    KeyHandler kh;
+    // Colors
+    Color dialogueWindowBackground = new Color(0, 0, 0, 150);
+    Color dialogueWindowStroke = new Color(255, 255, 255);
+
 
     /**
      * Constructor of the UI class.
      *
      * @param gp the GamePanel instance.
-     * @param kh the KeyHandler instance.
      */
-    public UI(GamePanel gp, KeyHandler kh) {
+    public UI(GamePanel gp) {
         this.gp = gp;
-//        this.kh = kh;
 
-        try {
-            InputStream is = getClass().getResourceAsStream("/fonts/Pixel-Life.ttf");
-            dialogueFont = Font.createFont(Font.TRUETYPE_FONT, is);
-        } catch (Exception e) {
-            LOGGER.severe("Error loading font: " + e.getMessage());
-        }
-
+        loadFonts();
     }
 
 
@@ -62,33 +55,18 @@ public class UI {
 
 
 
-    // ********** DRAW METHODS ********** //
-
-
-    /**
-     * @brief Shows a message on the screen.
-     *
-     * @note: This method is still experimental.
-     *
-     * @param text the text to show on the screen.
-     */
-    public void showMessage(String text) {
-        g2d.setFont(arial_30);
-        g2d.setColor(Color.WHITE);
-        g2d.drawString(text, 100, 100);
-    }
+// ********************************************** DRAW METHODS ********************************************** //
 
 
     /**
      * @brief Draws the UI elements on the screen.
+     * This is called every frame.
      *
      * @param g2d the Graphics2D object used to draw the elements.
      */
     public void draw(Graphics2D g2d) {
         this.g2d = g2d;
 
-        g2d.setFont(dialogueFont);
-        g2d.setColor(Color.WHITE);
 
         if(gp.gameStatus == GamePanel.GameStatus.RUNNING) {
             drawEntityRelatedStuff();
@@ -104,6 +82,37 @@ public class UI {
     }
 
 
+
+
+
+    // ********** RUNNING STATE ********** //
+
+
+    /**
+     * @brief Draws a bulb above the entity.
+     *
+     * @param entity the entity to draw the bulb above.
+     */
+    private void drawBulb(Entity entity) {
+        int x, y, width, height;
+
+        width = gp.TILE_SIZE / 4;
+        height = gp.TILE_SIZE / 4;
+        x = worldToScreenX(entity.worldX) + gp.TILE_SIZE / 2 - width / 2;
+        y = worldToScreenY(entity.worldY) - gp.TILE_SIZE / 2;
+
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(x, y, width, height);
+    }
+
+
+
+
+
+    // ********** DIALOGUE STATE ********** //
+
+
+
     /**
      * @brief Draws the dialogue screen.
      *
@@ -111,6 +120,8 @@ public class UI {
      * Then it draws the sub window and the dialogue text.
      */
     private void drawDialogueScreen() {
+        g2d.setFont(dialogueFont);
+
         int x, y, width, height;
 
         x = gp.TILE_SIZE * 2;
@@ -133,13 +144,11 @@ public class UI {
      *
      */
     private void drawDialogueWindow(int x, int y, int width, int height) {
-        Color color = new Color(0, 0,0, 150);
-        g2d.setColor(color);
+        g2d.setColor(dialogueWindowBackground);
         g2d.fillRoundRect(x, y, width, height, 50, 50);
 
-        color = new Color(255, 255, 255);
         g2d.setStroke(new BasicStroke(5));
-        g2d.setColor(color);
+        g2d.setColor(dialogueWindowStroke);
         g2d.drawRoundRect(x+5, y+5, width-10, height-10, 50, 50);
     }
 
@@ -155,7 +164,8 @@ public class UI {
      * @param dialogue the string to draw.
      */
     private void drawDialogueString(int x, int y, String dialogue) {
-        g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 32F));
+        g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 36F));
+
         x += gp.TILE_SIZE;
         y += gp.TILE_SIZE;
 
@@ -176,33 +186,46 @@ public class UI {
         g2d.setColor(Color.WHITE);
         g2d.drawString(dialogueToPrint, x, y);
 
-
-
         currentLetter++;
     }
 
 
-    /**
-     * @brief Draws a bulb above the entity.
-     *
-     * @param entity the entity to draw the bulb above.
-     */
-    private void drawBulb(Entity entity) {
-        int x = worldToScreenX(entity.worldX);
-        int y = worldToScreenY(entity.worldY) - gp.TILE_SIZE / 2;
 
-        g2d.setColor(Color.BLACK);
-        g2d.fillRect(x, y, gp.TILE_SIZE / 4, gp.TILE_SIZE / 4);
+
+
+
+
+    // ********** GENERAL METHODS (ANY GAME STATE) ********** //
+
+
+    /**
+     * @brief Shows a message on the screen.
+     *
+     * @note: This method is still experimental.
+     *
+     * @param text the text to show on the screen.
+     */
+    public void showMessage(String text) {
+        g2d.setFont(dialogueFont);
+        g2d.setColor(Color.WHITE);
+        g2d.drawString(text, 100, 100);
     }
 
 
 
 
 
+// ********************************************** HELPER METHODS ********************************************** //
 
 
-    // ********** HELPER METHODS ********** //
-
+    private void loadFonts() {
+        try {
+            InputStream is = Objects.requireNonNull(getClass().getResourceAsStream("/fonts/Pixel-Life.ttf"), "Font resource not found");
+            dialogueFont = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (Exception e) {
+            LOGGER.severe("Error loading font: " + e.getMessage());
+        }
+    }
 
     private void drawEntityRelatedStuff() {
         for(Entity entity : gp.npcArray) {
@@ -226,5 +249,11 @@ public class UI {
 
     private boolean isPlayerReadyForNextDialogue() {
         return gp.player.isReadyForNextDialogue;
+    }
+
+    private int getCenteredX(String text) {
+        int length = (int)g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
+
+        return (gp.WINDOW_WIDTH - length) / 2;
     }
 }

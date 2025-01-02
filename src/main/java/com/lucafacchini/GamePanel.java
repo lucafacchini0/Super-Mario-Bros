@@ -74,7 +74,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final Sound sound = new Sound();
 
     // UI
-    public UI ui = new UI(this, kh);
+    public UI ui = new UI(this);
 
     /**
      * @brief Constructor of the GamePanel class.
