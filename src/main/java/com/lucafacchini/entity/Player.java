@@ -17,6 +17,7 @@ public class Player extends Entity {
     // Debugging
     public int hasKey = 0;
     private static final Logger LOGGER = Logger.getLogger(Entity.class.getName());
+    public int NOT_USED_YET_1 = 0;
 
     // Sprite settings
     public final int NUM_MOVING_SPRITES = 6;
@@ -34,18 +35,7 @@ public class Player extends Entity {
     public int npcIndex;
 
     // Player settings
-    /**
-     * @BUG The higher the value of DEFAULT_SPEED, and "more space" is added between the player and the walls.
-     *
-     *     The BoundingBox of both the player and the tile don't change, but the player collides with the tile before reaching it.
-     *     The distance between the player and the tile changes based on the position of the player, and it's not the same.
-     *
-     *     Example: at X:37, Y:34, the player collides 8px on the right side before reaching the tile and 11px on the bottom side,
-     *     but, maybe, at X:52, Y:14, the player collides 3px on the right side before reaching the tile and 6px on the bottom side
-     *
-     */
     public final int DEFAULT_SPEED = 8;
-
     /**
      * @brief screenX and screenY are the coordinates of the player on the screen.
      * They are used to center the player on the screen. Their purpose is to
@@ -106,7 +96,7 @@ public class Player extends Entity {
      */
     void setDefaultValues() {
         // Set player spawn location
-        worldX = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
+        worldX = gp.TILE_SIZE * 27 - gp.TILE_SIZE;
         worldY = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
 
         // Set player speed
@@ -122,6 +112,8 @@ public class Player extends Entity {
         updateDirection();
         updateSprite();
         updatePosition();
+
+        checkForDialogues();
     }
 
 
@@ -212,13 +204,62 @@ public class Player extends Entity {
             objectIndex = gp.cm.checkObject(this, true);
             pickUpObject(objectIndex);
 
-            npcIndex = gp.cm.checkEntity(this, gp.npcArray);
-            interactionWithNPC(npcIndex);
-
+            NOT_USED_YET_1 = gp.cm.checkEntity(this, gp.npcArray);
+            // Maybe "push" the entity away from the player if they collide?
 
             if (!isCollidingWithTile && !isCollidingWithObject && !isCollidingWithEntity) {
                 move();
             }
+        }
+    }
+
+
+    // A flag to prevent multiple dialogues
+    private boolean enterKeyProcessed = false;
+
+    /**
+     * @brief Checks for dialogues with NPCs in the game world.
+     *
+     * Iterates through the NPC to check if the player is next to an NPC.
+     * The flag isNextToPlayer is managed by the Entity class.
+     *
+     * If the player is next to an NPC, the handleDialogue method is called.
+     */
+    private void checkForDialogues() {
+        for (int i = 0; i < gp.npcArray.length; i++) {
+            if (gp.npcArray[i] != null && gp.npcArray[i].isNextToPlayer) {
+                handleDialogue(i);
+            }
+        }
+    }
+
+    /**
+     * @brief Handles the dialogue with an NPC.
+     * Checks if the player has pressed the enter key to start a dialogue with an NPC.
+     * If so, the dialogue is displayed on the screen by calling the speak method of the NPC.
+     *
+     * If the NPC has finished all dialogues, the dialogue index is reset to 0 and
+     * the game status is set to RUNNING.
+     *
+     * @param npcIndex The index of the NPC in the npcArray.
+     */
+    private void handleDialogue(int npcIndex) {
+        this.npcIndex = npcIndex;
+
+        if (kh.isEnterPressed && !enterKeyProcessed) {
+            gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
+            gp.npcArray[npcIndex].speak();
+
+            if (gp.npcArray[npcIndex].hasFinishedDialogues()) {
+                gp.npcArray[npcIndex].dialogueIndex = 0;
+                gp.gameStatus = GamePanel.GameStatus.RUNNING;
+            } else {
+                gp.npcArray[npcIndex].dialogueIndex++;
+            }
+
+            enterKeyProcessed = true; // Set the flag to prevent multiple dialogues
+        } else if (!kh.isEnterPressed) {
+            enterKeyProcessed = false; // Reset the flag when the key is released
         }
     }
 
@@ -278,21 +319,6 @@ public class Player extends Entity {
                     gp.ui.gameFinished = true;
                 }
             }
-        }
-    }
-
-
-    /**
-     * @brief Handles player interaction with NPCs.
-     *
-     * @param index The index of the NPC in the npcArray.
-     */
-    public void interactionWithNPC(int index) {
-        if(index != -1) {
-            gp.gameStatus = GamePanel.GameStatus.DIALOGUE;
-            gp.npcArray[index].speak();
-        } else {
-            gp.gameStatus = GamePanel.GameStatus.RUNNING;
         }
     }
 }

@@ -63,7 +63,7 @@ public class NPC_OldMan extends Entity {
      */
     void setDefaultValues() {
         worldX = gp.TILE_SIZE * 24 - gp.TILE_SIZE; // Spawn at the center of the map
-        worldY = gp.TILE_SIZE * 26 - gp.TILE_SIZE; // Spawn at the center of the map
+        worldY = gp.TILE_SIZE * 22 - gp.TILE_SIZE; // Spawn at the center of the map
 
         speed = DEFAULT_SPEED;
     }
@@ -73,24 +73,9 @@ public class NPC_OldMan extends Entity {
      * @brief Sets the dialogue for the NPC.
      */
     public void setDialogue() {
-        dialogues[0] = "Hello, welcome to FacchiniRPG!";
-        dialogues[1] = "I'm so happy you've found me!";
-        dialogues[2] = "Have a nice adventure!";
+        dialogues[0] = "dialogue 1";
+        dialogues[1] = "dialogue 2";
+        dialogues[2] = "dialogue 3";
     }
 
-
-    /**
-     * @brief Makes the NPC speak.
-     */
-    @Override
-    public void speak() {
-        isStillTalking = false;
-
-        if(dialogues[dialogueIndex] == null) {
-            dialogueIndex = 0;
-            isStillTalking = true;
-        }
-
-        gp.ui.currentDialogue = dialogues[dialogueIndex];
-    }
 }
