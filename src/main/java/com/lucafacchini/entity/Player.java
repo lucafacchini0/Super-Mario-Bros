@@ -3,6 +3,7 @@ package com.lucafacchini.entity;
 import com.lucafacchini.GamePanel;
 import com.lucafacchini.KeyHandler;
 import com.lucafacchini.objects.SuperObject;
+import com.lucafacchini.stats.*;
 
 import java.util.logging.Logger;
 
@@ -44,6 +45,9 @@ public class Player extends Entity {
      */
     public final int screenX;
     public final int screenY;
+
+    // Stats
+    public HP hp;
 
     // KeyHandler
     KeyHandler kh;
@@ -101,6 +105,10 @@ public class Player extends Entity {
 
         // Set player speed
         speed = DEFAULT_SPEED;
+
+        // Stats
+        hp = new HP(10);
+        hp.currentHP = 4;
     }
 
 

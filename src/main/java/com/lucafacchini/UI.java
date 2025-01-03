@@ -20,7 +20,7 @@ public class UI {
     public boolean gameFinished = false;
 
     // Fonts
-    Font dialogueFont;
+    Font defaultFont;
 
     // Title screen
     public int titleScreenOption = 0;
@@ -39,7 +39,7 @@ public class UI {
     Graphics2D g2d;
 
     // Colors
-    Color dialogueWindowBackground = new Color(0, 0, 0, 150);
+    Color dialogueWindowBackground = new Color(0, 0, 0, 210);
     Color dialogueWindowStroke = new Color(255, 255, 255);
 
 
@@ -71,20 +71,24 @@ public class UI {
     public void draw(Graphics2D g2d) {
         this.g2d = g2d;
 
-        if(gp.gameStatus == GamePanel.GameStatus.TITLE_SCREEN) {
-            drawTitleScreen();
-        }
+        switch (gp.gameStatus) {
 
-        else if(gp.gameStatus == GamePanel.GameStatus.RUNNING) {
-            drawEntityRelatedStuff();
-        }
+            case TITLE_SCREEN -> {
+                drawTitleScreen();
+            }
 
-        else if(gp.gameStatus == GamePanel.GameStatus.DIALOGUE) {
-            drawDialogues();
-        }
+            case RUNNING -> {
+                drawEntityRelatedStuff();
+                drawStatsBar();
+            }
 
-        else if(gp.gameStatus == GamePanel.GameStatus.PAUSED) {
-            // Do stuff
+            case DIALOGUE -> {
+                drawDialogues();
+            }
+
+            case PAUSED -> {
+                drawStatsBar();
+            }
         }
     }
 
@@ -96,6 +100,12 @@ public class UI {
     // ********** TITLE_SCREEN STATE ********** //
 
 
+    /**
+     * @brief Method to draw the title screen.
+     *
+     * It starts by checking which window to draw.
+     * Then it draws the title screen window.
+     */
     private void drawTitleScreen() {
         switch (currentTitleScreenWindow) {
             case 1 -> drawTitleScreenWindow1();
@@ -103,46 +113,56 @@ public class UI {
         }
     }
 
+
+    /**
+     * @brief Draws the first window of the title screen.
+     *
+     * It starts by setting the font size and style.
+     * Then it draws the title and the options.
+     */
     private void drawTitleScreenWindow1() {
-        drawText("FacchiniRPG", Font.BOLD, 94F, Color.DARK_GRAY, Color.YELLOW, gp.TILE_SIZE * 2); // Title
-        drawText("Game by Luca Facchini", Font.PLAIN, 48F, Color.DARK_GRAY, Color.WHITE, gp.TILE_SIZE * 3); // Subtitle
+        setFont(defaultFont, 94F, Font.BOLD);
+        drawShadowText("FacchiniRPG", Color.YELLOW, Color.DARK_GRAY, getCenteredX("FacchiniRPG"), gp.TILE_SIZE * 2, 3, 3);
+        setFont(defaultFont, 32F, Font.BOLD);
+        drawShadowText("Game by Luca Facchini", Color.WHITE, Color.DARK_GRAY, getCenteredX("Game by Luca Facchini"), gp.TILE_SIZE * 3, 3, 3);
 
         // Options
         String[] options = {"PLAY GAME", "LOAD FILE", "EXIT"};
 
         for (int i = 0; i < options.length; i++) {
             int y = gp.TILE_SIZE * (8 + i);
+            setFont(defaultFont, 48F, Font.BOLD);
             drawTitleScreenOption(options[i], y, i == titleScreenOption);
         }
     }
 
+
+    /**
+     * @brief Draws the second window of the title screen.
+     *
+     * It starts by setting the font size and style.
+     * Then it the window (not implemented yet).
+     */
     private void drawTitleScreenWindow2() {
-        drawText("Press enter to start the game", Font.PLAIN, 48F, null, Color.WHITE, gp.WINDOW_HEIGHT / 2);
+        setFont(defaultFont, 24F, Font.PLAIN);
+        drawText("Press enter to start the game", Color.WHITE, true, gp.WINDOW_HEIGHT / 2);
     }
 
-    private void drawText(String text, int fontStyle, float fontSize, Color shadowColor, Color textColor, int y) {
-        g2d.setFont(dialogueFont.deriveFont(fontStyle, fontSize)); // Use dialogueFont explicitly
-        int x = getCenteredX(text);
 
-        if (shadowColor != null) {
-            g2d.setColor(shadowColor);
-            g2d.drawString(text, x + 3, y + 3);
-        }
-
-        g2d.setColor(textColor);
-        g2d.drawString(text, x, y);
-    }
-
+    /**
+     * @brief Draws the title screen options.
+     *
+     * It starts by drawing the text and the ">" symbol if the option is selected.
+     *
+     * @param text the text to draw.
+     * @param y the y coordinate of the text.
+     * @param isSelected if the option is selected.
+     */
     private void drawTitleScreenOption(String text, int y, boolean isSelected) {
-        g2d.setFont(dialogueFont.deriveFont(Font.BOLD, 48F));
-        int x = getCenteredX(text);
-
-        g2d.setColor(Color.WHITE);
-        g2d.drawString(text, x, y);
+        drawText(text, Color.WHITE, true, y);
 
         if (isSelected) {
-            g2d.setColor(Color.YELLOW);
-            g2d.drawString(">", x - gp.TILE_SIZE, y);
+            drawText(">", Color.YELLOW, getCenteredX(text) - 50, y);
         }
     }
 
@@ -186,8 +206,6 @@ public class UI {
      * Then it draws the sub window and the dialogue text.
      */
     private void drawDialogueScreen() {
-        g2d.setFont(dialogueFont);
-
         int x, y, width, height;
 
         x = gp.TILE_SIZE * 2;
@@ -230,7 +248,7 @@ public class UI {
      * @param dialogue the string to draw.
      */
     private void drawDialogueString(int x, int y, String dialogue) {
-        g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 36F));
+        setFont(defaultFont, 30F, Font.PLAIN);
 
         x += gp.TILE_SIZE;
         y += gp.TILE_SIZE;
@@ -247,10 +265,7 @@ public class UI {
 
         dialogueToPrint = dialogue.substring(0, currentLetter);
 
-        g2d.setColor(Color.BLACK);
-        g2d.drawString(dialogueToPrint, x + 2, y + 2);
-        g2d.setColor(Color.WHITE);
-        g2d.drawString(dialogueToPrint, x, y);
+        drawShadowText(dialogueToPrint, Color.WHITE, Color.BLACK, x, y, 2, 2);
 
         currentLetter++;
     }
@@ -272,11 +287,31 @@ public class UI {
      * @param text the text to show on the screen.
      */
     public void showMessage(String text) {
-        g2d.setFont(dialogueFont);
-        g2d.setColor(Color.WHITE);
-        g2d.drawString(text, 100, 100);
+        setFont(defaultFont, 30F, Font.PLAIN);
+        drawText(text, Color.WHITE, true, gp.TILE_SIZE);
     }
 
+
+    public void drawStatsBar() {
+        int x, y, width, height;
+
+        x = gp.TILE_SIZE;
+        y = gp.TILE_SIZE;
+        width = gp.TILE_SIZE / 4 * gp.player.hp.maxHP;
+        height = gp.TILE_SIZE / 4;
+
+        g2d.setColor(Color.RED);
+        g2d.fillRect(x, y, width, height);
+
+        width = gp.TILE_SIZE / 4 * gp.player.hp.currentHP;
+
+        g2d.setColor(Color.GREEN);
+        g2d.fillRect(x, y, width, height);
+
+        String text = "HP: " + gp.player.hp.currentHP + "/" + gp.player.hp.maxHP;
+        setFont(defaultFont, 16F, Font.PLAIN);
+        drawText(text, Color.BLACK, x + 10, y + gp.TILE_SIZE / 4 - (height / 6));
+    }
 
 
 
@@ -287,7 +322,7 @@ public class UI {
     private void loadFonts() {
         try {
             InputStream is = Objects.requireNonNull(getClass().getResourceAsStream("/fonts/Pixel-Life.ttf"), "Font resource not found");
-            dialogueFont = Font.createFont(Font.TRUETYPE_FONT, is);
+            defaultFont = Font.createFont(Font.TRUETYPE_FONT, is);
         } catch (Exception e) {
             LOGGER.severe("Error loading font: " + e.getMessage());
         }
@@ -321,5 +356,48 @@ public class UI {
         int length = (int)g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
 
         return (gp.WINDOW_WIDTH - length) / 2;
+    }
+
+
+
+    // Draw helper methods
+    private void setFont(Font font, float size, int style) {
+        g2d.setFont(font.deriveFont(style, size));
+    }
+
+
+    private void drawText(String text, Color color, int x, int y) {
+        g2d.setColor(color);
+        g2d.drawString(text, x, y);
+    }
+
+    private void drawShadowText(String text, Color textColor, Color shadowColor, int x, int y, int deltaX, int deltaY) {
+
+        g2d.setColor(shadowColor);
+        g2d.drawString(text, x + deltaX, y + deltaY);
+        g2d.setColor(textColor);
+        g2d.drawString(text, x, y);
+    }
+
+    private void drawText(String text, Color color, boolean center, int y) {
+        if(!center) {
+            Logger.getLogger(UI.class.getName()).severe("Center is false, use the other method");
+            return;
+        }
+
+        g2d.setColor(color);
+        g2d.drawString(text, getCenteredX(text), y);
+    }
+
+    private void drawShadowText(String text, Color textColor, Color shadowColor, boolean center, int y, int deltaX, int deltaY) {
+        if(!center) {
+            Logger.getLogger(UI.class.getName()).severe("Center is false, use the other method");
+            return;
+        }
+
+        g2d.setColor(shadowColor);
+        g2d.drawString(text, getCenteredX(text) + deltaX, y + deltaY);
+        g2d.setColor(textColor);
+        g2d.drawString(text, getCenteredX(text), y);
     }
 }
