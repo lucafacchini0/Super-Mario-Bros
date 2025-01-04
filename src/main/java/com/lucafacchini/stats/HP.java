@@ -32,4 +32,8 @@ public class HP {
             currentHP = 0;
         }
     }
+
+    public void setMaxHP(int maxHP) {
+        this.maxHP = Math.max(maxHP, 0);
+    }
 }

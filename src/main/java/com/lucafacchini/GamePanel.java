@@ -56,6 +56,9 @@ public class GamePanel extends JPanel implements Runnable {
     // Manage the key events
     KeyHandler kh = new KeyHandler(this);
 
+    // Event Handler for Entities/Player
+    public EventHandler eh = new EventHandler(this);
+
     // Entities
     public Entity[] npcArray = new Entity[10]; // Max number of NPCs in the game
     public Player player = new Player(this, kh); // The player

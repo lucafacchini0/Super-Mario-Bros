@@ -122,6 +122,7 @@ public class Player extends Entity {
         updatePosition();
 
         checkForDialogues();
+        checkForEvents();
     }
 
 
@@ -293,6 +294,12 @@ public class Player extends Entity {
 
 
     /**
+     * @brief Checks for events in the game world.
+     * Triggers events based on the player's position in the game world.
+     */
+
+
+    /**
      * @brief Moves the player entity in the current direction.
      */
     @Override
@@ -348,5 +355,12 @@ public class Player extends Entity {
                 }
             }
         }
+    }
+
+    /**
+     * @brief Check for events
+     */
+    public void checkForEvents() {
+        gp.eh.checkEvent();
     }
 }
