@@ -40,12 +40,12 @@ public class EventHandler {
         System.out.println("x:" + gp.player.worldX / gp.TILE_SIZE + " y:" + gp.player.worldY / gp.TILE_SIZE);
 
         if(hit(16, 31)) {
-            gp.player.hp.setMaxHP(50);
-            gp.player.hp.setHP(50);
+            gp.player.hp.setMax(50);
+            gp.player.hp.setCurrent(50);
         }
 
         if(hit(18, 31)) {
-            gp.player.hp.removeHP(1);
+            gp.player.hp.remove(1);
         }
     }
 

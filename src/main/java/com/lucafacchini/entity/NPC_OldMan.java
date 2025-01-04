@@ -1,6 +1,7 @@
 package com.lucafacchini.entity;
 
 import com.lucafacchini.GamePanel;
+import com.lucafacchini.stats.Speed;
 
 import java.util.logging.Logger;
 
@@ -13,16 +14,16 @@ public class NPC_OldMan extends Entity {
     private static final Logger LOGGER = Logger.getLogger(NPC_OldMan.class.getName());
 
     // Sprite settings
-    public final int NUM_MOVING_SPRITES = 6;
-    public final int NUM_IDLING_SPRITES = 4;
-    public final int SPRITE_HEIGHT_PX = 19;
-    public final int SPRITE_WIDTH_PX = 11;
+    public final int NUM_MOVING_SPRITES = 2;
+    public final int NUM_IDLING_SPRITES = 2;
+    public final int SPRITE_HEIGHT_PX = 16;
+    public final int SPRITE_WIDTH_PX = 16;
     public final int RESCALED_SPRITE_HEIGHT_PX;
     public final int RESCALED_SPRITE_WIDTH_PX;
-    public final int MOVING_SPRITE_UPDATE_TIME = 5;
+    public final int MOVING_SPRITE_UPDATE_TIME = 15;
 
-    // NPC Settings
-    public final int DEFAULT_SPEED = 4;
+    // Stats Settings
+    public final int DEFAULT_SPEED = 1;
 
     /**
      * @brief Constructor for the NPC_OldMan class.
@@ -47,8 +48,13 @@ public class NPC_OldMan extends Entity {
         RESCALED_SPRITE_WIDTH_PX = SPRITE_WIDTH_PX * gp.SCALE;
 
         // Load and rescale player sprites
-        loadSprites("player", NUM_MOVING_SPRITES, NUM_IDLING_SPRITES);
+        loadSprites("npc/old_man", NUM_MOVING_SPRITES, NUM_IDLING_SPRITES);
         rescaleSprites(RESCALED_SPRITE_WIDTH_PX, RESCALED_SPRITE_HEIGHT_PX);
+
+
+        // Stats
+        speed = new Speed(DEFAULT_SPEED);
+
 
         // Set default values
         setDialogue();
@@ -64,8 +70,6 @@ public class NPC_OldMan extends Entity {
     void setDefaultValues() {
         worldX = gp.TILE_SIZE * 24 - gp.TILE_SIZE; // Spawn at the center of the map
         worldY = gp.TILE_SIZE * 22 - gp.TILE_SIZE; // Spawn at the center of the map
-
-        speed = DEFAULT_SPEED;
     }
 
 

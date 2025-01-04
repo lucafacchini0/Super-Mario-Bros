@@ -297,18 +297,18 @@ public class UI {
 
         x = gp.TILE_SIZE;
         y = gp.TILE_SIZE;
-        width = gp.TILE_SIZE / 4 * gp.player.hp.maxHP;
+        width = gp.TILE_SIZE / 4 * gp.player.hp.max;
         height = gp.TILE_SIZE / 4;
 
         g2d.setColor(Color.RED);
         g2d.fillRect(x, y, width, height);
 
-        width = gp.TILE_SIZE / 4 * gp.player.hp.currentHP;
+        width = gp.TILE_SIZE / 4 * gp.player.hp.current;
 
         g2d.setColor(Color.GREEN);
         g2d.fillRect(x, y, width, height);
 
-        String text = "HP: " + gp.player.hp.currentHP + "/" + gp.player.hp.maxHP;
+        String text = "HP: " + gp.player.hp.current + "/" + gp.player.hp.max;
         setFont(defaultFont, 16F, Font.PLAIN);
         drawText(text, Color.BLACK, x + 10, y + gp.TILE_SIZE / 4 - (height / 6));
     }

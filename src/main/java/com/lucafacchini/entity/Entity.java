@@ -2,6 +2,7 @@ package com.lucafacchini.entity;
 
 import com.lucafacchini.GamePanel;
 import com.lucafacchini.Utilities;
+import com.lucafacchini.stats.Speed;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -67,7 +68,10 @@ public class Entity {
     public Direction previousDirection = Direction.DOWN;
 
     public int worldX, worldY; // The position of the entity in the world.
-    public int speed; // The speed of the entity.
+    //public int speed; // The speed of the entity.
+
+    // Stats that are shared by all entities.
+    public Speed speed;
 
     public Rectangle boundingBox; // The bounding box of the entity.
     public int boundingBoxDefaultX, boundingBoxDefaultY;
@@ -384,10 +388,10 @@ public class Entity {
      */
     public void move() {
         switch (currentDirection) {
-            case UP -> worldY -= speed;
-            case DOWN -> worldY += speed;
-            case LEFT -> worldX -= speed;
-            case RIGHT -> worldX += speed;
+            case UP -> worldY -= speed.getCurrent();
+            case DOWN -> worldY += speed.getCurrent();
+            case LEFT -> worldX -= speed.getCurrent();
+            case RIGHT -> worldX += speed.getCurrent();
         }
     }
 
