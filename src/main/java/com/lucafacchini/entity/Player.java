@@ -46,7 +46,7 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
 
-    // Stats
+    // Stats (only for the player)
     public HP hp;
 
     // KeyHandler
@@ -84,6 +84,10 @@ public class Player extends Entity {
         RESCALED_SPRITE_HEIGHT_PX = SPRITE_HEIGHT_PX * gp.SCALE;
         RESCALED_SPRITE_WIDTH_PX = SPRITE_WIDTH_PX * gp.SCALE;
 
+        // Stats
+        hp = new HP(10);
+        speed = new Speed(DEFAULT_SPEED);
+
         // Load and rescale player sprites
         loadSprites("player", NUM_MOVING_SPRITES, NUM_IDLING_SPRITES);
         rescaleSprites(RESCALED_SPRITE_WIDTH_PX, RESCALED_SPRITE_HEIGHT_PX);
@@ -102,13 +106,6 @@ public class Player extends Entity {
         // Set player spawn location
         worldX = gp.TILE_SIZE * 27 - gp.TILE_SIZE;
         worldY = gp.TILE_SIZE * 25 - gp.TILE_SIZE;
-
-        // Set player speed
-        speed = DEFAULT_SPEED;
-
-        // Stats
-        hp = new HP(10);
-        hp.currentHP = 4;
     }
 
 
@@ -122,6 +119,7 @@ public class Player extends Entity {
         updatePosition();
 
         checkForDialogues();
+        checkForEvents();
     }
 
 
@@ -293,17 +291,23 @@ public class Player extends Entity {
 
 
     /**
+     * @brief Checks for events in the game world.
+     * Triggers events based on the player's position in the game world.
+     */
+
+
+    /**
      * @brief Moves the player entity in the current direction.
      */
-    @Override
-    public void move() {
-        switch (currentDirection) {
-            case UP -> worldY -= speed;
-            case DOWN -> worldY += speed;
-            case LEFT -> worldX -= speed;
-            case RIGHT -> worldX += speed;
-        }
-    }
+//    @Override
+//    public void move() {
+//        switch (currentDirection) {
+//            case UP -> worldY -= speed;
+//            case DOWN -> worldY += speed;
+//            case LEFT -> worldX -= speed;
+//            case RIGHT -> worldX += speed;
+//        }
+//    }
 
 
     /**
@@ -336,7 +340,7 @@ public class Player extends Entity {
 
                 case BOOTS -> {
                     gp.ui.showMessage("You picked up boots!");
-                    speed *= 2;
+                    speed.setCurrent(speed.getCurrent() * 2);
                     gp.objectsArray[index] = null;
                     gp.playSound(2);
                 }
@@ -348,5 +352,12 @@ public class Player extends Entity {
                 }
             }
         }
+    }
+
+    /**
+     * @brief Check for events
+     */
+    public void checkForEvents() {
+        gp.eh.checkEvent();
     }
 }
