@@ -21,15 +21,15 @@ public class Player extends Entity {
     public int NOT_USED_YET_1 = 0;
 
     // Sprite settings
-    public final int NUM_MOVING_SPRITES = 6;
-    public final int NUM_IDLING_SPRITES = 4;
-    public final int SPRITE_HEIGHT_PX = 19;
-    public final int SPRITE_WIDTH_PX = 11;
+    public final int NUM_MOVING_SPRITES = 4;
+    public final int NUM_IDLING_SPRITES = 3;
+    public final int SPRITE_HEIGHT_PX = 16;
+    public final int SPRITE_WIDTH_PX = 16;
     public final int RESCALED_SPRITE_HEIGHT_PX;
     public final int RESCALED_SPRITE_WIDTH_PX;
     public final int MOVING_SPRITE_UPDATE_TIME = 5;
-    public final int IDLING_SPRITE_MULTIPLIER_UPDATE_TIME = 120;
-    public final int IDLING_SPRITE_MULTIPLIER_EYES_CLOSED = MOVING_SPRITE_UPDATE_TIME;
+    public final int IDLING_SPRITE_MULTIPLIER_UPDATE_TIME = 20;
+    public final int IDLING_SPRITE_MULTIPLIER_EYES_CLOSED = 20;
 
     // Indexes of objects and entities
     public int objectIndex;
@@ -67,10 +67,10 @@ public class Player extends Entity {
         screenX = gp.WINDOW_WIDTH / 2 - gp.TILE_SIZE / 2;
         screenY = gp.WINDOW_HEIGHT / 2 - gp.TILE_SIZE / 2;
 
-        boundingBox.x = 0;
-        boundingBox.y = 0;
-        boundingBox.width =  gp.TILE_SIZE;
-        boundingBox.height = gp.TILE_SIZE;
+        boundingBox.x = gp.TILE_SIZE / 4;
+        boundingBox.y = gp.TILE_SIZE / 2;
+        boundingBox.width =  gp.TILE_SIZE - boundingBox.x * 2;
+        boundingBox.height = gp.TILE_SIZE / 2;
         boundingBoxDefaultX = boundingBox.x;
         boundingBoxDefaultY = boundingBox.y;
 
