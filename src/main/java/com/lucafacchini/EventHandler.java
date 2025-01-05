@@ -53,7 +53,6 @@ public class EventHandler {
 
         boolean hit = false;
 
-        // do
         // TODO: This is unsafe and, imo, inefficient. It's better to use a separate variable to store the player's bounding box. This way we avoid re-assinging the player's bounding box every time we check for a collision.
         gp.player.boundingBox.x = gp.player.worldX + gp.player.boundingBox.x;
         gp.player.boundingBox.y = gp.player.worldY + gp.player.boundingBox.y;
