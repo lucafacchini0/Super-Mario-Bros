@@ -304,7 +304,7 @@ public class CollisionManager {
         int index = -1;
 
         for (int i = 0; i < target.length; i++) {
-            if (target[i] != null) {
+            if (target[i] != null && target[i] != entity) {
 
                 entity.boundingBox.x = entity.worldX + entity.boundingBox.x;
                 entity.boundingBox.y = entity.worldY + entity.boundingBox.y;

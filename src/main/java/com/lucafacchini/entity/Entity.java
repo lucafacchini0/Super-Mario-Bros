@@ -381,6 +381,8 @@ public class Entity {
 
         // Check player collisions (for NPCs)
         gp.cm.checkPlayer(this);
+
+        gp.cm.checkEntity(this, gp.npcArray);
     }
 
     /**
